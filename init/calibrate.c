@@ -286,9 +286,12 @@ void __cpuinit calibrate_delay(void)
 			pr_info("Calibrating delay using timer "
 				"specific routine.. ");
 	} else {
-		if (!printed)
+		if (!printed) {
 			pr_info("Calibrating delay loop... ");
+			pr_notice("%s() line:%d\n", __func__, __LINE__);
+		}
 		lpj = calibrate_delay_converge();
+		pr_notice("%s() line:%d\n", __func__, __LINE__);
 	}
 	per_cpu(cpu_loops_per_jiffy, this_cpu) = lpj;
 	if (!printed)

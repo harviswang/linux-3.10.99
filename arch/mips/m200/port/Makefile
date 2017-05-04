@@ -5,6 +5,7 @@ obj-y += arch_init_irq.o         \
          plat_time_init.o        \
          prom_free_prom_memory.o \
          prom_init.o             \
-         prom_putchar.o
+         prom_putchar.o          \
+         device_tree_init.o
 
 

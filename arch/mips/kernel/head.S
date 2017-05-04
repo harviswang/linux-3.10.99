@@ -145,8 +145,17 @@ FEXPORT(__kernel_entry)
 NESTED(kernel_entry, 16, sp)			# kernel entry point
 
 	kernel_entry_setup			# cpu specific setup
+    lui k0,0x1003
+    ori k0,k0,0x3000
+    add k1, zero, a0
+    sb k1, 0(k0)
 
 	setup_c0_status_pri
+
+    lui k0,0xb003
+    ori k0,k0,0x3000
+    addi k1, zero, 0x35
+    sb k1, 0(k0)
 
 	/* We might not get launched at the address the kernel is linked to,
 	   so we jump there.  */

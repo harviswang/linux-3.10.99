@@ -233,12 +233,15 @@ config MACH_JZ4740
 
 config MACH_M200
 	bool "Ingenic M200 based machines"
-	select SYS_HAS_CPU_MIPS32_R1
 	select SYS_HAS_CPU_MIPS32_R2
+	select CPU_MIPSR2_IRQ_VI
 	select SYS_SUPPORTS_32BIT_KERNEL
 	select SYS_SUPPORTS_LITTLE_ENDIAN
 	select SYS_HAS_EARLY_PRINTK
 	select SYS_SUPPORTS_MULTITHREADING
+	select SYS_SUPPORTS_HIGHMEM
+	select MIPS_CPU_SCACHE
+	select IRQ_CPU
 
 config LANTIQ
 	bool "Lantiq based platforms"
@@ -1155,7 +1158,7 @@ config BOOT_ELF32
 config MIPS_L1_CACHE_SHIFT
 	int
 	default "4" if MACH_DECSTATION || MIKROTIK_RB532 || PMC_MSP4200_EVAL || SOC_RT288X
-	default "6" if MIPS_CPU_SCACHE
+	default "6" if MIPS_CPU_SCACHE && !MACH_M200
 	default "7" if SGI_IP22 || SGI_IP27 || SGI_IP28 || SNI_RM || CPU_CAVIUM_OCTEON
 	default "5"
 

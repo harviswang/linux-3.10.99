@@ -84,4 +84,5 @@ obj-$(CONFIG_SERIAL_TEGRA) += serial-tegra.o
 obj-$(CONFIG_SERIAL_AR933X)   += ar933x_uart.o
 obj-$(CONFIG_SERIAL_EFM32_UART) += efm32-uart.o
 obj-$(CONFIG_SERIAL_ARC)	+= arc_uart.o
+obj-$(CONFIG_SERIAL_M200)	+= m200_uart.o cp0.o
 obj-$(CONFIG_SERIAL_RP2)	+= rp2.o

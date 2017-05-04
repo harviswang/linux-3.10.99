@@ -373,6 +373,7 @@ static noinline void __init_refok rest_init(void)
 	 * we schedule it before we create kthreadd, will OOPS.
 	 */
 	kernel_thread(kernel_init, NULL, CLONE_FS | CLONE_SIGHAND);
+	printk("%s %s line:%d\n", __FILE__, __func__, __LINE__);
 	numa_default_policy();
 	pid = kernel_thread(kthreadd, NULL, CLONE_FS | CLONE_FILES);
 	rcu_read_lock();
@@ -469,6 +470,7 @@ static void __init mm_init(void)
 	vmalloc_init();
 }
 
+extern int cpu_has_test(void);
 asmlinkage void __init start_kernel(void)
 {
 	char * command_line;
@@ -527,6 +529,7 @@ asmlinkage void __init start_kernel(void)
 	vfs_caches_init_early();
 	sort_main_extable();
 	trap_init();
+	cpu_has_test();
 	mm_init();
 
 	/*
@@ -561,7 +564,17 @@ asmlinkage void __init start_kernel(void)
 	WARN(!irqs_disabled(), "Interrupts were enabled early\n");
 	early_boot_irqs_disabled = false;
 	local_irq_enable();
-
+	/*
+	 * emulate a soft interrupt, check interrupt handler works or not 
+	 */
+	//set_c0_status(1);
+	set_c0_status(1 << 8 | 1 << 9 | 1 << 10);
+	set_c0_cause(1 << 8 |   1 << 10);
+	printk(KERN_ERR"read_c0_cause() = 0x%x\n", read_c0_cause());
+	printk(KERN_ERR"read_c0_status() = 0x%x\n", read_c0_status());
+	printk(KERN_ERR"read_c0_intctl() = 0x%x\n", read_c0_intctl());
+	printk(KERN_ERR"read_c0_config3() = 0x%x\n", read_c0_config3());
+	printk(KERN_ERR "read_c0_ebase() = 0x%x\n", read_c0_ebase());
 	kmem_cache_init_late();
 
 	/*
@@ -569,10 +582,11 @@ asmlinkage void __init start_kernel(void)
 	 * we've done PCI setups etc, and console_init() must be aware of
 	 * this. But we do want output early, in case something goes wrong.
 	 */
+	pr_notice("%s() line:%d\n", __func__, __LINE__);
 	console_init();
 	if (panic_later)
 		panic(panic_later, panic_param);
-
+	pr_notice("%s() line:%d\n", __func__, __LINE__);
 	lockdep_info();
 
 	/*
@@ -600,6 +614,7 @@ asmlinkage void __init start_kernel(void)
 		late_time_init();
 	sched_clock_init();
 	calibrate_delay();
+	pr_notice("%s() line:%d\n", __func__, __LINE__);
 	pidmap_init();
 	anon_vma_init();
 #ifdef CONFIG_X86

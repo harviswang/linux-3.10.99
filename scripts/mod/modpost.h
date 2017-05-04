@@ -19,13 +19,25 @@
 #define Elf_Addr    Elf32_Addr
 #define Elf_Sword   Elf64_Sword
 #define Elf_Section Elf32_Half
+#ifdef ELF_ST_BIND
+#undef ELF_ST_BIND
 #define ELF_ST_BIND ELF32_ST_BIND
+#endif
+#ifdef ELF_ST_TYPE
+#undef ELF_ST_TYPE
 #define ELF_ST_TYPE ELF32_ST_TYPE
+#endif
 
 #define Elf_Rel     Elf32_Rel
 #define Elf_Rela    Elf32_Rela
+#ifdef ELF_R_SYM
+#undef ELF_R_SYM
 #define ELF_R_SYM   ELF32_R_SYM
+#endif
+#ifdef ELF_R_TYPE
+#undef ELF_R_TYPE
 #define ELF_R_TYPE  ELF32_R_TYPE
+#endif
 #else
 
 #define Elf_Ehdr    Elf64_Ehdr

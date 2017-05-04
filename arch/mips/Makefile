@@ -283,7 +283,11 @@ vmlinux.bin vmlinux.ecoff vmlinux.srec: $(vmlinux-32) FORCE
 vmlinuz vmlinuz.bin vmlinuz.ecoff vmlinuz.srec: $(vmlinux-32) FORCE
 	$(Q)$(MAKE) $(build)=arch/mips/boot/compressed \
 	   VMLINUX_LOAD_ADDRESS=$(load-y) 32bit-bfd=$(32bit-bfd) $@
-
+# zImage
+zImage: $(vmlinux-32) FORCE
+	$(Q)$(MAKE) $(build)=arch/mips/boot/zcompressed VMLINUX=$(vmlinux-32) $@
+	@cp arch/mips/boot/zcompressed/$@ arch/mips/boot/compressed/$@
+	@echo '  Kernel: arch/mips/boot/compressed/$@ is ready'
 
 CLEAN_FILES += vmlinux.32 vmlinux.64
 

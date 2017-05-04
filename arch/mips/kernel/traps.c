@@ -686,6 +686,7 @@ asmlinkage void do_ov(struct pt_regs *regs)
 
 int process_fpemu_return(int sig, void __user *fault_addr)
 {
+	printk("%s line:%d\n", __func__, __LINE__);
 	if (sig == SIGSEGV || sig == SIGBUS) {
 		struct siginfo si = {0};
 		si.si_addr = fault_addr;
@@ -751,6 +752,7 @@ asmlinkage void do_fpe(struct pt_regs *regs, unsigned long fcr31)
 		own_fpu(1);	/* Using the FPU again.	 */
 
 		/* If something went wrong, signal */
+		printk("%s line:%d\n", __func__, __LINE__);
 		process_fpemu_return(sig, fault_addr);
 
 		return;
@@ -1127,6 +1129,7 @@ asmlinkage void do_cpu(struct pt_regs *regs)
 			sig = fpu_emulator_cop1Handler(regs,
 						       &current->thread.fpu,
 						       0, &fault_addr);
+			printk("%s line:%d\n", __func__, __LINE__);
 			if (!process_fpemu_return(sig, fault_addr))
 				mt_ase_fp_affinity();
 		}
@@ -1501,7 +1504,7 @@ void __init *set_except_vector(int n, void *addr)
 static void do_default_vi(void)
 {
 	show_regs(get_irq_regs());
-	panic("Caught unexpected vectored interrupt.");
+	panic("Caught unexpected vectored interrupt.");	
 }
 
 static void *set_vi_srs_handler(int n, vi_handler_t addr, int srs)
@@ -1621,7 +1624,7 @@ static void *set_vi_srs_handler(int n, vi_handler_t addr, int srs)
 	return (void *)old_handler;
 }
 
-void *set_vi_handler(int n, vi_handler_t addr)
+void __cpuinit *set_vi_handler(int n, vi_handler_t addr)
 {
 	return set_vi_srs_handler(n, addr, 0);
 }
@@ -1808,6 +1811,31 @@ static int __init set_rdhwr_noopt(char *str)
 
 __setup("rdhwr_noopt", set_rdhwr_noopt);
 
+#define VI_HANDLER(x) \
+static void vi_handler_##x(void) \
+{ \
+	printk("%s line:%d\n", __func__, __LINE__); \
+}
+
+VI_HANDLER(0)
+VI_HANDLER(1)
+VI_HANDLER(2)
+VI_HANDLER(3)
+VI_HANDLER(4)
+VI_HANDLER(5)
+VI_HANDLER(6)
+VI_HANDLER(7)
+
+vi_handler_t vi_handler_table[] = {
+	vi_handler_0,
+	vi_handler_1,
+	vi_handler_2,
+	vi_handler_3,
+	vi_handler_4,
+	vi_handler_5,
+	vi_handler_6,
+	vi_handler_7
+};
 void __init trap_init(void)
 {
 	extern char except_vec3_generic;
@@ -1873,7 +1901,7 @@ void __init trap_init(void)
 	if (cpu_has_veic || cpu_has_vint) {
 		int nvec = cpu_has_veic ? 64 : 8;
 		for (i = 0; i < nvec; i++)
-			set_vi_handler(i, NULL);
+			set_vi_handler(i, vi_handler_table[i]);
 	}
 	else if (cpu_has_divec)
 		set_handler(0x200, &except_vec4, 0x8);

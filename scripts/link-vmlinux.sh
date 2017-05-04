@@ -105,7 +105,11 @@ sortextable()
 }
 
 # Delete output files in case of error
+if [ $(uname) = "Linux" ]; then
 trap cleanup SIGHUP SIGINT SIGQUIT SIGTERM ERR
+elif [ $(uname) = "FreeBSD" ]; then
+trap cleanup SIGHUP SIGINT SIGQUIT SIGTERM 
+fi
 cleanup()
 {
 	rm -f .old_version

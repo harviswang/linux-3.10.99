@@ -35,7 +35,7 @@
 #include <asm/cacheflush.h> /* for run_uncached() */
 #include <asm/traps.h>
 #include <asm/dma-coherence.h>
-
+#define DEBUG() pr_notice("%s line:%d\n", __func__, __LINE__)
 /*
  * Special Variant of smp_call_function for use by cache functions:
  *
@@ -815,7 +815,7 @@ static void __cpuinit probe_pcache(void)
 	unsigned int prid = read_c0_prid();
 	unsigned long config1;
 	unsigned int lsize;
-
+	pr_notice("config  = 0x%x prid = 0x%x c->cputype = 0x%x\n", config, prid, c->cputype);
 	switch (c->cputype) {
 	case CPU_R4600:			/* QED style two way caches? */
 	case CPU_R4700:
@@ -987,6 +987,7 @@ static void __cpuinit probe_pcache(void)
 		 * So let's probe the I-cache ...
 		 */
 		config1 = read_c0_config1();
+		pr_notice("config1  = 0x%lx\n", config1);
 
 		if ((lsize = ((config1 >> 19) & 7)))
 			c->icache.linesz = 2 << lsize;
@@ -1019,6 +1020,7 @@ static void __cpuinit probe_pcache(void)
 			      c->dcache.ways *
 			      c->dcache.linesz;
 		c->dcache.waybit = __ffs(dcache_size/c->dcache.ways);
+		pr_notice("c->dcache.waybit = %d\n", c->dcache.waybit);
 
 		c->options |= MIPS_CPU_PREFETCH;
 		break;
@@ -1257,6 +1259,7 @@ static void __cpuinit setup_scache(void)
 		return;
 
 	default:
+		pr_notice("c->isa_level = 0x%x c->scache.flags = 0x%x\n", c->isa_level, c->scache.flags);
 		if (c->isa_level & (MIPS_CPU_ISA_M32R1 | MIPS_CPU_ISA_M32R2 |
 				    MIPS_CPU_ISA_M64R1 | MIPS_CPU_ISA_M64R2)) {
 #ifdef CONFIG_MIPS_CPU_SCACHE
@@ -1413,7 +1416,7 @@ void __cpuinit r4k_cache_init(void)
 
 	probe_pcache();
 	setup_scache();
-
+	DEBUG();
 	r4k_blast_dcache_page_setup();
 	r4k_blast_dcache_page_indexed_setup();
 	r4k_blast_dcache_setup();
@@ -1436,6 +1439,7 @@ void __cpuinit r4k_cache_init(void)
 	else
 		shm_align_mask = PAGE_SIZE-1;
 
+	DEBUG();
 	__flush_cache_vmap	= r4k__flush_cache_vmap;
 	__flush_cache_vunmap	= r4k__flush_cache_vunmap;
 
@@ -1444,7 +1448,7 @@ void __cpuinit r4k_cache_init(void)
 	flush_cache_mm		= r4k_flush_cache_mm;
 	flush_cache_page	= r4k_flush_cache_page;
 	flush_cache_range	= r4k_flush_cache_range;
-
+DEBUG();
 	__flush_kernel_vmap_range = r4k_flush_kernel_vmap_range;
 
 	flush_cache_sigtramp	= r4k_flush_cache_sigtramp;
@@ -1453,7 +1457,7 @@ void __cpuinit r4k_cache_init(void)
 	flush_data_cache_page	= r4k_flush_data_cache_page;
 	flush_icache_range	= r4k_flush_icache_range;
 	local_flush_icache_range	= local_r4k_flush_icache_range;
-
+DEBUG();
 #if defined(CONFIG_DMA_NONCOHERENT)
 	if (coherentio) {
 		_dma_cache_wback_inv	= (void *)cache_noop;
@@ -1468,14 +1472,15 @@ void __cpuinit r4k_cache_init(void)
 
 	build_clear_page();
 	build_copy_page();
-
+DEBUG();
 	/*
 	 * We want to run CMP kernels on core with and without coherent
 	 * caches. Therefore, do not use CONFIG_MIPS_CMP to decide whether
 	 * or not to flush caches.
 	 */
 	local_r4k___flush_cache_all(NULL);
-
+DEBUG();
 	coherency_setup();
+	DEBUG();
 	board_cache_error_setup = r4k_cache_error_setup;
 }

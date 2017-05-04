@@ -93,7 +93,7 @@ asmlinkage void spurious_interrupt(void)
 void __init init_IRQ(void)
 {
 	int i;
-
+	printk("%s line:%d\n", __func__, __LINE__);
 #ifdef CONFIG_KGDB
 	if (kgdb_early_setup)
 		return;

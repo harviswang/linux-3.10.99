@@ -5,3 +5,4 @@
 
 obj-y += driverlib/
 obj-y += port/
+obj-y += linux/

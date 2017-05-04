@@ -23,6 +23,7 @@
  */
 static void mips_sc_wback_inv(unsigned long addr, unsigned long size)
 {
+	pr_notice("size = %ld\n", size);
 	blast_scache_range(addr, addr + size);
 }
 
@@ -54,6 +55,10 @@ static struct bcache_ops mips_sc_ops = {
 	.bc_disable = mips_sc_disable,
 	.bc_wback_inv = mips_sc_wback_inv,
 	.bc_inv = mips_sc_inv
+};
+
+static char *way_string[] __cpuinitdata = { NULL, "direct mapped", "2-way",
+	"3-way", "4-way", "5-way", "6-way", "7-way", "8-way"
 };
 
 /*
@@ -108,7 +113,7 @@ static inline int __init mips_sc_probe(void)
 		return 0;
 
 	config2 = read_c0_config2();
-
+	pr_notice("config2 = 0x%x\n", config2);
 	if (!mips_sc_is_activated(c))
 		return 0;
 
@@ -128,7 +133,10 @@ static inline int __init mips_sc_probe(void)
 	c->scache.waybit = __ffs(c->scache.waysize);
 
 	c->scache.flags &= ~MIPS_CACHE_NOT_PRESENT;
-
+	printk("Second cache(L2 Cache) %dkB, %s, %s, linesize %d bytes.\n",
+	       (c->scache.waysize * c->scache.ways) >> 10,
+	       c->scache.flags & MIPS_CACHE_VTAG ? "VIVT" : "VIPT",
+	       way_string[c->scache.ways], c->scache.linesz);
 	return 1;
 }
 

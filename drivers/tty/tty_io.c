@@ -3517,6 +3517,7 @@ void __init console_init(void)
 	 */
 	call = __con_initcall_start;
 	while (call < __con_initcall_end) {
+		printk("%pF\n", call);
 		(*call)();
 		call++;
 	}

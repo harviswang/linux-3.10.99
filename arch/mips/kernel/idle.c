@@ -31,6 +31,12 @@
 void (*cpu_wait)(void);
 EXPORT_SYMBOL(cpu_wait);
 
+//static void jzrisc_wait(void)
+//{
+//	printk("%s line:%d\n", __func__, __LINE__);
+//	dump_stack();
+//}
+
 static void r3081_wait(void)
 {
 	unsigned long cfg = read_c0_conf();
@@ -166,13 +172,14 @@ void __init check_wait(void)
 	case CPU_CAVIUM_OCTEON:
 	case CPU_CAVIUM_OCTEON_PLUS:
 	case CPU_CAVIUM_OCTEON2:
-	case CPU_JZRISC:
 	case CPU_LOONGSON1:
 	case CPU_XLR:
 	case CPU_XLP:
 		cpu_wait = r4k_wait;
 		break;
-
+	case CPU_JZRISC:
+		cpu_wait = NULL/*jzrisc_wait*/;
+		break;
 	case CPU_RM7000:
 		cpu_wait = rm7k_wait_irqoff;
 		break;

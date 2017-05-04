@@ -209,7 +209,7 @@ static unsigned long __init init_initrd(void)
 	/*
 	 * Board specific code or command line parser should have
 	 * already set up initrd_start and initrd_end. In these cases
-	 * perfom sanity checks and use them if all looks good.
+	 * perform sanity checks and use them if all looks good.
 	 */
 	if (!initrd_start || initrd_end <= initrd_start)
 		goto disable;
@@ -591,7 +591,7 @@ static void __init arch_mem_init(char **cmdline_p)
 	strlcpy(command_line, boot_command_line, COMMAND_LINE_SIZE);
 
 	*cmdline_p = command_line;
-
+pr_info("%s line:%d command_line:%s\n", __func__, __LINE__, command_line);
 	parse_early_param();
 
 	if (usermem) {

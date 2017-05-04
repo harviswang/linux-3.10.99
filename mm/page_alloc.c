@@ -5062,7 +5062,8 @@ void __init free_area_init_nodes(unsigned long *max_zone_pfn)
 				sizeof(arch_zone_highest_possible_pfn));
 	arch_zone_lowest_possible_pfn[0] = find_min_pfn_with_active_regions();
 	arch_zone_highest_possible_pfn[0] = max_zone_pfn[0];
-	for (i = 1; i < MAX_NR_ZONES; i++) {
+	/* fix: error: array subscript is below array bounds [-Werror=array-bounds] */
+	for (i = 1; i < MAX_NR_ZONES && i - 1 >= 0; i++) {
 		if (i == ZONE_MOVABLE)
 			continue;
 		arch_zone_lowest_possible_pfn[i] =

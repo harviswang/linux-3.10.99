@@ -45,7 +45,7 @@
 //
 //*****************************************************************************
 #define INTC_BASE               0xB0001000  // INTC
-
+#define OST_BASE                0xB0002000  // OST
 #define UART0_BASE              0xB0030000  // UART0
 #define UART1_BASE              0xB0031000  // UART1
 #define UART2_BASE              0xB0032000  // UART2

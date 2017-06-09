@@ -1,177 +1,395 @@
-/*
- * Operating System Timer(OST)
- */
+//*****************************************************************************
+//
+// ost.c - Driver for the OST.
+//
+// Copyright (c) 2017 Harvis Wang.  All rights reserved.
+// Software License Agreement
+//
+//   Redistribution and use in source and binary forms, with or without
+//   modification, are permitted provided that the following conditions
+//   are met:
+//
+//   Redistributions of source code must retain the above copyright
+//   notice, this list of conditions and the following disclaimer.
+//
+//   Redistributions in binary form must reproduce the above copyright
+//   notice, this list of conditions and the following disclaimer in the
+//   documentation and/or other materials provided with the
+//   distribution.
+//
+//   Neither the name of Texas Instruments Incorporated nor the names of
+//   its contributors may be used to endorse or promote products derived
+//   from this software without specific prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+//*****************************************************************************
 
 #include "../inc/hw_tcu.h"
 #include "../inc/hw_ost.h"
 #include "../inc/hw_intc.h"
-#include <linux/interrupt.h>
-#include <linux/io.h> /* writel/readl */
-#include <linux/printk.h> /* printk */
-#include <linux/irq.h> /* IRQ_HANDLED */
-#include <linux/clockchips.h> /* clockevents_config_and_register */
+#include "../inc/hw_memmap.h"
+#include "../inc/hw_types.h"
+#include "debug.h"
 #include "intc.h"
+#include "ost.h"
 
-void ost_counter_mode_set(void)
+//*****************************************************************************
+//
+//! \internal
+//! Checks a OST base address.
+//!
+//! \param ulBase is the base address of the OST.
+//!
+//! This function determines if a OST base address is valid.
+//!
+//! \return Returns \b true if the base address is valid and \b false
+//! otherwise.
+//
+//*****************************************************************************
+#ifdef DEBUG
+static tBoolean
+OSTBaseValid(unsigned long ulBase)
 {
-	
+    return(ulBase == OST_BASE);
+}
+#endif
+
+//*****************************************************************************
+//
+//! Set the counter mode of OST.
+//!
+//! \param ulBase is the base address of the OST.
+//! \param ulCounterMode is the counter mode of the OST.
+//!        OST_COUNTER_BECLEARED increase to compared value, cleared, increase
+//!                              from 0.
+//!        OST_COUNTER_GOON increase to compared value, goon increase till
+//!                         overflow, increase from 0
+//!
+//! This function set counter mode.
+//!
+//! \return None.
+//
+//*****************************************************************************
+void
+OSTSetCounterMode(unsigned long ulBase, unsigned long ulCounterMode)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(OSTBaseValid(ulBase));
+    ASSERT(ulCounterMode == OST_COUNTER_BECLEARED ||
+           ulCounterMode == OST_COUNTER_GOON );
+
+    switch (ulCounterMode) {
+    case OST_COUNTER_BECLEARED:
+        HWREGH(ulBase + OST_O_CSR) &= ~OST_CSR_CNTMD;
+        break;
+    case OST_COUNTER_GOON:
+        HWREGH(ulBase + OST_O_CSR) |= OST_CSR_CNTMD;
+        break;
+    default:
+        ASSERT(false);
+        break;
+    }
 }
 
-void ost_counter_shutdown(void)
+//*****************************************************************************
+//
+//! Get the counter mode of OST.
+//!
+//! \param ulBase is the base address of the OST.
+//!
+//! This function get the counter mode.
+//!
+//! \return Returns OST_COUNTER_BECLEARED or OST_COUNTER_GOON.
+//
+//*****************************************************************************
+unsigned long
+OSTGetCounterMode(unsigned long ulBase)
 {
-	
+    //
+    // Check the arguments.
+    //
+    ASSERT(OSTBaseValid(ulBase));
+
+    if (HWREGH(ulBase + OST_O_CSR) & OST_CSR_CNTMD) {
+        return(OST_COUNTER_GOON);
+    } else {
+        return(OST_COUNTER_BECLEARED);
+    }
 }
 
-static void
-ost_init(void)
+//*****************************************************************************
+//
+//! Shutdown the counter of OST.
+//!
+//! \param ulBase is the base address of the OST.
+//! \param ulShutdownMode is the shutdown mode of the OST counter.
+//!
+//! This function shutdowns OST counter in Graceful/Abrupt mode.
+//!
+//! \return None.
+//
+//*****************************************************************************
+void
+OSTShutdown(unsigned long ulBase, unsigned long ulShutdownMode)
 {
-	unsigned int i = 1;
-	
-	writew(0x0000, (void*)(OST + OST_CSR));
-	
-	/*
-	 *  
-	 */
-	printk("OST_CNTH = 0x%x\n", readl((void*)(OST + OST_CNTH)));
-	printk("OST_CNTL = 0x%x\n", readl((void*)(OST + OST_CNTL)));
-	writel(0x00, (void*)(OST + OST_CNTH));
-	writel(0x00, (void*)(OST + OST_CNTL));
-	printk("%s line:%d\n", __func__, __LINE__);
-	/*
-	 * OSTDR = 24M(0x1800000)
-	 * 
-	 */
-	writel(240000/100, (void*)(OST + OST_DR));
+    //
+    // Check the arguments.
+    //
+    ASSERT(OSTBaseValid(ulBase));
+    ASSERT(ulShutdownMode == OST_SHUTDOWN_GRACEFUL ||
+           ulShutdownMode == OST_SHUTDOWN_ABRUPT);
 
-	/*
-	 * 
-	 */
-	printk("%s line:%d\n", __func__, __LINE__);
-	printk("%s line:%d\n", __func__, __LINE__);
-	IntEnable(IRQ_NO_TCU0);
-	printk("%s line:%d\n", __func__, __LINE__);
-
-	/*
-	 * CNT_CMD = 0
-	 * SD = 0
-	 * PRESCALE = 0
-	 * EXT_EN = 1
-	 * RTC_EN = 0
-	 * PCK = 0
-	 */
-	writew(1 << 2, (void*)(OST + OST_CSR));
-	printk("%s line:%d\n", __func__, __LINE__);
-
-	/*
-	 * OSTFLAG 
-	 */
-	writel(1 << 15, (void*)(TCU + TCU_TFSR));
-	printk("%s line:%d\n", __func__, __LINE__);
-	/*
-	 * OST Enable
-	 */
-	writel(1 << 15, (void*)(TCU + TCU_TESR));
-
-	/*
-	 * OSTMASK
-	 */
-	writel(1 << 15, (void*)(TCU + TCU_TMCR));
-	printk("%s line:%d\n", __func__, __LINE__);
-
-	printk("%s line:%d\n", __func__, __LINE__);
-	while (i < 1000) {
-		if (readl((void*)(OST + OST_CNTL)) == readl((void*)(OST + OST_DR))) {
-			printk("OST_CNTL == OST_DR i:0x%x\n", i);
-		}
-		i++;
-	}
-	printk("OST_CNTH = 0x%x\n", readl((void*)(OST + OST_CNTH)));
-	printk("OST_CNTL = 0x%x\n", readl((void*)(OST + OST_CNTL)));
-	printk("OST_DR = 0x%x\n", readl((void*)(OST + OST_DR)));
-	//printk("INTC_ICSR0 = 0x%x\n", readl((void*)(INTC + INTC_ICSR0)));
-	//printk("INTC_ICPR0 = 0x%x\n", readl((void*)(INTC + INTC_ICPR0)));
-	//printk("INTC_ICMR0 = 0x%x\n", readl((void*)(INTC + INTC_ICMR0)));
-	printk("TCU_TSR = 0x%x\n", readl((void*)(TCU + TCU_TSR)));
+    switch (ulShutdownMode) {
+    case OST_SHUTDOWN_GRACEFUL:
+        if (OSTGetCounterMode(ulBase) == OST_COUNTER_BECLEARED) {
+            HWREGH(ulBase + OST_O_CSR) &= ~OST_CSR_SD;
+        } else {
+            ASSERT(false);
+        }
+        break;
+    case OST_SHUTDOWN_ABRUPT:
+        HWREGH(ulBase + OST_O_CSR) |= OST_CSR_SD;
+        break;
+    default:
+        ASSERT(false);
+        break;
+    }
 }
 
-static void ost_start(void)
+//*****************************************************************************
+//
+//! Set the OST clock input prescale.
+//!
+//! \param ulBase is the base address of the OST.
+//! \param ulClockInputPrescale is the OST clock input prescale.
+//!
+//! This function set OST clock input prescale.
+//!
+//! \return None.
+//
+//*****************************************************************************
+void
+OSTSetClockInputPrescale(unsigned long ulBase, unsigned long ulClockInputPrescale)
 {
-	writel(1 << 15, (void*)(TCU + TCU_TESR));
+    //
+    // Check the arguments.
+    //
+    ASSERT(OSTBaseValid(ulBase));
+    ASSERT(ulClockInputPrescale == OST_CLOCKPRESCALE_1 ||
+           ulClockInputPrescale == OST_CLOCKPRESCALE_4 ||
+           ulClockInputPrescale == OST_CLOCKPRESCALE_16 ||
+           ulClockInputPrescale == OST_CLOCKPRESCALE_64 ||
+           ulClockInputPrescale == OST_CLOCKPRESCALE_256 ||
+           ulClockInputPrescale == OST_CLOCKPRESCALE_1024);
+
+    switch (ulClockInputPrescale) {
+    case OST_CLOCKPRESCALE_1:
+        HWREGH(ulBase + OST_O_CSR) &= ((~OST_CSR_PRESCALE) | OST_CSR_PRESCALE_1);
+        break;
+    case OST_CLOCKPRESCALE_4:
+        HWREGH(ulBase + OST_O_CSR) &= ((~OST_CSR_PRESCALE) | OST_CSR_PRESCALE_4);
+        break;
+    case OST_CLOCKPRESCALE_16:
+        HWREGH(ulBase + OST_O_CSR) &= ((~OST_CSR_PRESCALE) | OST_CSR_PRESCALE_16);
+        break;
+    case OST_CLOCKPRESCALE_64:
+        HWREGH(ulBase + OST_O_CSR) &= ((~OST_CSR_PRESCALE) | OST_CSR_PRESCALE_64);
+        break;
+    case OST_CLOCKPRESCALE_256:
+        HWREGH(ulBase + OST_O_CSR) &= ((~OST_CSR_PRESCALE) | OST_CSR_PRESCALE_256);
+        break;
+    case OST_CLOCKPRESCALE_1024:
+        HWREGH(ulBase + OST_O_CSR) &= ((~OST_CSR_PRESCALE) | OST_CSR_PRESCALE_1024);
+        break;
+    default:
+        ASSERT(false);
+        break;
+    }
 }
 
-/*
- * OST stop counting up
- */
-static void ost_stop(void)
+//*****************************************************************************
+//
+//! Set the clock input of OST.
+//!
+//! \param ulBase is the base address of the OST.
+//! \param ulClockSource is clock input, OST_CLOCKINPUT_EXTAL, 
+//! OST_CLOCKINPUT_RTC or OST_CLOCKINPUT_PCLK.
+//!
+//! This function set the OST clock input.
+//!
+//! \return None.
+//
+//*****************************************************************************
+void
+OSTSetClockInput(unsigned long ulBase, unsigned long ulClockInput)
 {
-	writel(1 << 15, (void*)(TCU + TCU_TECR));
+    unsigned long ulMask;
+    //
+    // Check the arguments.
+    //
+    ASSERT(OSTBaseValid(ulBase));
+    ASSERT(ulClockInput == OST_CLOCKINPUT_EXTAL ||
+           ulClockInput == OST_CLOCKINPUT_RTC   ||
+           ulClockInput == OST_CLOCKINPUT_PCLK);
+
+    ulMask = OST_CSR_EXTEN | OST_CSR_RTCEN | OST_CSR_PCKEN;
+
+    switch (ulClockInput) {
+    case OST_CLOCKINPUT_EXTAL:
+        HWREGH(ulBase + OST_O_CSR) &= ~ulMask;
+        HWREGH(ulBase + OST_O_CSR) |= OST_CSR_EXTEN;
+        break;
+    case OST_CLOCKINPUT_RTC:
+        HWREGH(ulBase + OST_O_CSR) &= ~ulMask;
+        HWREGH(ulBase + OST_O_CSR) |= OST_CSR_RTCEN;
+        break;
+    case OST_CLOCKINPUT_PCLK:
+        HWREGH(ulBase + OST_O_CSR) &= ~ulMask;
+        HWREGH(ulBase + OST_O_CSR) |= OST_CSR_PCKEN;
+        break;
+    default:
+        ASSERT(false);
+        break;
+    }
 }
 
-static void ost_count_reset(void)
+//*****************************************************************************
+//
+//! Set the Data Register of OST.
+//!
+//! \param ulBase is the base address of the OST.
+//! \param ulData is the compared data register value.
+//!
+//! This function set data which TCNT is compared to.
+//!
+//! \return None.
+//
+//*****************************************************************************
+void
+OSTSetData(unsigned long ulBase, unsigned long ulData)
 {
-	ost_stop();
-	writel(0x00, (void*)(OST + OST_CNTH));
-	writel(0x00, (void*)(OST + OST_CNTL));
-	ost_start();
+    //
+    // Check the arguments.
+    //
+    ASSERT(OSTBaseValid(ulBase));
+
+    HWREG(ulBase + OST_O_DR) = ulData;
 }
 
-static irqreturn_t ost_interrupt_handle(int irq, void *dev_id)
+//*****************************************************************************
+//
+//! Get the value of OST Data Register.
+//!
+//! \param ulBase is the base address of the OST.
+//!
+//! This function get data which TCNT is compared to.
+//!
+//! \return Returns data register'a value.
+//
+//*****************************************************************************
+unsigned long
+OSTGetData(unsigned long ulBase)
 {
-	struct clock_event_device *ced = dev_id;
-	writel(1 << 15, (void*)(TCU + TCU_TFCR));
-	//printk("%s line:%d\n", __func__, __LINE__);
-	
-	ced->event_handler(ced);
+    //
+    // Check the arguments.
+    //
+    ASSERT(OSTBaseValid(ulBase));
 
-	return IRQ_HANDLED;
+    return(HWREG(ulBase + OST_O_DR));
 }
 
-static void
-ost_set_mode(enum clock_event_mode mode, struct clock_event_device *ced)
+//*****************************************************************************
+//
+//! Set the Counter Register of OST.
+//!
+//! \param ulBase is the base address of the OST.
+//! \param ulCounterHigh is the high 32-bit of counter.
+//! \param ulCounterLow is the low 32-bit of counter.
+//!
+//! This function set initial value of Counter.
+//!
+//! \return None.
+//
+//*****************************************************************************
+void
+OSTSetCounter(unsigned long ulBase, unsigned long ulCounterHigh, unsigned long ulCounterLow)
 {
-	switch(mode) {
-	case CLOCK_EVT_MODE_UNUSED:
-	case CLOCK_EVT_MODE_SHUTDOWN:
-		break;
-	case CLOCK_EVT_MODE_PERIODIC:
-		ost_count_reset();
-		break;
-	case CLOCK_EVT_MODE_ONESHOT:
-	case CLOCK_EVT_MODE_RESUME:
-		break;
-		
-	}
-	(void)ced;
+    //
+    // Check the arguments.
+    //
+    ASSERT(OSTBaseValid(ulBase));
+
+    HWREG(ulBase + OST_O_CNTH) = ulCounterHigh;
+    HWREG(ulBase + OST_O_CNTL) = ulCounterLow;
 }
 
-static int
-ost_set_next_event(unsigned long delta, struct clock_event_device *ced)
+//*****************************************************************************
+//
+//! Get the value of OST Counter Register.
+//!
+//! \param ulBase is the base address of the OST.
+//! \param pulCounterHigh store the high 32-bit of counter.
+//! \param pulCounterLow store the low 32-bit of counter.
+//!
+//! This function set data which TCNT is compared to.
+//!
+//! \return None.
+//
+//*****************************************************************************
+void
+OSTGetCounter(unsigned long ulBase, unsigned long *pulCounterHigh, unsigned long *pulCounterLow)
 {
-	(void)delta;
-	(void)ced;
-	
-	printk("%s line:%d\n", __func__, __LINE__);
-	return 0;
+    //
+    // Check the arguments.
+    //
+    ASSERT(OSTBaseValid(ulBase));
+    ASSERT(pulCounterHigh);
+    ASSERT(pulCounterLow);
+
+    // low 32-bit read from OST_O_CNTL
+    // must be read before high 32-bit part
+    if (pulCounterLow) {
+        *pulCounterLow = HWREG(ulBase + OST_O_CNTL);
+    }
+
+    // high 32-bit read from OST_O_CNTHBUF
+    // note: not from OST_O_CNTH since it maybe changed 
+    if (pulCounterHigh) {
+        *pulCounterHigh = HWREG(ulBase + OST_O_CNTHBUF);
+    }
 }
 
-void __init ost_time_init()
+//*****************************************************************************
+//
+//! Print all register value of OST.
+//!
+//! \param ulBase is the base address of the OST port.
+//! \param print is a function pointer like printf.
+//!
+//! This function print value of all register in a OST.
+//!
+//! \return none
+//
+//*****************************************************************************
+void
+OSTTRegisterDump(unsigned long ulBase, int (*print)(const char *format, ...))
 {
-	static struct irqaction action;
-	static struct clock_event_device ced;
-	
-	ost_init();
-
-	action.name = "OST IRQ";
-	action.handler = ost_interrupt_handle;
-	action.flags = IRQF_DISABLED | IRQF_TIMER | IRQF_IRQPOLL;
-	action.dev_id = (void *)&ced;
-	setup_irq(IRQ_NO_TCU0, &action);
-	
-	ced.name = "OST EVENT";
-	ced.features = CLOCK_EVT_FEAT_ONESHOT | CLOCK_EVT_FEAT_PERIODIC;
-	ced.irq = IRQ_NO_TCU0;
-	ced.rating = 400,
-	ced.set_mode = ost_set_mode;
-	ced.set_next_event = ost_set_next_event;
-	clockevents_config_and_register(&ced, 1, 4, 65536);
+    REG_PRINT(OST_O_DR, ulBase, print);
+    REG_PRINT(OST_O_CNTL, ulBase, print);
+    REG_PRINT(OST_O_CNTH, ulBase, print);
+    REGH_PRINT(OST_O_CSR, ulBase, print);
+    REG_PRINT(OST_O_CNTHBUF, ulBase, print);
 }

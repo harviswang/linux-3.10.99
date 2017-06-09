@@ -76,5 +76,11 @@ extern void __error__(char *pcFilename, unsigned long ulLine);
 #define REG_PRINT(reg, ulBase, print) \
 	do { print("%s=0x%08x\n", #reg, HWREG(ulBase + reg));} while (0)
 
+#define REGH_PRINT(reg, ulBase, print) \
+	do { print("%s=0x%08x\n", #reg, HWREGH(ulBase + reg));} while (0)
+
+#define REGB_PRINT(reg, ulBase, print) \
+	do { print("%s=0x%08x\n", #reg, HWREGB(ulBase + reg));} while (0)
+
 #endif /* __DEBUG_H__ */
 

@@ -9,7 +9,6 @@
 #include <asm/setup.h>
 #include <asm/irq.h> /* do_IRQ */
 #include <asm/bitops.h> /* ffs */
-#include "../inc/hw_intc.h" /* intc_irq_init */
 #include "../driverlib/intc.h" /* IRQ_NO_TCU0 */
 #include "../linux/intc_linux.h" /* intc_irq_init */
 

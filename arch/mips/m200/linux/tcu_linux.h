@@ -1,8 +1,8 @@
 //*****************************************************************************
 //
-// hw_memmap.h - Macros defining the memory of M200.
+// tcu_linux.h - Defines and Macros for the tcu.h port to linux.
 //
-// Copyright (c) 2016-2017 Harvis Wang.  All rights reserved.
+// Copyright (c) 2017 Harvis Wang.  All rights reserved.
 // Software License Agreement
 // 
 //   Redistribution and use in source and binary forms, with or without
@@ -34,24 +34,32 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 //*****************************************************************************
-
-#ifndef __HW_MEMMAP_H__
-#define __HW_MEMMAP_H__
+#ifndef __OST_LINUX_H__
+#define __OST_LINUX_H__
 
 //*****************************************************************************
 //
-// The following are defines for the base address of the memories and
-// peripherals.
+// If building with a C++ compiler, make all of the definitions in this header
+// have a C binding.
 //
 //*****************************************************************************
-#define INTC_BASE               0xB0001000  // INTC
-#define OST_BASE                0xB0002000  // OST
-#define TCU_BASE                0xB0002000  // TCU
-#define UART0_BASE              0xB0030000  // UART0
-#define UART1_BASE              0xB0031000  // UART1
-#define UART2_BASE              0xB0032000  // UART2
-#define UART3_BASE              0xB0033000  // UART3
-#define UART4_BASE              0xB0034000  // UART4
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-#endif /* __HW_MEMMAP_H__ */
+//*****************************************************************************
+//
+// API Function prototypes
+//
+//*****************************************************************************
 
+//*****************************************************************************
+//
+// Mark the end of the C bindings section for C++ compilers.
+//
+//*****************************************************************************
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* __OST_LINUX_H__ */

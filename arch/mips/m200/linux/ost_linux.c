@@ -17,25 +17,24 @@ static void ost_init(void)
 {
 	unsigned int i = 1;
 	
-    /* Initial the configuration */
-    /* Set shutdown mode */
+    /* 1. Initial the configuration */
+    /* a. Set the shutdown mode(graceful) */
     OSTSetCounterMode(OST_BASE, OST_COUNTER_BECLEARED);
     OSTShutdown(OST_BASE, OST_SHUTDOWN_GRACEFUL);
 	
-	/* Set Prescale	*/
+	/* b. Set OSTCNT count clock frequency prescale */
     OSTSetClockInputPrescale(OST_BASE, OST_CLOCKPRESCALE_1);
 
-    /* Set counter register(64-bit) */
+    /* c. Set counter register(64-bit) */
     OSTSetCounter(OST_BASE, 0x00000000, 0x00000000);
 
-    /* Set data register(32-bit) */
-    OSTSetData(OST_BASE, 240000/100);
+    /* d. Set data register(32-bit) */
+    OSTSetData(OST_BASE, 24000000/100);
 
 	IntEnable(IRQ_NO_TCU0);
 
-	/* Enable clock */
+	/* 2. Enable clock */
     OSTSetClockInput(OST_BASE, OST_CLOCKINPUT_EXTAL); 
-	printk("%s line:%d\n", __func__, __LINE__);
 
 	/*
 	 * OSTFLAG 
@@ -43,7 +42,7 @@ static void ost_init(void)
 	writel(1 << 15, (void*)(TCU + TCU_TFSR));
 	printk("%s line:%d\n", __func__, __LINE__);
 
-	/* Enable OST counter(start increase) */
+	/* 3. Enable OST counter(start increase) */
 	writel(1 << 15, (void*)(TCU + TCU_TESR));
 
 	/*
@@ -66,6 +65,7 @@ static void ost_init(void)
 	//printk("INTC_ICPR0 = 0x%x\n", readl((void*)(INTC + INTC_ICPR0)));
 	//printk("INTC_ICMR0 = 0x%x\n", readl((void*)(INTC + INTC_ICMR0)));
 	printk("TCU_TSR = 0x%x\n", readl((void*)(TCU + TCU_TSR)));
+    OSTRegisterDump(OST_BASE, printk);
 }
 
 static void ost_start(void)

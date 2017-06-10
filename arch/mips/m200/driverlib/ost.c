@@ -385,7 +385,7 @@ OSTGetCounter(unsigned long ulBase, unsigned long *pulCounterHigh, unsigned long
 //
 //*****************************************************************************
 void
-OSTTRegisterDump(unsigned long ulBase, int (*print)(const char *format, ...))
+OSTRegisterDump(unsigned long ulBase, int (*print)(const char *format, ...))
 {
     REG_PRINT(OST_O_DR, ulBase, print);
     REG_PRINT(OST_O_CNTL, ulBase, print);

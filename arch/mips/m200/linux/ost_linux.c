@@ -39,16 +39,16 @@ static void ost_init(void)
 	/*
 	 * OSTFLAG 
 	 */
-	writel(1 << 15, (void*)(TCU + TCU_TFSR));
+	writel(1 << 15, (void*)(TCU_BASE + TCU_O_FSR));
 	printk("%s line:%d\n", __func__, __LINE__);
 
 	/* 3. Enable OST counter(start increase) */
-	writel(1 << 15, (void*)(TCU + TCU_TESR));
+	writel(1 << 15, (void*)(TCU_BASE + TCU_O_ESR));
 
 	/*
 	 * OSTMASK
 	 */
-	writel(1 << 15, (void*)(TCU + TCU_TMCR));
+	writel(1 << 15, (void*)(TCU_BASE + TCU_O_MCR));
 	printk("%s line:%d\n", __func__, __LINE__);
 
 	printk("%s line:%d\n", __func__, __LINE__);
@@ -64,13 +64,13 @@ static void ost_init(void)
 	//printk("INTC_ICSR0 = 0x%x\n", readl((void*)(INTC + INTC_ICSR0)));
 	//printk("INTC_ICPR0 = 0x%x\n", readl((void*)(INTC + INTC_ICPR0)));
 	//printk("INTC_ICMR0 = 0x%x\n", readl((void*)(INTC + INTC_ICMR0)));
-	printk("TCU_TSR = 0x%x\n", readl((void*)(TCU + TCU_TSR)));
+	printk("TCU_O_SR = 0x%x\n", readl((void*)(TCU_BASE + TCU_O_SR)));
     OSTRegisterDump(OST_BASE, printk);
 }
 
 static void ost_start(void)
 {
-	writel(1 << 15, (void*)(TCU + TCU_TESR));
+	writel(1 << 15, (void*)(TCU_BASE + TCU_O_ESR));
 }
 
 /*
@@ -78,7 +78,7 @@ static void ost_start(void)
  */
 static void ost_stop(void)
 {
-	writel(1 << 15, (void*)(TCU + TCU_TECR));
+	writel(1 << 15, (void*)(TCU_BASE + TCU_O_ECR));
 }
 
 static void ost_count_reset(void)
@@ -92,7 +92,7 @@ static void ost_count_reset(void)
 static irqreturn_t ost_interrupt_handle(int irq, void *dev_id)
 {
 	struct clock_event_device *ced = dev_id;
-	writel(1 << 15, (void*)(TCU + TCU_TFCR));
+	writel(1 << 15, (void*)(TCU_BASE + TCU_O_FCR));
 	//printk("%s line:%d\n", __func__, __LINE__);
 	
 	ced->event_handler(ced);

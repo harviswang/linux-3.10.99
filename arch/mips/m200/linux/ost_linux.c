@@ -10,46 +10,53 @@
 #include "../driverlib/ost.h"
 #include "../driverlib/intc.h"
 #include "../inc/hw_memmap.h"
-#include "../inc/hw_tcu.h"
 #include "../inc/hw_ost.h"
+#include "../inc/hw_tcu.h"
 
 static void ost_init(void)
 {
 	unsigned int i = 1;
+	unsigned int ost_irq;
 	
     /* 1. Initial the configuration */
     /* a. Set the shutdown mode(graceful) */
-    OSTSetCounterMode(OST_BASE, OST_COUNTER_BECLEARED);
+    OSTCounterModeSet(OST_BASE, OST_COUNTER_BECLEARED);
     OSTShutdown(OST_BASE, OST_SHUTDOWN_GRACEFUL);
 	
 	/* b. Set OSTCNT count clock frequency prescale */
-    OSTSetClockInputPrescale(OST_BASE, OST_CLOCKPRESCALE_1);
+    OSTClockInputPrescaleSet(OST_BASE, OST_CLOCKPRESCALE_1);
 
     /* c. Set counter register(64-bit) */
-    OSTSetCounter(OST_BASE, 0x00000000, 0x00000000);
+    OSTCounterSet(OST_BASE, 0x00000000, 0x00000000);
 
     /* d. Set data register(32-bit) */
-    OSTSetData(OST_BASE, 24000000/100);
+    OSTDataSet(OST_BASE, 24000000/100);
 
-	IntEnable(IRQ_NO_TCU0);
 
 	/* 2. Enable clock */
-    OSTSetClockInput(OST_BASE, OST_CLOCKINPUT_EXTAL); 
+    OSTClockInputSet(OST_BASE, OST_CLOCKINPUT_EXTAL); 
 
 	/*
 	 * OSTFLAG 
 	 */
-	writel(1 << 15, (void*)(TCU_BASE + TCU_O_FSR));
+	writel(1 << 15, (void*)(TCU_BASE + TCU_O_FCR));
 	printk("%s line:%d\n", __func__, __LINE__);
 
 	/* 3. Enable OST counter(start increase) */
-	writel(1 << 15, (void*)(TCU_BASE + TCU_O_ESR));
+	OSTCounterEnable(TCU_BASE);
 
-	/*
-	 * OSTMASK
-	 */
-	writel(1 << 15, (void*)(TCU_BASE + TCU_O_MCR));
-	printk("%s line:%d\n", __func__, __LINE__);
+    OSTRegisterDump(OST_BASE, printk);
+
+	/* Unmask OST interrupt	 */
+    OSTInterruptUnmask(OST_BASE);
+
+    /* Enable INTC OST interrupt switch */
+    ost_irq = OSTIntNumberGet(OST_BASE);
+    if (ost_irq == -1) {
+        printk("Error OSTIntNumberGet failed\n");
+    } else {
+	    INTCInterruptEnable(ost_irq);
+    }
 
 	printk("%s line:%d\n", __func__, __LINE__);
 	while (i < 1000) {

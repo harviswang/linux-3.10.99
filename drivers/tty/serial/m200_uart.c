@@ -327,7 +327,7 @@ m200_uart_set_termios(struct uart_port *port, struct ktermios *termios,
 	UARTEnable(port->iobase);
 
 	/* Enablue UART module interrupt  */ 
-	IntEnable(port->irq);
+	INTCInterruptEnable(port->irq);
 
 	//DEBUG();
 	//UARTRegisterDump(port->iobase, printk);

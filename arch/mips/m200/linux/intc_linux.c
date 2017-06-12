@@ -9,12 +9,12 @@
 
 static void intc_irq_mask(struct irq_data *data)
 {
-	IntDisable(data->irq);
+	INTCInterruptDisable(data->irq);
 }
 
 static void intc_irq_unmask(struct irq_data *data)
 {
-	IntEnable(data->irq);
+	INTCInterruptEnable(data->irq);
 }
 
 static struct irq_chip intc_chip = {

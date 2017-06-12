@@ -17,10 +17,6 @@
 //   documentation and/or other materials provided with the
 //   distribution.
 //
-//   Neither the name of Texas Instruments Incorporated nor the names of
-//   its contributors may be used to endorse or promote products derived
-//   from this software without specific prior written permission.
-//
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
 // "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
 // LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
@@ -43,6 +39,58 @@
 #include "debug.h"
 #include "intc.h"
 #include "ost.h"
+
+//*****************************************************************************
+//
+// A mapping of OST base address to interupt number.
+//
+//*****************************************************************************
+static const unsigned long g_ppulOSTIntMap[1][2] =
+{
+    { OST_BASE, IRQ_NO_TCU0 },
+};
+
+//*****************************************************************************
+//
+//! Gets the OST interrupt number.
+//!
+//! \param ulBase is the base address of the OST.
+//!
+//! Given a OST base address, this function returns the corresponding
+//! interrupt number.
+//!
+//! \return Returns a OST interrupt number, or -1 if \e ulBase is invalid.
+//
+//*****************************************************************************
+long
+OSTIntNumberGet(unsigned long ulBase)
+{
+    unsigned long ulIdx;
+
+    //
+    // Loop through the table that maps OST base addresses to interrupt
+    // numbers.
+    //
+    for(ulIdx = 0; ulIdx < (sizeof(g_ppulOSTIntMap) /
+                            sizeof(g_ppulOSTIntMap[0])); ulIdx++)
+    {
+        //
+        // See if this base address matches.
+        //
+        if(g_ppulOSTIntMap[ulIdx][0] == ulBase)
+        {
+            //
+            // Return the corresponding interrupt number.
+            //
+            return(g_ppulOSTIntMap[ulIdx][1]);
+        }
+    }
+
+    //
+    // The base address could not be found, so return an error.
+    //
+    return(-1);
+}
 
 //*****************************************************************************
 //
@@ -82,7 +130,7 @@ OSTBaseValid(unsigned long ulBase)
 //
 //*****************************************************************************
 void
-OSTSetCounterMode(unsigned long ulBase, unsigned long ulCounterMode)
+OSTCounterModeSet(unsigned long ulBase, unsigned long ulCounterMode)
 {
     //
     // Check the arguments.
@@ -116,7 +164,7 @@ OSTSetCounterMode(unsigned long ulBase, unsigned long ulCounterMode)
 //
 //*****************************************************************************
 unsigned long
-OSTGetCounterMode(unsigned long ulBase)
+OSTCounterModeGet(unsigned long ulBase)
 {
     //
     // Check the arguments.
@@ -154,7 +202,7 @@ OSTShutdown(unsigned long ulBase, unsigned long ulShutdownMode)
 
     switch (ulShutdownMode) {
     case OST_SHUTDOWN_GRACEFUL:
-        if (OSTGetCounterMode(ulBase) == OST_COUNTER_BECLEARED) {
+        if (OSTCounterModeGet(ulBase) == OST_COUNTER_BECLEARED) {
             HWREGH(ulBase + OST_O_CSR) &= ~OST_CSR_SD;
         } else {
             ASSERT(false);
@@ -182,7 +230,7 @@ OSTShutdown(unsigned long ulBase, unsigned long ulShutdownMode)
 //
 //*****************************************************************************
 void
-OSTSetClockInputPrescale(unsigned long ulBase, unsigned long ulClockInputPrescale)
+OSTClockInputPrescaleSet(unsigned long ulBase, unsigned long ulClockInputPrescale)
 {
     //
     // Check the arguments.
@@ -234,7 +282,7 @@ OSTSetClockInputPrescale(unsigned long ulBase, unsigned long ulClockInputPrescal
 //
 //*****************************************************************************
 void
-OSTSetClockInput(unsigned long ulBase, unsigned long ulClockInput)
+OSTClockInputSet(unsigned long ulBase, unsigned long ulClockInput)
 {
     unsigned long ulMask;
     //
@@ -279,7 +327,7 @@ OSTSetClockInput(unsigned long ulBase, unsigned long ulClockInput)
 //
 //*****************************************************************************
 void
-OSTSetData(unsigned long ulBase, unsigned long ulData)
+OSTDataSet(unsigned long ulBase, unsigned long ulData)
 {
     //
     // Check the arguments.
@@ -301,7 +349,7 @@ OSTSetData(unsigned long ulBase, unsigned long ulData)
 //
 //*****************************************************************************
 unsigned long
-OSTGetData(unsigned long ulBase)
+OSTDataGet(unsigned long ulBase)
 {
     //
     // Check the arguments.
@@ -325,7 +373,7 @@ OSTGetData(unsigned long ulBase)
 //
 //*****************************************************************************
 void
-OSTSetCounter(unsigned long ulBase, unsigned long ulCounterHigh, unsigned long ulCounterLow)
+OSTCounterSet(unsigned long ulBase, unsigned long ulCounterHigh, unsigned long ulCounterLow)
 {
     //
     // Check the arguments.
@@ -350,7 +398,7 @@ OSTSetCounter(unsigned long ulBase, unsigned long ulCounterHigh, unsigned long u
 //
 //*****************************************************************************
 void
-OSTGetCounter(unsigned long ulBase, unsigned long *pulCounterHigh, unsigned long *pulCounterLow)
+OSTCounterGet(unsigned long ulBase, unsigned long *pulCounterHigh, unsigned long *pulCounterLow)
 {
     //
     // Check the arguments.
@@ -387,9 +435,107 @@ OSTGetCounter(unsigned long ulBase, unsigned long *pulCounterHigh, unsigned long
 void
 OSTRegisterDump(unsigned long ulBase, int (*print)(const char *format, ...))
 {
+    REGH_PRINT(OST_O_ER, ulBase, print);
+    REG_PRINT(OST_O_MR, ulBase, print);
     REG_PRINT(OST_O_DR, ulBase, print);
     REG_PRINT(OST_O_CNTL, ulBase, print);
     REG_PRINT(OST_O_CNTH, ulBase, print);
     REGH_PRINT(OST_O_CSR, ulBase, print);
     REG_PRINT(OST_O_CNTHBUF, ulBase, print);
+}
+
+//*****************************************************************************
+//
+//! Enable OST counter.
+//!
+//! \param ulBase is the base address of the OST port.
+//!
+//! This function enable OST counter, begin counting up.
+//!
+//! \return Returns true if enable operation success, returns false others 
+//
+//*****************************************************************************
+tBoolean
+OSTCounterEnable(unsigned long ulBase)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(OSTBaseValid(ulBase));
+
+    HWREGH(ulBase + OST_O_ESR) |= OST_ESR_OSTST;
+
+    return((HWREGH(ulBase + OST_O_ER) & OST_ER_OSTEN) == OST_ER_OSTEN);
+}
+
+//*****************************************************************************
+//
+//! Disable OST counter.
+//!
+//! \param ulBase is the base address of the OST port.
+//!
+//! This function disable OST counter, stop counting up.
+//!
+//! \return Returns true if disable operation success, returns false others 
+//
+//*****************************************************************************
+tBoolean
+OSTCounterDisable(unsigned long ulBase)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(OSTBaseValid(ulBase));
+
+    HWREGH(ulBase + OST_O_ECR) |= OST_ECR_OSTCL;
+
+    return((HWREGH(ulBase + OST_O_ER) & OST_ER_OSTEN) != OST_ER_OSTEN);
+}
+
+//*****************************************************************************
+//
+//! Unmask OST interrupt.
+//!
+//! \param ulBase is the base address of the OST.
+//!
+//! This function unmask OST comparison match interrupt.
+//!
+//! \return Returns true if unmask operation success, returns false others 
+//
+//*****************************************************************************
+tBoolean
+OSTInterruptUnmask(unsigned long ulBase)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(OSTBaseValid(ulBase));
+
+    HWREG(ulBase + OST_O_MCR) |= OST_MCR_OSTMCL;
+
+    return((HWREG(ulBase + OST_O_MR) & OST_MR_OSTMASK) != OST_MR_OSTMASK);
+}
+
+//*****************************************************************************
+//
+//! Mask OST interrupt.
+//!
+//! \param ulBase is the base address of the OST.
+//!
+//! This function mask OST comparison match interrupt.
+//!
+//! \return Returns true if mask operation success, returns false others 
+//
+//*****************************************************************************
+tBoolean
+OSTInterruptMask(unsigned long ulBase)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(OSTBaseValid(ulBase));
+
+    HWREG(ulBase + OST_O_MSR) |= OST_MSR_OSTMST;
+
+    return((HWREG(ulBase + OST_O_MR) & OST_MR_OSTMASK) == OST_MR_OSTMASK);
 }

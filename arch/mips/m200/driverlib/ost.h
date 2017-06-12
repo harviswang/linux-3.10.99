@@ -17,10 +17,6 @@
 //   documentation and/or other materials provided with the  
 //   distribution.
 // 
-//   Neither the name of Texas Instruments Incorporated nor the names of
-//   its contributors may be used to endorse or promote products derived
-//   from this software without specific prior written permission.
-// 
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
 // "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
 // LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
@@ -37,6 +33,8 @@
 
 #ifndef __OST_H__
 #define __OST_H__
+
+#include "../inc/hw_types.h"
 
 //*****************************************************************************
 //
@@ -94,16 +92,21 @@ extern "C" {
 // API Function prototypes
 //
 //*****************************************************************************
-extern void OSTSetCounterMode(unsigned long ulBase, unsigned long ulCounterMode);
-extern unsigned long OSTGetCounterMode(unsigned long ulBase);
+extern long OSTIntNumberGet(unsigned long ulBase);
+extern void OSTCounterModeSet(unsigned long ulBase, unsigned long ulCounterMode);
+extern unsigned long OSTCounterModeGet(unsigned long ulBase);
 extern void OSTShutdown(unsigned long ulBase, unsigned long ulShutdownMode);
-extern void OSTSetClockInputPrescale(unsigned long ulBase, unsigned long ulClockInputPrescale);
-extern void OSTSetClockInput(unsigned long ulBase, unsigned long ulClockInput);
-extern void OSTSetData(unsigned long ulBase, unsigned long ulData);
-extern unsigned long OSTGetData(unsigned long ulBase);
-extern void OSTSetCounter(unsigned long ulBase, unsigned long ulCounterHigh, unsigned long ulCounterLow);
-extern void OSTGetCounter(unsigned long ulBase, unsigned long *pulCounterHigh, unsigned long *pulCounterLow);
+extern void OSTClockInputPrescaleSet(unsigned long ulBase, unsigned long ulClockInputPrescale);
+extern void OSTClockInputSet(unsigned long ulBase, unsigned long ulClockInput);
+extern void OSTDataSet(unsigned long ulBase, unsigned long ulData);
+extern unsigned long OSTDataGet(unsigned long ulBase);
+extern void OSTCounterSet(unsigned long ulBase, unsigned long ulCounterHigh, unsigned long ulCounterLow);
+extern void OSTCounterGet(unsigned long ulBase, unsigned long *pulCounterHigh, unsigned long *pulCounterLow);
 extern void OSTRegisterDump(unsigned long ulBase, int (*print)(const char *format, ...));
+extern tBoolean OSTCounterEnable(unsigned long ulBase);
+extern tBoolean OSTCounterDisable(unsigned long ulBase);
+extern tBoolean OSTInterruptUnmask(unsigned long ulBase);
+extern tBoolean OSTInterruptMask(unsigned long ulBase);
 //*****************************************************************************
 //
 // Mark the end of the C bindings section for C++ compilers.

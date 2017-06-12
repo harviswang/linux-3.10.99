@@ -17,10 +17,6 @@
 //   documentation and/or other materials provided with the  
 //   distribution.
 // 
-//   Neither the name of Texas Instruments Incorporated nor the names of
-//   its contributors may be used to endorse or promote products derived
-//   from this software without specific prior written permission.
-// 
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
 // "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
 // LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
@@ -33,6 +29,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
+// Note: I move OST_O_ER/OST_O_ESR/OST_O_ECR/OST_O_MR/OST_O_MSR/OST_O_MCR 
+//       from TCU mode, but only OST part is used.
 //*****************************************************************************
 
 #ifndef __HW_OST_H__
@@ -43,11 +41,62 @@
 // The following are defines for the OST register offsets.
 //
 //*****************************************************************************
+#define OST_O_ER                0x00000010  // OST Counter Enable Register(16-bit)
+#define OST_O_ESR               0x00000014  // OST Counter Enable Set Register(16-bit)
+#define OST_O_ECR               0x00000018  // OST Counter Enable Clear Register(16-bit)
+#define OST_O_MR                0x00000030  // OST Interrupt Mask Register
+#define OST_O_MSR               0x00000034  // OST Interrupt Mask Set Register
+#define OST_O_MCR               0x00000038  // OST Interrupt Mask Clear Register
 #define OST_O_DR                0x000000E0  // OST Data Reigster
 #define OST_O_CNTL              0x000000E4  // OST Counter Lower 32 Bits
 #define OST_O_CNTH              0x000000E8  // OST Counter Higher 32 Bits
 #define OST_O_CSR               0x000000EC  // OST Control Register(16-bit read/write)
 #define OST_O_CNTHBUF           0x000000FC  // OST Counter Higher 32 Bits Buffer
+
+//*****************************************************************************
+//
+// The following are defines for the bit fields in the OST_O_ER register.
+//
+//*****************************************************************************
+#define OST_ER_OSTEN            0x00008000  // 0: stop counting up
+                                            // 1: begin counting up
+
+//*****************************************************************************
+//
+// The following are defines for the bit fields in the OST_O_ESR register.
+//
+//*****************************************************************************
+#define OST_ESR_OSTST           0x00008000  // Set OST_ER_OSTEN 
+
+//*****************************************************************************
+//
+// The following are defines for the bit fields in the OST_O_ECR register.
+//
+//*****************************************************************************
+#define OST_ECR_OSTCL           0x00008000  // Clear OST_ER_OSTEN 
+
+//*****************************************************************************
+//
+// The following are defines for the bit fields in the OST_O_MR register.
+//
+//*****************************************************************************
+#define OST_MR_OSTMASK          0x00008000  // OST comparison match interrupt mask
+                                            // 0: not mask
+                                            // 1: mask
+
+//*****************************************************************************
+//
+// The following are defines for the bit fields in the OST_O_MSR register.
+//
+//*****************************************************************************
+#define OST_MSR_OSTMST          0x00008000  // Set OST_MR_OSTMASK 
+
+//*****************************************************************************
+//
+// The following are defines for the bit fields in the OST_O_MCR register.
+//
+//*****************************************************************************
+#define OST_MCR_OSTMCL          0x00008000  // Clear OST_MR_OSTMASK 
 
 //*****************************************************************************
 //

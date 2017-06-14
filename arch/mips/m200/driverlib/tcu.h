@@ -17,10 +17,6 @@
 //   documentation and/or other materials provided with the  
 //   distribution.
 // 
-//   Neither the name of Texas Instruments Incorporated nor the names of
-//   its contributors may be used to endorse or promote products derived
-//   from this software without specific prior written permission.
-// 
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
 // "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
 // LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
@@ -38,6 +34,8 @@
 #ifndef __TCU_H__
 #define __TCU_H__
 
+#include "../inc/hw_types.h"
+
 //*****************************************************************************
 //
 // If building with a C++ compiler, make all of the definitions in this header
@@ -50,12 +48,9 @@ extern "C" {
 
 //*****************************************************************************
 //
-// Values that can be passed to as the parameter
+// Values that can be passed to TCUxxxx as the parameter ulTimerID
 //
 //*****************************************************************************
-#define TCU_MODE_TCU1           0x80000000  // TCU1 Mode
-#define TCU_MODE_TCU2           0x40000000  // TCU2 Mode
-
 #define TCU_TIMER7              0x00000080  // Timer7 ID
 #define TCU_TIMER6              0x00000040  // Timer6 ID
 #define TCU_TIMER5              0x00000020  // Timer5 ID
@@ -67,9 +62,62 @@ extern "C" {
 
 //*****************************************************************************
 //
+// Values that can be passed to TCUPWMShutdown as the parameter ulShutdown
+//
+//*****************************************************************************
+#define TCU_SHUTDOWN_GRACEFUL   0x80000000  // Graceful shutdown PWM output
+#define TCU_SHUTDOWN_ABRUPT     0x40000000  // Abrupt shutdown PWM output
+
+//*****************************************************************************
+//
+// Values that can be passed to TCUClockInputPrescaleSet as the
+// ulClockInputPrescale parameter
+//
+//*****************************************************************************
+#define TCU_CLOCKPRESCALE_1    0x08000000  // Internal clock: ClockInput/1
+#define TCU_CLOCKPRESCALE_4    0x04000000  // Internal clock: ClockInput/4
+#define TCU_CLOCKPRESCALE_16   0x02000000  // Internal clock: ClockInput/16
+#define TCU_CLOCKPRESCALE_64   0x01000000  // Internal clock: ClockInput/64
+#define TCU_CLOCKPRESCALE_256  0x00800000  // Internal clock: ClockInput/256
+#define TCU_CLOCKPRESCALE_1024 0x00400000  // Internal clock: ClockInput/1024
+
+//*****************************************************************************
+//
+// Values that can be passed to TCUClockInputSet as the
+// ulClockInput parameter
+//
+//*****************************************************************************
+#define TCU_CLOCKINPUT_EXTAL    0x00200000  // EXTAL clock as OST clock input
+#define TCU_CLOCKINPUT_RTC      0x00100000  // RTC clock as OST clock input
+#define TCU_CLOCKINPUT_PCLK     0x00080000  // PCLK clock as OST clock input
+
+//*****************************************************************************
+//
+// Values that can be passed to TCUComparisonMatchFlagSet/Clear as the
+// ulFlagType parameter
+//
+//*****************************************************************************
+#define TCU_FLAGTYPE_FIFOEMPTY  0x00040000  // FIFO empty flag
+#define TCU_FLAGTYPE_HALF       0x00020000  // HALF comparison match flag
+#define TCU_FLAGTYPE_FIFO       0x00010000  // FIFO comparison match flag
+#define TCU_FLAGTYPE_FULL       0x00008000  // FULL comparison match flag
+
+//*****************************************************************************
+//
 // API Function prototypes
 //
 //*****************************************************************************
+extern long TCUIntNumberGet(unsigned long ulTimerID);
+extern tBoolean TCUCounterEnable(unsigned long ulBase, unsigned long ulTimerID);
+extern tBoolean TCUCounterDisable(unsigned long ulBase, unsigned long ulTimerID);
+extern tBoolean TCUClockSupply(unsigned long ulBase, unsigned long ulTimerID);
+extern tBoolean TCUClockNotSupply(unsigned long ulBase, unsigned long ulTimerID);
+extern tBoolean TCUPWMShutdown(unsigned long ulBase, unsigned long ulTimerID, unsigned long ulShutdown);
+extern tBoolean TCUClockInputPrescaleSet(unsigned long ulBase, unsigned long ulTimerID, unsigned long ulCounterClockPrescale);
+extern tBoolean TCUClockInputSet(unsigned long ulBase, unsigned long ulTimerID, unsigned long ulClockInput);
+extern tBoolean TCUComparisonMatchFlagSet(unsigned long ulBase, unsigned long ulTimerID, unsigned long ulFlagType);
+extern tBoolean TCUComparisonMatchFlagClear(unsigned long ulBase, unsigned long ulTimerID, unsigned long ulFlagType);
+extern void TCURegisterDump(unsigned long ulBase, int (*print)(const char *format, ...));
 
 //*****************************************************************************
 //

@@ -102,9 +102,10 @@
 //*****************************************************************************
 //
 // The following are defines for the bit fields in the TCU_O_ER register.
+// Note: I have moved TCU_ER_OSTEN from tcu module to ost module
 //
 //*****************************************************************************
-#define TCU_ER_OSTEN            0x00008000  // Enable status of the counter in OST.
+//#define TCU_ER_OSTEN            0x00008000  // Enable status of the counter in OST.
                                             // 0: Stop counting up
                                             // 1: Begin counting up
 #define TCU_ER_TCEN7            0x00000080  // Enable status of the counter in timer 7.
@@ -120,8 +121,9 @@
 //
 // The following are defines for the bit fields in the TCU_O_ESR register.
 //
+// Note: I have moved TCU_ESR_OSTST from here to ost module
 //*****************************************************************************
-#define TCU_ESR_OSTST            0x00008000  // Enable the counter in OST.
+//#define TCU_ESR_OSTST            0x00008000  // Enable the counter in OST.
 #define TCU_ESR_TCST7            0x00000080  // Enable the counter in timer 7.
 #define TCU_ESR_TCST6            0x00000040  // Enable the counter in timer 6.
 #define TCU_ESR_TCST5            0x00000020  // Enable the counter in timer 5.
@@ -135,25 +137,28 @@
 //
 // The following are defines for the bit fields in the TCU_O_ECR register.
 //
+// Note: I have moved TCU_ESR_OSTCL from here to ost module
 //*****************************************************************************
-#define TCU_ESR_OSTCL            0x00008000  // Disable the counter in OST.
-#define TCU_ESR_TCCL7            0x00000080  // Disable the counter in timer 7.
-#define TCU_ESR_TCCL6            0x00000040  // Disable the counter in timer 6.
-#define TCU_ESR_TCCL5            0x00000020  // Disable the counter in timer 5.
-#define TCU_ESR_TCCL4            0x00000010  // Disable the counter in timer 4.
-#define TCU_ESR_TCCL3            0x00000008  // Disable the counter in timer 3.
-#define TCU_ESR_TCCL2            0x00000004  // Disable the counter in timer 2.
-#define TCU_ESR_TCCL1            0x00000002  // Disable the counter in timer 1.
-#define TCU_ESR_TCCL0            0x00000001  // Disable the counter in timer 0.
+//#define TCU_ECR_OSTCL            0x00008000  // Disable the counter in OST.
+#define TCU_ECR_TCCL7            0x00000080  // Disable the counter in timer 7.
+#define TCU_ECR_TCCL6            0x00000040  // Disable the counter in timer 6.
+#define TCU_ECR_TCCL5            0x00000020  // Disable the counter in timer 5.
+#define TCU_ECR_TCCL4            0x00000010  // Disable the counter in timer 4.
+#define TCU_ECR_TCCL3            0x00000008  // Disable the counter in timer 3.
+#define TCU_ECR_TCCL2            0x00000004  // Disable the counter in timer 2.
+#define TCU_ECR_TCCL1            0x00000002  // Disable the counter in timer 1.
+#define TCU_ECR_TCCL0            0x00000001  // Disable the counter in timer 0.
 
 //*****************************************************************************
 //
 // The following are defines for the bit fields in the TCU_O_SR register.
 //
+// Note: I have moved TCU_SR_OSTS from here to OST module
+//*****************************************************************************
 //*****************************************************************************
 #define TCU_SR_WDTS             0x00010000  // 0: The clock supplies to WDT is supplied
                                             // 1: The clock supplies to WDT is stopped
-#define TCU_SR_OSTS             0x00008000  // OST.
+//#define TCU_SR_OSTS             0x00008000  // OST.
 #define TCU_SR_STOP7            0x00000080  // timer 7.
 #define TCU_SR_STOP6            0x00000040  // timer 6.
 #define TCU_SR_STOP5            0x00000020  // timer 5.
@@ -167,6 +172,7 @@
 //
 // The following are defines for the bit fields in the TCU_O_FR register.
 //
+// Note: I have moved TCU_FR_OSTFLAG from here to OST module
 //*****************************************************************************
 #define TCU_FR_FIFOEFLAG5       0x08000000  // FIFO empty flag 5
                                             // 0: fifo not empty
@@ -184,7 +190,7 @@
 #define TCU_FR_HFLAG2           0x00040000  // timer 2 half comparison match flag
 #define TCU_FR_HFLAG1           0x00020000  // timer 1 half comparison match flag
 #define TCU_FR_HFLAG0           0x00010000  // timer 0 half comparison match flag
-#define TCU_FR_OSTFLAG          0x00008000  // OST comparison match flag
+//#define TCU_FR_OSTFLAG          0x00008000  // OST comparison match flag
 #define TCU_FR_FIFOFLAG5        0x00000800  // FIFO comparison match flag. (TCU_O_CNTx = TCU_O_FWDx)
 #define TCU_FR_FIFOFLAG4        0x00000400  //
 #define TCU_FR_FIFOFLAG3        0x00000200  //
@@ -202,6 +208,8 @@
 //
 // The following are defines for the bit fields in the TCU_O_FSR register.
 //
+// Note: I have moved TCU_FSR_OSTFST from here to OST module
+// Note: Not support TCU_FSR_FFST2/TCU_FSR_FFST1
 //*****************************************************************************
 #define TCU_FSR_FIFOESET5       0x08000000  // Set TCU_FR_FIFOEFLAGx
 #define TCU_FSR_FIFOESET4       0x04000000  //
@@ -212,8 +220,10 @@
 #define TCU_FSR_HFST5           0x00200000  //
 #define TCU_FSR_HFST4           0x00100000  //
 #define TCU_FSR_HFST3           0x00080000  //
+#define TCU_FSR_HFST2           0x00040000  //
+#define TCU_FSR_HFST1           0x00020000  //
 #define TCU_FSR_HFST0           0x00010000  //
-#define TCU_FSR_OSTFST          0x00008000  // Set TCU_FR_OSTFLAG
+//#define TCU_FSR_OSTFST          0x00008000  // Set TCU_FR_OSTFLAG
 #define TCU_FSR_FIFOST5         0x00000800  // Set TCU_FR_FIFOFLAGx
 #define TCU_FSR_FIFOST4         0x00000400  //
 #define TCU_FSR_FIFOST3         0x00000300  //
@@ -229,6 +239,7 @@
 //
 // The following are defines for the bit fields in the TCU_O_FCR register.
 //
+// Note: I have moved TCU_FCR_OSTFCL from here to OST module
 //*****************************************************************************
 #define TCU_FCR_FIFOECL5        0x08000000  // Clear TCU_FR_FIFOEFLAGx
 #define TCU_FCR_FIFOECL4        0x04000000  //
@@ -242,7 +253,7 @@
 #define TCU_FCR_HFCL2           0x00040000  //
 #define TCU_FCR_HFCL1           0x00020000  //
 #define TCU_FCR_HFCL0           0x00010000  //
-#define TCU_FCR_OSTFCL          0x00008000  // Clear TCU_FR_OSTFLAG
+//#define TCU_FCR_OSTFCL          0x00008000  // Clear TCU_FR_OSTFLAG
 #define TCU_FCR_FIFOCL5         0x00000800  // Clear TCU_FR_FIFOFLAGx
 #define TCU_FCR_FIFOCL4         0x00000400  //
 #define TCU_FCR_FIFOCL3         0x00000200  //
@@ -260,9 +271,10 @@
 //
 // The following are defines for the bit fields in the TCU_O_SSR register.
 //
+// Note: I have moved TCU_SSR_OSTSS from here to OST module
 //*****************************************************************************
 #define TCU_SSR_WDTSS           0x00010000  // Set TCU_SR_WDTS
-#define TCU_SSR_OSTSS           0x00008000  // Set TCU_SR_OSTS
+//#define TCU_SSR_OSTSS           0x00008000  // Set TCU_SR_OSTS
 #define TCU_SSR_STPS7           0x00000080  // Set TCU_SR_STOPx
 #define TCU_SSR_STPS6           0x00000040  //
 #define TCU_SSR_STPS5           0x00000020  //
@@ -371,9 +383,10 @@
 //
 // The following are defines for the bit fields in the TCU_O_SCR register.
 //
+// Note: I have moved TCU_SCR_OSTSC from here to OST module
 //*****************************************************************************
 #define TCU_SCR_WDTSC           0x00010000  // Clear TCU_SR_WDTS
-#define TCU_SCR_OSTSC           0x00008000  // Clear TCU_SR_OSTS
+//#define TCU_SCR_OSTSC           0x00008000  // Clear TCU_SR_OSTS
 #define TCU_SCR_STPC7           0x00000080  // Clear TCU_SR_STOPx
 #define TCU_SCR_STPC6           0x00000040  //
 #define TCU_SCR_STPC5           0x00000020  //
@@ -418,9 +431,22 @@
 #define TCU_CSR0_PWMEN          0x00000080  // PWM output pin control bit 
 #define TCU_CSR0_PWMINEN        0x00000040  // PWM input mode enable 
 #define TCU_CSR0_PRESCALE       0x00000038  // Counter clock frequency prescale 
+                                            // Don't change this field when the channel is running
 #define TCU_CSR0_EXTEN          0x00000004  // Select EXTAL as the timer clock input
 #define TCU_CSR0_RTCEN          0x00000002  // Select RTCCLK as the timer clock input
 #define TCU_CSR0_PCKEN          0x00000001  // Select PCLK as the timer clock input
+
+//*****************************************************************************
+//
+// The following are defines for the bit fields in the TCU_CSR0_PRESCALE field.
+//
+//*****************************************************************************
+#define TCU_CSR_PRESCALE_1      0x00000000  // CLK/1
+#define TCU_CSR_PRESCALE_4      0x00000008  // CLK/4
+#define TCU_CSR_PRESCALE_16     0x00000010  // CLK/16
+#define TCU_CSR_PRESCALE_64     0x00000018  // CLK/64
+#define TCU_CSR_PRESCALE_256    0x00000020  // CLK/256
+#define TCU_CSR_PRESCALE_1024   0x00000028  // CLK/1024
 
 //*****************************************************************************
 //
@@ -457,6 +483,7 @@
 #define TCU_CSR1_PWMEN          0x00000080  // PWM output pin control bit 
 //#define TCU_CSR1_PWMINEN        0x00000040  // PWM input mode enable 
 #define TCU_CSR1_PRESCALE       0x00000038  // Counter clock frequency prescale 
+                                            // Don't change this field when the channel is running
 #define TCU_CSR1_EXTEN          0x00000004  // Select EXTAL as the timer clock input
 #define TCU_CSR1_RTCEN          0x00000002  // Select RTCCLK as the timer clock input
 #define TCU_CSR1_PCKEN          0x00000001  // Select PCLK as the timer clock input
@@ -496,6 +523,7 @@
 #define TCU_CSR2_PWMEN          0x00000080  // PWM output pin control bit 
 //#define TCU_CSR2_PWMINEN        0x00000040  // PWM input mode enable 
 #define TCU_CSR2_PRESCALE       0x00000038  // Counter clock frequency prescale 
+                                            // Don't change this field when the channel is running
 #define TCU_CSR2_EXTEN          0x00000004  // Select EXTAL as the timer clock input
 #define TCU_CSR2_RTCEN          0x00000002  // Select RTCCLK as the timer clock input
 #define TCU_CSR2_PCKEN          0x00000001  // Select PCLK as the timer clock input
@@ -535,6 +563,7 @@
 #define TCU_CSR3_PWMEN          0x00000080  // PWM output pin control bit 
 #define TCU_CSR3_PWMINEN        0x00000040  // PWM input mode enable 
 #define TCU_CSR3_PRESCALE       0x00000038  // Counter clock frequency prescale 
+                                            // Don't change this field when the channel is running
 #define TCU_CSR3_EXTEN          0x00000004  // Select EXTAL as the timer clock input
 #define TCU_CSR3_RTCEN          0x00000002  // Select RTCCLK as the timer clock input
 #define TCU_CSR3_PCKEN          0x00000001  // Select PCLK as the timer clock input
@@ -574,6 +603,7 @@
 #define TCU_CSR4_PWMEN          0x00000080  // PWM output pin control bit 
 #define TCU_CSR4_PWMINEN        0x00000040  // PWM input mode enable 
 #define TCU_CSR4_PRESCALE       0x00000038  // Counter clock frequency prescale 
+                                            // Don't change this field when the channel is running
 #define TCU_CSR4_EXTEN          0x00000004  // Select EXTAL as the timer clock input
 #define TCU_CSR4_RTCEN          0x00000002  // Select RTCCLK as the timer clock input
 #define TCU_CSR4_PCKEN          0x00000001  // Select PCLK as the timer clock input
@@ -613,6 +643,7 @@
 #define TCU_CSR5_PWMEN          0x00000080  // PWM output pin control bit 
 #define TCU_CSR5_PWMINEN        0x00000040  // PWM input mode enable 
 #define TCU_CSR5_PRESCALE       0x00000038  // Counter clock frequency prescale 
+                                            // Don't change this field when the channel is running
 #define TCU_CSR5_EXTEN          0x00000004  // Select EXTAL as the timer clock input
 #define TCU_CSR5_RTCEN          0x00000002  // Select RTCCLK as the timer clock input
 #define TCU_CSR5_PCKEN          0x00000001  // Select PCLK as the timer clock input
@@ -652,6 +683,7 @@
 #define TCU_CSR6_PWMEN          0x00000080  // PWM output pin control bit 
 #define TCU_CSR6_PWMINEN        0x00000040  // PWM input mode enable 
 #define TCU_CSR6_PRESCALE       0x00000038  // Counter clock frequency prescale 
+                                            // Don't change this field when the channel is running
 #define TCU_CSR6_EXTEN          0x00000004  // Select EXTAL as the timer clock input
 #define TCU_CSR6_RTCEN          0x00000002  // Select RTCCLK as the timer clock input
 #define TCU_CSR6_PCKEN          0x00000001  // Select PCLK as the timer clock input
@@ -691,6 +723,7 @@
 #define TCU_CSR7_PWMEN          0x00000080  // PWM output pin control bit 
 #define TCU_CSR7_PWMINEN        0x00000040  // PWM input mode enable 
 #define TCU_CSR7_PRESCALE       0x00000038  // Counter clock frequency prescale 
+                                            // Don't change this field when the channel is running
 #define TCU_CSR7_EXTEN          0x00000004  // Select EXTAL as the timer clock input
 #define TCU_CSR7_RTCEN          0x00000002  // Select RTCCLK as the timer clock input
 #define TCU_CSR7_PCKEN          0x00000001  // Select PCLK as the timer clock input

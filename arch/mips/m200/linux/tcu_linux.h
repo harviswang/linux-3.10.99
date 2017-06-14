@@ -17,10 +17,6 @@
 //   documentation and/or other materials provided with the  
 //   distribution.
 // 
-//   Neither the name of Texas Instruments Incorporated nor the names of
-//   its contributors may be used to endorse or promote products derived
-//   from this software without specific prior written permission.
-// 
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
 // "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
 // LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
@@ -34,8 +30,8 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 //*****************************************************************************
-#ifndef __OST_LINUX_H__
-#define __OST_LINUX_H__
+#ifndef __TCU_LINUX_H__
+#define __TCU_LINUX_H__
 
 //*****************************************************************************
 //
@@ -52,6 +48,7 @@ extern "C" {
 // API Function prototypes
 //
 //*****************************************************************************
+extern void __init tcu_timer5_clockevent_init(void);
 
 //*****************************************************************************
 //
@@ -62,4 +59,4 @@ extern "C" {
 }
 #endif
 
-#endif /* __OST_LINUX_H__ */
+#endif /* __TCU_LINUX_H__ */

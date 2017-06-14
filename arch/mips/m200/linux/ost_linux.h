@@ -52,7 +52,7 @@ extern "C" {
 // API Function prototypes
 //
 //*****************************************************************************
-extern void __init ost_time_init(void);
+extern void __init ost_clocksource_init(void);
 
 //*****************************************************************************
 //

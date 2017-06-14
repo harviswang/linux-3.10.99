@@ -18,7 +18,7 @@ static void intc_irq_unmask(struct irq_data *data)
 }
 
 static struct irq_chip intc_chip = {
-	.name = "interrupt controller irq",
+	.name = "'Interrupt Controller IRQ'",
 	.irq_mask = intc_irq_mask,
 	.irq_unmask = intc_irq_unmask,
 };

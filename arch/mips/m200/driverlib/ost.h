@@ -107,6 +107,10 @@ extern tBoolean OSTCounterEnable(unsigned long ulBase);
 extern tBoolean OSTCounterDisable(unsigned long ulBase);
 extern tBoolean OSTInterruptUnmask(unsigned long ulBase);
 extern tBoolean OSTInterruptMask(unsigned long ulBase);
+extern tBoolean OSTClockSupply(unsigned long ulBase);
+extern tBoolean OSTClockNotSupply(unsigned long ulBase);
+extern tBoolean OSTComparisonMatchFlagSet(unsigned long ulBase);
+extern tBoolean OSTComparisonMatchFlagClear(unsigned long ulBase);
 //*****************************************************************************
 //
 // Mark the end of the C bindings section for C++ compilers.

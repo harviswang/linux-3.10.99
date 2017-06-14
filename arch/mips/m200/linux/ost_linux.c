@@ -15,13 +15,12 @@
 
 static void ost_init(void)
 {
-	unsigned int i = 1;
 	unsigned int ost_irq;
 	
     /* 1. Initial the configuration */
     /* a. Set the shutdown mode(graceful) */
-    OSTCounterModeSet(OST_BASE, OST_COUNTER_BECLEARED);
-    OSTShutdown(OST_BASE, OST_SHUTDOWN_GRACEFUL);
+    OSTCounterModeSet(OST_BASE, OST_COUNTER_GOON);
+    OSTShutdown(OST_BASE, OST_SHUTDOWN_ABRUPT);
 	
 	/* b. Set OSTCNT count clock frequency prescale */
     OSTClockInputPrescaleSet(OST_BASE, OST_CLOCKPRESCALE_1);
@@ -30,129 +29,107 @@ static void ost_init(void)
     OSTCounterSet(OST_BASE, 0x00000000, 0x00000000);
 
     /* d. Set data register(32-bit) */
-    OSTDataSet(OST_BASE, 24000000/100);
-
+    OSTDataSet(OST_BASE, 0xFFFFFFFF);
 
 	/* 2. Enable clock */
-    OSTClockInputSet(OST_BASE, OST_CLOCKINPUT_EXTAL); 
-
-	/*
-	 * OSTFLAG 
-	 */
-	writel(1 << 15, (void*)(TCU_BASE + TCU_O_FCR));
-	printk("%s line:%d\n", __func__, __LINE__);
+    OSTClockInputSet(OST_BASE, OST_CLOCKINPUT_EXTAL);
+    OSTClockSupply(OST_BASE);
 
 	/* 3. Enable OST counter(start increase) */
-	OSTCounterEnable(TCU_BASE);
+	OSTCounterEnable(OST_BASE);
 
+    /* 4. We not use OST interrupt, so close it */
+	/* a. OSTFLAG clear */
+    OSTComparisonMatchFlagClear(OST_BASE);
     OSTRegisterDump(OST_BASE, printk);
 
-	/* Unmask OST interrupt	 */
-    OSTInterruptUnmask(OST_BASE);
+	/* b. Mask OST interrupt	 */
+    OSTInterruptMask(OST_BASE);
 
-    /* Enable INTC OST interrupt switch */
+    /* c. Disable INTC OST interrupt switch */
     ost_irq = OSTIntNumberGet(OST_BASE);
     if (ost_irq == -1) {
         printk("Error OSTIntNumberGet failed\n");
     } else {
-	    INTCInterruptEnable(ost_irq);
+	    INTCInterruptDisable(ost_irq);
     }
 
 	printk("%s line:%d\n", __func__, __LINE__);
-	while (i < 1000) {
-		if (readl((void*)(OST_BASE + OST_O_CNTL)) == readl((void*)(OST_BASE + OST_O_DR))) {
-			printk("OST_O_CNTL == OST_O_DR i:0x%x\n", i);
-		}
-		i++;
-	}
-	printk("OST_O_CNTH = 0x%x\n", readl((void*)(OST_BASE + OST_O_CNTH)));
-	printk("OST_O_CNTL = 0x%x\n", readl((void*)(OST_BASE + OST_O_CNTL)));
-	printk("OST_O_DR = 0x%x\n", readl((void*)(OST_BASE + OST_O_DR)));
-	//printk("INTC_ICSR0 = 0x%x\n", readl((void*)(INTC + INTC_ICSR0)));
-	//printk("INTC_ICPR0 = 0x%x\n", readl((void*)(INTC + INTC_ICPR0)));
-	//printk("INTC_ICMR0 = 0x%x\n", readl((void*)(INTC + INTC_ICMR0)));
-	printk("TCU_O_SR = 0x%x\n", readl((void*)(TCU_BASE + TCU_O_SR)));
+
     OSTRegisterDump(OST_BASE, printk);
 }
 
-static void ost_start(void)
+
+static cycle_t ost_cycle_read(struct clocksource *cs)
 {
-	writel(1 << 15, (void*)(TCU_BASE + TCU_O_ESR));
+    cycle_t res;
+    unsigned int *pHigh, *pLow;
+
+    (void)cs;
+    /* Arch must be little-endian */
+    pLow = (unsigned int*)&res;
+    pHigh = pLow + 1;
+
+    OSTCounterGet(OST_BASE, (unsigned long *)pHigh, (unsigned long *)pLow);
+
+    return res;
+}
+
+static int ost_clocksource_enable(struct clocksource *cs)
+{
+    printk("%s line:%d\n", __func__, __LINE__);
+    (void)cs;
+    OSTCounterEnable(OST_BASE);
+    return 0;
+}
+
+static void ost_clocksource_disable(struct clocksource *cs)
+{
+    printk("%s line:%d\n", __func__, __LINE__);
+    (void)cs;
+    OSTCounterDisable(OST_BASE);
+}
+
+/* Stop clock supply */
+static void ost_clocksource_suspend(struct clocksource *cs)
+{
+    printk("%s line:%d\n", __func__, __LINE__);
+    (void)cs;
+    OSTClockNotSupply(OST_BASE);
+}
+
+/* Resume clock supply */
+static void ost_clocksource_resume(struct clocksource *cs)
+{
+    printk("%s line:%d\n", __func__, __LINE__);
+    (void)cs;
+    OSTClockSupply(OST_BASE);
 }
 
 /*
- * OST stop counting up
+ * Override sched_clock() in /kernel/sched/clock.c
+ * TODO: clock frequency should be get by clk api
  */
-static void ost_stop(void)
+unsigned long long sched_clock(void)
 {
-	writel(1 << 15, (void*)(TCU_BASE + TCU_O_ECR));
+    /* Cache the sched_clock multiplier to save a divide in the hot path. */
+    static unsigned long long mult = NSEC_PER_SEC / 24000000;
+    unsigned long long result = ost_cycle_read((struct clocksource *)0) * mult;
+    return result;
 }
 
-static void ost_count_reset(void)
+void __init ost_clocksource_init(void)
 {
-	ost_stop();
-	writel(0x00, (void*)(OST_BASE + OST_O_CNTH));
-	writel(0x00, (void*)(OST_BASE + OST_O_CNTL));
-	ost_start();
-}
+    static struct clocksource cs;
 
-static irqreturn_t ost_interrupt_handle(int irq, void *dev_id)
-{
-	struct clock_event_device *ced = dev_id;
-	writel(1 << 15, (void*)(TCU_BASE + TCU_O_FCR));
-	//printk("%s line:%d\n", __func__, __LINE__);
-	
-	ced->event_handler(ced);
+    cs.read = ost_cycle_read,
+    cs.name = "ost clocksource",
+    cs.rating = 400,
+    cs.enable = ost_clocksource_enable,
+    cs.disable = ost_clocksource_disable,
+    cs.suspend = ost_clocksource_suspend,
+    cs.resume = ost_clocksource_resume,
 
-	return IRQ_HANDLED;
-}
-
-static void
-ost_set_mode(enum clock_event_mode mode, struct clock_event_device *ced)
-{
-	switch(mode) {
-	case CLOCK_EVT_MODE_UNUSED:
-	case CLOCK_EVT_MODE_SHUTDOWN:
-		break;
-	case CLOCK_EVT_MODE_PERIODIC:
-		ost_count_reset();
-		break;
-	case CLOCK_EVT_MODE_ONESHOT:
-	case CLOCK_EVT_MODE_RESUME:
-		break;
-		
-	}
-	(void)ced;
-}
-
-static int
-ost_set_next_event(unsigned long delta, struct clock_event_device *ced)
-{
-	(void)delta;
-	(void)ced;
-	
-	printk("%s line:%d\n", __func__, __LINE__);
-	return 0;
-}
-
-void __init ost_time_init(void)
-{
-	static struct irqaction action;
-	static struct clock_event_device ced;
-	
 	ost_init();
-
-	action.name = "OST IRQ";
-	action.handler = ost_interrupt_handle;
-	action.flags = IRQF_DISABLED | IRQF_TIMER | IRQF_IRQPOLL;
-	action.dev_id = (void *)&ced;
-	setup_irq(IRQ_NO_TCU0, &action);
-	
-	ced.name = "OST EVENT";
-	ced.features = CLOCK_EVT_FEAT_ONESHOT | CLOCK_EVT_FEAT_PERIODIC;
-	ced.irq = IRQ_NO_TCU0;
-	ced.rating = 400,
-	ced.set_mode = ost_set_mode;
-	ced.set_next_event = ost_set_next_event;
-	clockevents_config_and_register(&ced, 1, 4, 65536);
+    clocksource_register(&cs);
 }

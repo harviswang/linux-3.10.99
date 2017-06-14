@@ -436,6 +436,7 @@ void
 OSTRegisterDump(unsigned long ulBase, int (*print)(const char *format, ...))
 {
     REGH_PRINT(OST_O_ER, ulBase, print);
+    REG_PRINT(OST_O_FR, ulBase, print);
     REG_PRINT(OST_O_MR, ulBase, print);
     REG_PRINT(OST_O_DR, ulBase, print);
     REG_PRINT(OST_O_CNTL, ulBase, print);
@@ -463,7 +464,7 @@ OSTCounterEnable(unsigned long ulBase)
     //
     ASSERT(OSTBaseValid(ulBase));
 
-    HWREGH(ulBase + OST_O_ESR) |= OST_ESR_OSTST;
+    HWREG(ulBase + OST_O_ESR) |= OST_ESR_OSTST;
 
     return((HWREGH(ulBase + OST_O_ER) & OST_ER_OSTEN) == OST_ER_OSTEN);
 }
@@ -487,7 +488,7 @@ OSTCounterDisable(unsigned long ulBase)
     //
     ASSERT(OSTBaseValid(ulBase));
 
-    HWREGH(ulBase + OST_O_ECR) |= OST_ECR_OSTCL;
+    HWREG(ulBase + OST_O_ECR) |= OST_ECR_OSTCL;
 
     return((HWREGH(ulBase + OST_O_ER) & OST_ER_OSTEN) != OST_ER_OSTEN);
 }
@@ -539,3 +540,98 @@ OSTInterruptMask(unsigned long ulBase)
 
     return((HWREG(ulBase + OST_O_MR) & OST_MR_OSTMASK) == OST_MR_OSTMASK);
 }
+
+//*****************************************************************************
+//
+//! OST clock supply.
+//!
+//! \param ulBase is the base address of the OST.
+//!
+//! This function supply OST clock, if supplied counter can works.
+//!
+//! \return Returns true if supply operation success, returns false others 
+//
+//*****************************************************************************
+tBoolean
+OSTClockSupply(unsigned long ulBase)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(OSTBaseValid(ulBase));
+
+    HWREG(ulBase + OST_O_SCR) |= OST_SCR_OSTSC;
+
+    return((HWREG(ulBase + OST_O_SR) & OST_SR_OSTS) != OST_SR_OSTS);
+}
+
+//*****************************************************************************
+//
+//! OST clock not supplied(stop).
+//!
+//! \param ulBase is the base address of the OST.
+//!
+//! This function not supply OST clock, if not supplied counter can't works.
+//!
+//! \return Returns true if not supplied operation success, returns false others 
+//
+//*****************************************************************************
+tBoolean
+OSTClockNotSupply(unsigned long ulBase)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(OSTBaseValid(ulBase));
+
+    HWREG(ulBase + OST_O_SSR) |= OST_SSR_OSTSS;
+
+    return((HWREG(ulBase + OST_O_SR) & OST_SR_OSTS) == OST_SR_OSTS);
+}
+
+//*****************************************************************************
+//
+//! OST comparison match flag set.
+//!
+//! \param ulBase is the base address of the OST.
+//!
+//! This function set OST comparison match flag, if set an interrupt is occur.
+//!
+//! \return Returns true if set flag operation success, returns false others
+//
+//*****************************************************************************
+tBoolean
+OSTComparisonMatchFlagSet(unsigned long ulBase)
+{
+    //
+    // Checks parameters
+    //
+    ASSERT(OSTBaseValid(ulBase));
+
+    HWREG(ulBase + OST_O_FSR) |= OST_FSR_OSTFST;
+    return((HWREG(ulBase + OST_O_FR) & OST_FR_OSTFLAG) == OST_FR_OSTFLAG);
+}
+
+//*****************************************************************************
+//
+//! OST comparison match flag clear.
+//!
+//! \param ulBase is the base address of the OST.
+//!
+//! This function clear OST comparison match flag, if clear an interrupt is finished.
+//!
+//! \return Returns true if clear flag operation success, returns false others
+//
+//*****************************************************************************
+tBoolean
+OSTComparisonMatchFlagClear(unsigned long ulBase)
+{
+    //
+    // Checks parameters
+    //
+    ASSERT(OSTBaseValid(ulBase));
+
+    HWREG(ulBase + OST_O_FCR) |= OST_FCR_OSTFCL;
+    return((HWREG(ulBase + OST_O_FR) & OST_FR_OSTFLAG) != OST_FR_OSTFLAG);
+}
+

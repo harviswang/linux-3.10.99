@@ -29,7 +29,9 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
-// Note: I move OST_O_ER/OST_O_ESR/OST_O_ECR/OST_O_MR/OST_O_MSR/OST_O_MCR 
+// Note: I move OST_O_ER/OST_O_ESR/OST_O_ECR
+//              OST_O_MR/OST_O_MSR/OST_O_MCR
+//              OST_O_SR/OST_O_SSR/OST_O_SCR
 //       from TCU mode, but only OST part is used.
 //*****************************************************************************
 
@@ -40,13 +42,21 @@
 //
 // The following are defines for the OST register offsets.
 //
+// Note: first part is coming from tcu mode, but only use it's ost subpart
 //*****************************************************************************
 #define OST_O_ER                0x00000010  // OST Counter Enable Register(16-bit)
 #define OST_O_ESR               0x00000014  // OST Counter Enable Set Register(16-bit)
 #define OST_O_ECR               0x00000018  // OST Counter Enable Clear Register(16-bit)
+#define OST_O_FR                0x00000020  // OST Flag Register
+#define OST_O_FSR               0x00000024  // OST Flag Set Register
+#define OST_O_FCR               0x00000028  // OST Flag Clear Register
 #define OST_O_MR                0x00000030  // OST Interrupt Mask Register
 #define OST_O_MSR               0x00000034  // OST Interrupt Mask Set Register
 #define OST_O_MCR               0x00000038  // OST Interrupt Mask Clear Register
+#define OST_O_SR                0x0000001C  // OST Stop Register
+#define OST_O_SSR               0x0000002C  // OST Stop Set Register
+#define OST_O_SCR               0x0000003C  // OST Stop Clear Register
+
 #define OST_O_DR                0x000000E0  // OST Data Reigster
 #define OST_O_CNTL              0x000000E4  // OST Counter Lower 32 Bits
 #define OST_O_CNTH              0x000000E8  // OST Counter Higher 32 Bits
@@ -77,6 +87,26 @@
 
 //*****************************************************************************
 //
+// The following are defines for the bit fields in the OST_O_FR register.
+// If comparison matched, this flag is set by hardware, an interrupt is occur,
+// so in irq handler(ISR) we must first clear this flag
+//*****************************************************************************
+#define OST_FR_OSTFLAG          0x00008000  // OST comparison match flag
+
+//*****************************************************************************
+//
+// The following are defines for the bit fields in the OST_O_FSR register.
+//*****************************************************************************
+#define OST_FSR_OSTFST          0x00008000  // Set OST_FR_OSTFLAG
+
+//*****************************************************************************
+//
+// The following are defines for the bit fields in the OST_O_FCR register.
+//*****************************************************************************
+#define OST_FCR_OSTFCL          0x00008000  // Clear OST_FR_OSTFLAG
+
+//*****************************************************************************
+//
 // The following are defines for the bit fields in the OST_O_MR register.
 //
 //*****************************************************************************
@@ -97,6 +127,28 @@
 //
 //*****************************************************************************
 #define OST_MCR_OSTMCL          0x00008000  // Clear OST_MR_OSTMASK 
+
+//*****************************************************************************
+//
+// The following are defines for the bit fields in the OST_O_SR register.
+//
+//*****************************************************************************
+#define OST_SR_OSTS             0x00008000  // 0: 0: The clock supplies to OST is supplied
+                                            // 1: The clock supplies to OST is stopped
+
+//*****************************************************************************
+//
+// The following are defines for the bit fields in the OST_O_SSR register.
+//
+//*****************************************************************************
+#define OST_SSR_OSTSS           0x00008000  // Set OST_SR_OSTS
+
+//*****************************************************************************
+//
+// The following are defines for the bit fields in the OST_O_SCR register.
+//
+//*****************************************************************************
+#define OST_SCR_OSTSC           0x00008000  // Clear OST_SR_OSTS
 
 //*****************************************************************************
 //

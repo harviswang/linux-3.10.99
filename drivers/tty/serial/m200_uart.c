@@ -223,7 +223,7 @@ static int m200_uart_startup(struct uart_port *port)
 	struct m200_uart_port *m200_port = UART_TO_M200(port);
 	
 	snprintf(m200_port->name, sizeof(m200_port->name),
-		"m200_uart%d", port->line);
+		"'UART %d'", port->line);
 	
 	port->irq = UARTIntNumberGet(port->iobase);
 	err = request_irq(port->irq, m200_uart_irq_handler, port->irqflags, 

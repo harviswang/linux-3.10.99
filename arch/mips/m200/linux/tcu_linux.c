@@ -13,10 +13,58 @@
 #include "../driverlib/intc.h"
 #include "../inc/hw_tcu.h"
 #include "../inc/hw_memmap.h"
+#include "../inc/hw_gpio.h"
+#include "../inc/hw_types.h"
+
+static void pwm0_init(void)
+{
+    unsigned int result = 0;
+    /* PE0 configure gpio PE0 as PWM function pin */
+    HWREG(GPIOE_BASE + GPIO_O_INTC) |= 0x00000001;
+    HWREG(GPIOE_BASE + GPIO_O_MASKC) |= 0x00000001;
+    HWREG(GPIOE_BASE + GPIO_O_PAT1C) |= 0x00000001;
+    HWREG(GPIOE_BASE + GPIO_O_PAT0C) |= 0x00000001;
+
+    /* 1. Initial the configuration. */
+    /* a. Writing TCSR.INITL to initialize PWM output level. */
+    result = TCUPWMInitialOutputLevelSet(TCU_BASE, TCU_TIMER0, TCU_PWMINITOUTPUT_LOW);
+    printk("%s line:%d result:%d\n", __func__, __LINE__, result);
+
+    /* b. Writing TCSR.SD to setting the shutdown mode(abrupt or graceful mode) */
+    result = TCUPWMShutdown(TCU_BASE, TCU_TIMER0, TCU_SHUTDOWN_GRACEFUL);
+    printk("%s line:%d result:%d\n", __func__, __LINE__, result);
+
+    /* c. Writing TCSR.PRESCALE to set TCNT count clock frequency */
+    result = TCUClockInputPrescaleSet(TCU_BASE, TCU_TIMER0, TCU_CLOCKPRESCALE_1024);
+    printk("%s line:%d result:%d\n", __func__, __LINE__, result);
+
+    /* d. Setting TCNT, TDHR and TDFR */
+    /* if TDHR = 0, TDFR = 1, duty = 50% */
+    TCUCounterSet(TCU_BASE, TCU_TIMER0, 0x0000);
+    TCUDataHalfSet(TCU_BASE, TCU_TIMER0, 0x000E);
+    TCUDataFullSet(TCU_BASE, TCU_TIMER0, 0x000F);
+
+    /* 2. Enable the clock */
+    /* a. Writing TCSR.PWM_EN to set whether enable PWM */
+    result = TCUPWMEnable(TCU_BASE, TCU_TIMER0);
+    printk("%s line:%d result:%d\n", __func__, __LINE__, result);
+
+    /* b. Writing TCSR.EXT_EN, TCSR.RTC_EN or TCSR.PCK_EN to 1 to select the input
+          clock and enable the input clock. */
+    result = TCUClockInputSet(TCU_BASE, TCU_TIMER0, TCU_CLOCKINPUT_EXTAL);
+    printk("%s line:%d result:%d\n", __func__, __LINE__, result);
+    result = TCUClockSupply(TCU_BASE, TCU_TIMER0);
+    printk("%s line:%d result:%d\n", __func__, __LINE__, result);
+
+    /* 3. Enable the counter */
+    result = TCUCounterEnable(TCU_BASE, TCU_TIMER0);
+    printk("%s line:%d result:%d\n", __func__, __LINE__, result);
+}
 
 static void tcu_timer5_init(void)
 {
     unsigned int timer5_irq = 0;
+    printk("%s line:%d\n", __func__, __LINE__);
 
     /* 1. Initial the configuration */
     /* a. Writing TCSR.INITL to initialize PWM output level. */
@@ -49,7 +97,7 @@ static void tcu_timer5_init(void)
     TCUInterruptMask(TCU_BASE, TCU_TIMER5, TCU_MASKTYPE_HALF);
     TCUInterruptMask(TCU_BASE, TCU_TIMER5, TCU_MASKTYPE_FIFOEMPTY);
     TCUInterruptMask(TCU_BASE, TCU_TIMER5, TCU_MASKTYPE_FIFO);
-    HWREG(TCU_BASE + TCU_O_MCR) |= TCU_MCR_FMCL5;
+    TCUInterruptUnmask(TCU_BASE, TCU_TIMER5, TCU_MASKTYPE_FULL);
     timer5_irq = TCUIntNumberGet(TCU_TIMER5);
     if (timer5_irq == -1) {
         printk("TCUIntNumberGet() failed\n");
@@ -130,6 +178,7 @@ void __init tcu_timer5_clockevent_init(void)
     static struct irqaction action;
     static struct clock_event_device ced;
 
+    pwm0_init();
     tcu_timer5_init();
 
     action.name = "'TCU Timer5 IRQ'";

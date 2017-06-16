@@ -1,8 +1,8 @@
 //*****************************************************************************
 //
-// hw_memmap.h - Macros defining the memory of M200.
+// gpio.h - Defines and Macros for the GPIO module.
 //
-// Copyright (c) 2016-2017 Harvis Wang.  All rights reserved.
+// Copyright (c) 2017 Harvis Wang.  All rights reserved.
 // Software License Agreement
 // 
 //   Redistribution and use in source and binary forms, with or without
@@ -16,10 +16,6 @@
 //   notice, this list of conditions and the following disclaimer in the
 //   documentation and/or other materials provided with the  
 //   distribution.
-// 
-//   Neither the name of Texas Instruments Incorporated nor the names of
-//   its contributors may be used to endorse or promote products derived
-//   from this software without specific prior written permission.
 // 
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
 // "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -35,30 +31,36 @@
 //
 //*****************************************************************************
 
-#ifndef __HW_MEMMAP_H__
-#define __HW_MEMMAP_H__
+#ifndef __GPIO_H__
+#define __GPIO_H__
+
+#include "../inc/hw_types.h"
 
 //*****************************************************************************
 //
-// The following are defines for the base address of the memories and
-// peripherals.
+// If building with a C++ compiler, make all of the definitions in this header
+// have a C binding.
 //
 //*****************************************************************************
-#define INTC_BASE               0xB0001000  // INTC
-#define OST_BASE                0xB0002000  // OST
-#define TCU_BASE                0xB0002000  // TCU
-#define GPIOA_BASE              0xB0010000  // GPIO PA
-#define GPIOB_BASE              0xB0010100  // GPIO PB
-#define GPIOC_BASE              0xB0010200  // GPIO PC
-#define GPIOD_BASE              0xB0010300  // GPIO PD
-#define GPIOE_BASE              0xB0010400  // GPIO PE
-#define GPIOF_BASE              0xB0010500  // GPIO PF
-#define GPIOZ_BASE              0xB0010F00  // GPIO PZ(Dummy)
-#define UART0_BASE              0xB0030000  // UART0
-#define UART1_BASE              0xB0031000  // UART1
-#define UART2_BASE              0xB0032000  // UART2
-#define UART3_BASE              0xB0033000  // UART3
-#define UART4_BASE              0xB0034000  // UART4
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-#endif /* __HW_MEMMAP_H__ */
+
+//*****************************************************************************
+//
+// API Function prototypes
+//
+//*****************************************************************************
+
+//*****************************************************************************
+//
+// Mark the end of the C bindings section for C++ compilers.
+//
+//*****************************************************************************
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* __OST_H__ */
 

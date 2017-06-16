@@ -104,6 +104,26 @@ extern "C" {
 
 //*****************************************************************************
 //
+// Values that can be passed to TCUPWMInitialOutputLevelSet as the
+// ulPWMInitialOutputLevel parameter
+//
+//*****************************************************************************
+#define TCU_PWMINITOUTPUT_LOW   0x00004000  // PWM initial output low
+#define TCU_PWMINITOUTPUT_HIGH  0x00002000  // PWM initial output high
+
+//*****************************************************************************
+//
+// Values that can be passed to TCUInterruptMask as the
+// ulMaskType parameter
+//
+//*****************************************************************************
+#define TCU_MASKTYPE_FIFOEMPTY  0x00001000  // TCU FIFOEMPTY interrupt mask
+#define TCU_MASKTYPE_HALF       0x00000800  // TCU HALF interrupt mask
+#define TCU_MASKTYPE_FIFO       0x00000400  // TCU FIFO interrupt mask
+#define TCU_MASKTYPE_FULL       0x00000200  // TCU FULL interrupt mask
+
+//*****************************************************************************
+//
 // API Function prototypes
 //
 //*****************************************************************************
@@ -111,8 +131,16 @@ extern long TCUIntNumberGet(unsigned long ulTimerID);
 extern tBoolean TCUCounterEnable(unsigned long ulBase, unsigned long ulTimerID);
 extern tBoolean TCUCounterDisable(unsigned long ulBase, unsigned long ulTimerID);
 extern tBoolean TCUClockSupply(unsigned long ulBase, unsigned long ulTimerID);
+extern tBoolean TCUInterruptMask(unsigned long ulBase, unsigned long ulTimerID, unsigned long ulMaskType);
+extern tBoolean TCUInterruptUnmask(unsigned long ulBase, unsigned long ulTimerID, unsigned long ulMaskType);
+extern void TCUDataFullSet(unsigned long ulBase, unsigned long ulTimerID, unsigned long ulDataFull);
+extern void TCUDataHalfSet(unsigned long ulBase, unsigned long ulTimerID, unsigned long ulDataHalf);
 extern tBoolean TCUClockNotSupply(unsigned long ulBase, unsigned long ulTimerID);
 extern tBoolean TCUPWMShutdown(unsigned long ulBase, unsigned long ulTimerID, unsigned long ulShutdown);
+extern void TCUCounterSet(unsigned long ulBase, unsigned long ulTimerID, unsigned long ulCounter);
+extern tBoolean TCUPWMEnable(unsigned long ulBase, unsigned long ulTimerID);
+extern tBoolean TCUPWMDisable(unsigned long ulBase, unsigned long ulTimerID);
+extern tBoolean TCUPWMInitialOutputLevelSet(unsigned long ulBase, unsigned long ulTimerID, unsigned long ulPWMInitialOutputLevel);
 extern tBoolean TCUClockInputPrescaleSet(unsigned long ulBase, unsigned long ulTimerID, unsigned long ulCounterClockPrescale);
 extern tBoolean TCUClockInputSet(unsigned long ulBase, unsigned long ulTimerID, unsigned long ulClockInput);
 extern tBoolean TCUComparisonMatchFlagSet(unsigned long ulBase, unsigned long ulTimerID, unsigned long ulFlagType);

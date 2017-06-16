@@ -1,5 +1,7 @@
 /*
  * Timer Counter Unit(TCU)
+ * TODO: HZ=100, but actually I measure it's 102
+ * measure method: cat /proc/interrupts  && sleep 1 &&  cat /proc/interrupts
  */
 #include <linux/interrupt.h>
 #include <linux/printk.h>
@@ -18,22 +20,22 @@ static void tcu_timer5_init(void)
 
     /* 1. Initial the configuration */
     /* a. Writing TCSR.INITL to initialize PWM output level. */
-    HWREGH(TCU_BASE + TCU_O_CSR5) &= ~TCU_CSR5_INITL;
+    TCUPWMInitialOutputLevelSet(TCU_BASE, TCU_TIMER5, TCU_PWMINITOUTPUT_LOW);
 
     /* b. Set shutdown mode */
     TCUPWMShutdown(TCU_BASE, TCU_TIMER5, TCU_SHUTDOWN_GRACEFUL);
 
     /* c. Set prescale */
-    TCUClockInputPrescaleSet(TCU_BASE, TCU_TIMER5, TCU_CLOCKPRESCALE_64);
+    TCUClockInputPrescaleSet(TCU_BASE, TCU_TIMER5, TCU_CLOCKPRESCALE_4);
 
     /* Setting TCNT, TDHR and TDFR */
-    HWREGH(TCU_BASE + TCU_O_CNT5) = 0x0000;
-    HWREGH(TCU_BASE + TCU_O_DHR5) = 0x8000;
-    HWREGH(TCU_BASE + TCU_O_DFR5) = 0xFFFF;
+    TCUCounterSet(TCU_BASE, TCU_TIMER5, 0x0000);
+    TCUDataHalfSet(TCU_BASE, TCU_TIMER5, 0xFFFF); // Half > Full, we not use half comparison here
+    TCUDataFullSet(TCU_BASE, TCU_TIMER5, 60000 - 1); // 24000000/4/HZ = 60000
 
     /* 2. Enable the clock */
     /* a. Writing TCSR.PWM_EN to set whether enable PWM or disable PWM */
-    HWREGH(TCU_BASE + TCU_O_CSR5) &= ~TCU_CSR5_PWMEN;
+    TCUPWMDisable(TCU_BASE, TCU_TIMER5);
 
     /* b. Set input clock */
     TCUClockInputSet(TCU_BASE, TCU_TIMER5, TCU_CLOCKINPUT_EXTAL);
@@ -43,8 +45,11 @@ static void tcu_timer5_init(void)
     TCUCounterEnable(TCU_BASE, TCU_TIMER5);
     printk("file:%s line:%d\n", __FILE__, __LINE__);
 
-    HWREG(TCU_BASE + TCU_O_MCR) |= TCU_MCR_HMCL5;
-    HWREG(TCU_BASE + TCU_O_MCR) |= TCU_MCR_FIFOMCL5;
+    /* 4. Mask non-full interrupt of timer 5, unmask full interrupt of timer 5 */
+    TCUInterruptMask(TCU_BASE, TCU_TIMER5, TCU_MASKTYPE_HALF);
+    TCUInterruptMask(TCU_BASE, TCU_TIMER5, TCU_MASKTYPE_FIFOEMPTY);
+    TCUInterruptMask(TCU_BASE, TCU_TIMER5, TCU_MASKTYPE_FIFO);
+    HWREG(TCU_BASE + TCU_O_MCR) |= TCU_MCR_FMCL5;
     timer5_irq = TCUIntNumberGet(TCU_TIMER5);
     if (timer5_irq == -1) {
         printk("TCUIntNumberGet() failed\n");
@@ -57,14 +62,14 @@ static void tcu_timer5_init(void)
 
 static void tcu_timer5_start(void)
 {
-    TCUCounterEnable(TCU_BASE, TCU_TIMER5);
-//    TCUClockSupply(TCU_BASE, TCU_TIMER5);
+//    TCUCounterEnable(TCU_BASE, TCU_TIMER5);
+    TCUClockSupply(TCU_BASE, TCU_TIMER5);
 }
 
 static void tcu_timer5_stop(void)
 {
-    TCUCounterDisable(TCU_BASE, TCU_TIMER5);
-//    TCUClockNotSupply(TCU_BASE, TCU_TIMER5);
+//    TCUCounterDisable(TCU_BASE, TCU_TIMER5);
+    TCUClockNotSupply(TCU_BASE, TCU_TIMER5);
 }
 
 static void tcu_timer5_count_reset(void)
@@ -79,8 +84,10 @@ tcu_timer5_interrupt_handle(int irq, void *dev_id)
 {
     struct clock_event_device *ced = dev_id;
 
-    HWREG(TCU_BASE + TCU_O_FCR) |= TCU_FCR_HFCL5;
-    HWREG(TCU_BASE + TCU_O_FCR) |= TCU_FCR_FFCL5;
+    if (HWREG(TCU_BASE + TCU_O_FR) & TCU_FR_FFLAG5) {
+        HWREG(TCU_BASE + TCU_O_FCR) |= TCU_FCR_FFCL5;
+        TCUCounterSet(TCU_BASE, TCU_TIMER5, 0x0000);
+    }
     //printk("%s line:%d\n", __func__, __LINE__);
 
     ced->event_handler(ced);

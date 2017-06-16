@@ -245,22 +245,28 @@ OSTClockInputPrescaleSet(unsigned long ulBase, unsigned long ulClockInputPrescal
 
     switch (ulClockInputPrescale) {
     case OST_CLOCKPRESCALE_1:
-        HWREGH(ulBase + OST_O_CSR) &= ((~OST_CSR_PRESCALE) | OST_CSR_PRESCALE_1);
+        HWREGH(ulBase + OST_O_CSR) &= ~OST_CSR_PRESCALE;
+        HWREGH(ulBase + OST_O_CSR) |= OST_CSR_PRESCALE_1;
         break;
     case OST_CLOCKPRESCALE_4:
-        HWREGH(ulBase + OST_O_CSR) &= ((~OST_CSR_PRESCALE) | OST_CSR_PRESCALE_4);
+        HWREGH(ulBase + OST_O_CSR) &= ~OST_CSR_PRESCALE;
+        HWREGH(ulBase + OST_O_CSR) |= OST_CSR_PRESCALE_4;
         break;
     case OST_CLOCKPRESCALE_16:
-        HWREGH(ulBase + OST_O_CSR) &= ((~OST_CSR_PRESCALE) | OST_CSR_PRESCALE_16);
+        HWREGH(ulBase + OST_O_CSR) &= ~OST_CSR_PRESCALE;
+        HWREGH(ulBase + OST_O_CSR) |= OST_CSR_PRESCALE_16;
         break;
     case OST_CLOCKPRESCALE_64:
-        HWREGH(ulBase + OST_O_CSR) &= ((~OST_CSR_PRESCALE) | OST_CSR_PRESCALE_64);
+        HWREGH(ulBase + OST_O_CSR) &= ~OST_CSR_PRESCALE;
+        HWREGH(ulBase + OST_O_CSR) |= OST_CSR_PRESCALE_64;
         break;
     case OST_CLOCKPRESCALE_256:
-        HWREGH(ulBase + OST_O_CSR) &= ((~OST_CSR_PRESCALE) | OST_CSR_PRESCALE_256);
+        HWREGH(ulBase + OST_O_CSR) &= ~OST_CSR_PRESCALE;
+        HWREGH(ulBase + OST_O_CSR) |= OST_CSR_PRESCALE_256;
         break;
     case OST_CLOCKPRESCALE_1024:
-        HWREGH(ulBase + OST_O_CSR) &= ((~OST_CSR_PRESCALE) | OST_CSR_PRESCALE_1024);
+        HWREGH(ulBase + OST_O_CSR) &= ~OST_CSR_PRESCALE;
+        HWREGH(ulBase + OST_O_CSR) |= OST_CSR_PRESCALE_1024;
         break;
     default:
         ASSERT(false);

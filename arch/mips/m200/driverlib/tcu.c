@@ -347,6 +347,581 @@ TCUClockSupply(unsigned long ulBase, unsigned long ulTimerID)
 
 //*****************************************************************************
 //
+//! \internal
+//! Mask a FIFO empty interrupt of a TCU timer.
+//!
+//! \param ulBase is the base address of the TCU.
+//! \param ulTimerID is the ID of the TCU timer.
+//!
+//! This function mask an FIFO empty interrupt of a TCU timer.
+//!
+//! \return Returns true if mask operation success, false others.
+//
+//*****************************************************************************
+static tBoolean
+TCUInterruptFIFOEmptyMask(unsigned long ulBase, unsigned long ulTimerID)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(TCUBaseValid(ulBase));
+    ASSERT((ulTimerID == TCU_TIMER5) ||
+           (ulTimerID == TCU_TIMER4) ||
+           (ulTimerID == TCU_TIMER3) ||
+           (ulTimerID == TCU_TIMER0));
+
+    switch (ulTimerID) {
+    case TCU_TIMER5:
+        HWREG(ulBase + TCU_O_MSR) |= TCU_MSR_FIFOEMST5;
+        return((HWREG(ulBase + TCU_O_MR) & TCU_MR_FIFOEMASK5) == TCU_MR_FIFOEMASK5);
+    case TCU_TIMER4:
+        HWREG(ulBase + TCU_O_MSR) |= TCU_MSR_FIFOEMST4;
+        return((HWREG(ulBase + TCU_O_MR) & TCU_MR_FIFOEMASK4) == TCU_MR_FIFOEMASK4);
+    case TCU_TIMER3:
+        HWREG(ulBase + TCU_O_MSR) |= TCU_MSR_FIFOEMST3;
+        return((HWREG(ulBase + TCU_O_MR) & TCU_MR_FIFOEMASK3) == TCU_MR_FIFOEMASK3);
+    case TCU_TIMER0:
+        HWREG(ulBase + TCU_O_MSR) |= TCU_MSR_FIFOEMST0;
+        return((HWREG(ulBase + TCU_O_MR) & TCU_MR_FIFOEMASK0) == TCU_MR_FIFOEMASK0);
+    default:
+        ASSERT(false);
+        return(false);
+    }
+}
+
+//*****************************************************************************
+//
+//! \internal
+//! Mask a half comparison interrupt of a TCU timer.
+//!
+//! \param ulBase is the base address of the TCU.
+//! \param ulTimerID is the ID of the TCU timer.
+//!
+//! This function mask an half comparison interrupt of a TCU timer.
+//!
+//! \return Returns true if mask operation success, false others.
+//
+//*****************************************************************************
+static tBoolean
+TCUInterruptHalfMask(unsigned long ulBase, unsigned long ulTimerID)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(TCUBaseValid(ulBase));
+    ASSERT(TCUTimerIDValid(ulTimerID));
+
+    switch (ulTimerID) {
+    case TCU_TIMER7:
+        HWREG(ulBase + TCU_O_MSR) |= TCU_MSR_HMST7;
+        return((HWREG(ulBase + TCU_O_MR) & TCU_MR_HMASK7) == TCU_MR_HMASK7);
+    case TCU_TIMER6:
+        HWREG(ulBase + TCU_O_MSR) |= TCU_MSR_HMST6;
+        return((HWREG(ulBase + TCU_O_MR) & TCU_MR_HMASK6) == TCU_MR_HMASK6);
+    case TCU_TIMER5:
+        HWREG(ulBase + TCU_O_MSR) |= TCU_MSR_HMST5;
+        return((HWREG(ulBase + TCU_O_MR) & TCU_MR_HMASK5) == TCU_MR_HMASK5);
+    case TCU_TIMER4:
+        HWREG(ulBase + TCU_O_MSR) |= TCU_MSR_HMST4;
+        return((HWREG(ulBase + TCU_O_MR) & TCU_MR_HMASK4) == TCU_MR_HMASK4);
+    case TCU_TIMER3:
+        HWREG(ulBase + TCU_O_MSR) |= TCU_MSR_HMST3;
+        return((HWREG(ulBase + TCU_O_MR) & TCU_MR_HMASK3) == TCU_MR_HMASK3);
+    case TCU_TIMER2:
+        HWREG(ulBase + TCU_O_MSR) |= TCU_MSR_HMST2;
+        return((HWREG(ulBase + TCU_O_MR) & TCU_MR_HMASK2) == TCU_MR_HMASK2);
+    case TCU_TIMER1:
+        HWREG(ulBase + TCU_O_MSR) |= TCU_MSR_HMST1;
+        return((HWREG(ulBase + TCU_O_MR) & TCU_MR_HMASK1) == TCU_MR_HMASK1);
+    case TCU_TIMER0:
+        HWREG(ulBase + TCU_O_MSR) |= TCU_MSR_HMST0;
+        return((HWREG(ulBase + TCU_O_MR) & TCU_MR_HMASK0) == TCU_MR_HMASK0);
+    default:
+        ASSERT(false);
+        return(false);
+    }
+}
+
+//*****************************************************************************
+//
+//! \internal
+//! Mask a FIFO interrupt of a TCU timer.
+//!
+//! \param ulBase is the base address of the TCU.
+//! \param ulTimerID is the ID of the TCU timer.
+//!
+//! This function mask an FIFO interrupt of a TCU timer.
+//!
+//! \return Returns true if mask operation success, false others.
+//
+//*****************************************************************************
+static tBoolean
+TCUInterruptFIFOMask(unsigned long ulBase, unsigned long ulTimerID)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(TCUBaseValid(ulBase));
+    ASSERT((ulTimerID == TCU_TIMER5) ||
+           (ulTimerID == TCU_TIMER4) ||
+           (ulTimerID == TCU_TIMER3) ||
+           (ulTimerID == TCU_TIMER0));
+
+    switch (ulTimerID) {
+    case TCU_TIMER5:
+        HWREG(ulBase + TCU_O_MSR) |= TCU_MSR_FIFOMST5;
+        return((HWREG(ulBase + TCU_O_MR) & TCU_MR_FIFOMASK5) == TCU_MR_FIFOMASK5);
+    case TCU_TIMER4:
+        HWREG(ulBase + TCU_O_MSR) |= TCU_MSR_FIFOMST4;
+        return((HWREG(ulBase + TCU_O_MR) & TCU_MR_FIFOMASK4) == TCU_MR_FIFOMASK4);
+    case TCU_TIMER3:
+        HWREG(ulBase + TCU_O_MSR) |= TCU_MSR_FIFOMST3;
+        return((HWREG(ulBase + TCU_O_MR) & TCU_MR_FIFOMASK3) == TCU_MR_FIFOMASK3);
+    case TCU_TIMER0:
+        HWREG(ulBase + TCU_O_MSR) |= TCU_MSR_FIFOMST0;
+        return((HWREG(ulBase + TCU_O_MR) & TCU_MR_FIFOMASK0) == TCU_MR_FIFOMASK0);
+    default:
+        ASSERT(false);
+        return(false);
+    }
+}
+
+//*****************************************************************************
+//
+//! \internal
+//! Mask a full comparison interrupt of a TCU timer.
+//!
+//! \param ulBase is the base address of the TCU.
+//! \param ulTimerID is the ID of the TCU timer.
+//!
+//! This function mask an full comparison interrupt of a TCU timer.
+//!
+//! \return Returns true if mask operation success, false others.
+//
+//*****************************************************************************
+static tBoolean
+TCUInterruptFullMask(unsigned long ulBase, unsigned long ulTimerID)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(TCUBaseValid(ulBase));
+    ASSERT(TCUTimerIDValid(ulTimerID));
+
+    switch (ulTimerID) {
+    case TCU_TIMER7:
+        HWREG(ulBase + TCU_O_MSR) |= TCU_MSR_FMST7;
+        return((HWREG(ulBase + TCU_O_MR) & TCU_MR_FMASK7) == TCU_MR_FMASK7);
+    case TCU_TIMER6:
+        HWREG(ulBase + TCU_O_MSR) |= TCU_MSR_FMST6;
+        return((HWREG(ulBase + TCU_O_MR) & TCU_MR_FMASK6) == TCU_MR_FMASK6);
+    case TCU_TIMER5:
+        HWREG(ulBase + TCU_O_MSR) |= TCU_MSR_FMST5;
+        return((HWREG(ulBase + TCU_O_MR) & TCU_MR_FMASK5) == TCU_MR_FMASK5);
+    case TCU_TIMER4:
+        HWREG(ulBase + TCU_O_MSR) |= TCU_MSR_FMST4;
+        return((HWREG(ulBase + TCU_O_MR) & TCU_MR_FMASK4) == TCU_MR_FMASK4);
+    case TCU_TIMER3:
+        HWREG(ulBase + TCU_O_MSR) |= TCU_MSR_FMST3;
+        return((HWREG(ulBase + TCU_O_MR) & TCU_MR_FMASK3) == TCU_MR_FMASK3);
+    case TCU_TIMER2:
+        HWREG(ulBase + TCU_O_MSR) |= TCU_MSR_FMST2;
+        return((HWREG(ulBase + TCU_O_MR) & TCU_MR_FMASK2) == TCU_MR_FMASK2);
+    case TCU_TIMER1:
+        HWREG(ulBase + TCU_O_MSR) |= TCU_MSR_FMST1;
+        return((HWREG(ulBase + TCU_O_MR) & TCU_MR_FMASK1) == TCU_MR_FMASK1);
+    case TCU_TIMER0:
+        HWREG(ulBase + TCU_O_MSR) |= TCU_MSR_FMST0;
+        return((HWREG(ulBase + TCU_O_MR) & TCU_MR_FMASK0) == TCU_MR_FMASK0);
+    default:
+        ASSERT(false);
+        return(false);
+    }
+}
+
+//*****************************************************************************
+//
+//! Mask an interrupt of TCU module.
+//!
+//! \param ulBase is the base address of the TCU.
+//! \param ulTimerID is the ID of the TCU timer.
+//! \param ulMaskType is the type of TCU interrupt.
+//!
+//! This function mask an kind interrupt of a TCU timer.
+//!
+//! \return Returns true if mask operation success, false others.
+//
+//*****************************************************************************
+tBoolean
+TCUInterruptMask(unsigned long ulBase, unsigned long ulTimerID, unsigned long ulMaskType)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(TCUBaseValid(ulBase));
+    ASSERT(TCUTimerIDValid(ulTimerID));
+    ASSERT((ulMaskType == TCU_MASKTYPE_FIFOEMPTY) ||
+           (ulMaskType == TCU_MASKTYPE_HALF) ||
+           (ulMaskType == TCU_MASKTYPE_FIFO) ||
+           (ulMaskType == TCU_MASKTYPE_FULL));
+
+    switch (ulMaskType) {
+    case TCU_MASKTYPE_FIFOEMPTY:
+        return(TCUInterruptFIFOEmptyMask(ulBase, ulTimerID));
+    case TCU_MASKTYPE_HALF:
+        return(TCUInterruptHalfMask(ulBase, ulTimerID));
+    case TCU_MASKTYPE_FIFO:
+        return(TCUInterruptFIFOMask(ulBase, ulTimerID));
+    case TCU_MASKTYPE_FULL:
+        return(TCUInterruptFullMask(ulBase, ulTimerID));
+    default:
+        ASSERT(false);
+        return(false);
+    }
+}
+
+//*****************************************************************************
+//
+//! \internal
+//! Unmask a FIFO empty interrupt of a TCU timer.
+//!
+//! \param ulBase is the base address of the TCU.
+//! \param ulTimerID is the ID of the TCU timer.
+//!
+//! This function unmask an FIFO empty interrupt of a TCU timer.
+//!
+//! \return Returns true if unmask operation success, false others.
+//
+//*****************************************************************************
+static tBoolean
+TCUInterruptFIFOEmptyUnmask(unsigned long ulBase, unsigned long ulTimerID)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(TCUBaseValid(ulBase));
+    ASSERT((ulTimerID == TCU_TIMER5) ||
+           (ulTimerID == TCU_TIMER4) ||
+           (ulTimerID == TCU_TIMER3) ||
+           (ulTimerID == TCU_TIMER0));
+
+    switch (ulTimerID) {
+    case TCU_TIMER5:
+        HWREG(ulBase + TCU_O_MCR) |= TCU_MCR_FIFOEMCL5;
+        return((HWREG(ulBase + TCU_O_MR) & TCU_MR_FIFOEMASK5) != TCU_MR_FIFOEMASK5);
+    case TCU_TIMER4:
+        HWREG(ulBase + TCU_O_MCR) |= TCU_MCR_FIFOEMCL4;
+        return((HWREG(ulBase + TCU_O_MR) & TCU_MR_FIFOEMASK4) != TCU_MR_FIFOEMASK4);
+    case TCU_TIMER3:
+        HWREG(ulBase + TCU_O_MCR) |= TCU_MCR_FIFOEMCL3;
+        return((HWREG(ulBase + TCU_O_MR) & TCU_MR_FIFOEMASK3) != TCU_MR_FIFOEMASK3);
+    case TCU_TIMER0:
+        HWREG(ulBase + TCU_O_MCR) |= TCU_MCR_FIFOEMCL0;
+        return((HWREG(ulBase + TCU_O_MR) & TCU_MR_FIFOEMASK0) != TCU_MR_FIFOEMASK0);
+    default:
+        ASSERT(false);
+        return(false);
+    }
+}
+
+//*****************************************************************************
+//
+//! \internal
+//! Unmask a half comparison interrupt of a TCU timer.
+//!
+//! \param ulBase is the base address of the TCU.
+//! \param ulTimerID is the ID of the TCU timer.
+//!
+//! This function unmask an half comparison interrupt of a TCU timer.
+//!
+//! \return Returns true if unmask operation success, false others.
+//
+//*****************************************************************************
+static tBoolean
+TCUInterruptHalfUnmask(unsigned long ulBase, unsigned long ulTimerID)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(TCUBaseValid(ulBase));
+    ASSERT(TCUTimerIDValid(ulTimerID));
+
+    switch (ulTimerID) {
+    case TCU_TIMER7:
+        HWREG(ulBase + TCU_O_MCR) |= TCU_MCR_HMCL7;
+        return((HWREG(ulBase + TCU_O_MR) & TCU_MR_HMASK7) != TCU_MR_HMASK7);
+    case TCU_TIMER6:
+        HWREG(ulBase + TCU_O_MCR) |= TCU_MCR_HMCL6;
+        return((HWREG(ulBase + TCU_O_MR) & TCU_MR_HMASK6) != TCU_MR_HMASK6);
+    case TCU_TIMER5:
+        HWREG(ulBase + TCU_O_MCR) |= TCU_MCR_HMCL5;
+        return((HWREG(ulBase + TCU_O_MR) & TCU_MR_HMASK5) != TCU_MR_HMASK5);
+    case TCU_TIMER4:
+        HWREG(ulBase + TCU_O_MCR) |= TCU_MCR_HMCL4;
+        return((HWREG(ulBase + TCU_O_MR) & TCU_MR_HMASK4) != TCU_MR_HMASK4);
+    case TCU_TIMER3:
+        HWREG(ulBase + TCU_O_MCR) |= TCU_MCR_HMCL3;
+        return((HWREG(ulBase + TCU_O_MR) & TCU_MR_HMASK3) != TCU_MR_HMASK3);
+    case TCU_TIMER2:
+        HWREG(ulBase + TCU_O_MCR) |= TCU_MCR_HMCL2;
+        return((HWREG(ulBase + TCU_O_MR) & TCU_MR_HMASK2) != TCU_MR_HMASK2);
+    case TCU_TIMER1:
+        HWREG(ulBase + TCU_O_MCR) |= TCU_MCR_HMCL1;
+        return((HWREG(ulBase + TCU_O_MR) & TCU_MR_HMASK1) != TCU_MR_HMASK1);
+    case TCU_TIMER0:
+        HWREG(ulBase + TCU_O_MCR) |= TCU_MCR_HMCL0;
+        return((HWREG(ulBase + TCU_O_MR) & TCU_MR_HMASK0) != TCU_MR_HMASK0);
+    default:
+        ASSERT(false);
+        return(false);
+    }
+}
+
+//*****************************************************************************
+//
+//! \internal
+//! Unmask a FIFO interrupt of a TCU timer.
+//!
+//! \param ulBase is the base address of the TCU.
+//! \param ulTimerID is the ID of the TCU timer.
+//!
+//! This function unmask an FIFO interrupt of a TCU timer.
+//!
+//! \return Returns true if unmask operation success, false others.
+//
+//*****************************************************************************
+static tBoolean
+TCUInterruptFIFOUnmask(unsigned long ulBase, unsigned long ulTimerID)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(TCUBaseValid(ulBase));
+    ASSERT((ulTimerID == TCU_TIMER5) ||
+           (ulTimerID == TCU_TIMER4) ||
+           (ulTimerID == TCU_TIMER3) ||
+           (ulTimerID == TCU_TIMER0));
+    switch (ulTimerID) {
+    case TCU_TIMER5:
+        HWREG(ulBase + TCU_O_MCR) |= TCU_MCR_FIFOMCL5;
+        return((HWREG(ulBase + TCU_O_MR) & TCU_MR_FIFOMASK5) != TCU_MR_FIFOMASK5);
+    case TCU_TIMER4:
+        HWREG(ulBase + TCU_O_MCR) |= TCU_MCR_FIFOMCL4;
+        return((HWREG(ulBase + TCU_O_MR) & TCU_MR_FIFOMASK4) != TCU_MR_FIFOMASK4);
+    case TCU_TIMER3:
+        HWREG(ulBase + TCU_O_MCR) |= TCU_MCR_FIFOMCL3;
+        return((HWREG(ulBase + TCU_O_MR) & TCU_MR_FIFOMASK3) != TCU_MR_FIFOMASK3);
+    case TCU_TIMER0:
+        HWREG(ulBase + TCU_O_MCR) |= TCU_MCR_FIFOMCL0;
+        return((HWREG(ulBase + TCU_O_MR) & TCU_MR_FIFOMASK0) != TCU_MR_FIFOMASK0);
+    default:
+        ASSERT(false);
+        return(false);
+    }
+}
+
+//*****************************************************************************
+//
+//! \internal
+//! Unmask a full comparison interrupt of a TCU timer.
+//!
+//! \param ulBase is the base address of the TCU.
+//! \param ulTimerID is the ID of the TCU timer.
+//!
+//! This function unmask an full comparison interrupt of a TCU timer.
+//!
+//! \return Returns true if unmask operation success, false others.
+//
+//*****************************************************************************
+static tBoolean
+TCUInterruptFullUnmask(unsigned long ulBase, unsigned long ulTimerID)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(TCUBaseValid(ulBase));
+    ASSERT(TCUTimerIDValid(ulTimerID));
+
+    switch (ulTimerID) {
+    case TCU_TIMER7:
+        HWREG(ulBase + TCU_O_MCR) |= TCU_MCR_FMCL7;
+        return((HWREG(ulBase + TCU_O_MR) & TCU_MR_FMASK7) != TCU_MR_FMASK7);
+    case TCU_TIMER6:
+        HWREG(ulBase + TCU_O_MCR) |= TCU_MCR_FMCL6;
+        return((HWREG(ulBase + TCU_O_MR) & TCU_MR_FMASK6) != TCU_MR_FMASK6);
+    case TCU_TIMER5:
+        HWREG(ulBase + TCU_O_MCR) |= TCU_MCR_FMCL5;
+        return((HWREG(ulBase + TCU_O_MR) & TCU_MR_FMASK5) != TCU_MR_FMASK5);
+    case TCU_TIMER4:
+        HWREG(ulBase + TCU_O_MCR) |= TCU_MCR_FMCL4;
+        return((HWREG(ulBase + TCU_O_MR) & TCU_MR_FMASK4) != TCU_MR_FMASK4);
+    case TCU_TIMER3:
+        HWREG(ulBase + TCU_O_MCR) |= TCU_MCR_FMCL3;
+        return((HWREG(ulBase + TCU_O_MR) & TCU_MR_FMASK3) != TCU_MR_FMASK3);
+    case TCU_TIMER2:
+        HWREG(ulBase + TCU_O_MCR) |= TCU_MCR_FMCL2;
+        return((HWREG(ulBase + TCU_O_MR) & TCU_MR_FMASK2) != TCU_MR_FMASK2);
+    case TCU_TIMER1:
+        HWREG(ulBase + TCU_O_MCR) |= TCU_MCR_FMCL1;
+        return((HWREG(ulBase + TCU_O_MR) & TCU_MR_FMASK1) != TCU_MR_FMASK1);
+    case TCU_TIMER0:
+        HWREG(ulBase + TCU_O_MCR) |= TCU_MCR_FMCL0;
+        return((HWREG(ulBase + TCU_O_MR) & TCU_MR_FMASK0) != TCU_MR_FMASK0);
+    default:
+        ASSERT(false);
+        return(false);
+    }
+}
+
+//*****************************************************************************
+//
+//! Unmask an interrupt of TCU module.
+//!
+//! \param ulBase is the base address of the TCU.
+//! \param ulTimerID is the ID of the TCU timer.
+//! \param ulMaskType is the type of TCU interrupt.
+//!
+//! This function unmask an kind interrupt of a TCU timer.
+//!
+//! \return Returns true if unmask operation success, false others.
+//
+//*****************************************************************************
+tBoolean
+TCUInterruptUnmask(unsigned long ulBase, unsigned long ulTimerID, unsigned long ulMaskType)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(TCUBaseValid(ulBase));
+    ASSERT(TCUTimerIDValid(ulTimerID));
+    ASSERT((ulMaskType == TCU_MASKTYPE_FIFOEMPTY) ||
+           (ulMaskType == TCU_MASKTYPE_HALF) ||
+           (ulMaskType == TCU_MASKTYPE_FIFO) ||
+           (ulMaskType == TCU_MASKTYPE_FULL));
+
+    switch (ulMaskType) {
+    case TCU_MASKTYPE_FIFOEMPTY:
+        return(TCUInterruptFIFOEmptyUnmask(ulBase, ulTimerID));
+    case TCU_MASKTYPE_HALF:
+        return(TCUInterruptHalfUnmask(ulBase, ulTimerID));
+    case TCU_MASKTYPE_FIFO:
+        return(TCUInterruptFIFOUnmask(ulBase, ulTimerID));
+    case TCU_MASKTYPE_FULL:
+        return(TCUInterruptFullUnmask(ulBase, ulTimerID));
+    default:
+        ASSERT(false);
+        return(false);
+    }
+}
+
+//*****************************************************************************
+//
+//! Set data full regiser of a TCU timer.
+//!
+//! \param ulBase is the base address of the TCU.
+//! \param ulTimerID is the ID of the TCU timer.
+//! \param ulDataFull is the value of data full register(just use 16-bit).
+//!
+//! This function set full register of a TCU timer.
+//!
+//! \return None.
+//
+//*****************************************************************************
+void
+TCUDataFullSet(unsigned long ulBase, unsigned long ulTimerID, unsigned long ulDataFull)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(TCUBaseValid(ulBase));
+    ASSERT(TCUTimerIDValid(ulTimerID));
+
+    switch (ulTimerID) {
+    case TCU_TIMER7:
+        HWREGH(ulBase + TCU_O_DFR7) = ulDataFull;
+        break;
+    case TCU_TIMER6:
+        HWREGH(ulBase + TCU_O_DFR6) = ulDataFull;
+        break;
+    case TCU_TIMER5:
+        HWREGH(ulBase + TCU_O_DFR5) = ulDataFull;
+        break;
+    case TCU_TIMER4:
+        HWREGH(ulBase + TCU_O_DFR4) = ulDataFull;
+        break;
+    case TCU_TIMER3:
+        HWREGH(ulBase + TCU_O_DFR3) = ulDataFull;
+        break;
+    case TCU_TIMER2:
+        HWREGH(ulBase + TCU_O_DFR2) = ulDataFull;
+        break;
+    case TCU_TIMER1:
+        HWREGH(ulBase + TCU_O_DFR1) = ulDataFull;
+        break;
+    case TCU_TIMER0:
+        HWREGH(ulBase + TCU_O_DFR0) = ulDataFull;
+        break;
+    default:
+        ASSERT(false);
+        break;
+    }
+}
+
+//*****************************************************************************
+//
+//! Set data half regiser of a TCU timer.
+//!
+//! \param ulBase is the base address of the TCU.
+//! \param ulTimerID is the ID of the TCU timer.
+//! \param ulDataFull is the value of data half register(just use 16-bit).
+//!
+//! This function set half register of a TCU timer.
+//!
+//! \return None.
+//
+//*****************************************************************************
+void
+TCUDataHalfSet(unsigned long ulBase, unsigned long ulTimerID, unsigned long ulDataHalf)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(TCUBaseValid(ulBase));
+    ASSERT(TCUTimerIDValid(ulTimerID));
+
+    switch (ulTimerID) {
+    case TCU_TIMER7:
+        HWREGH(ulBase + TCU_O_DHR7) = ulDataHalf;
+        break;
+    case TCU_TIMER6:
+        HWREGH(ulBase + TCU_O_DHR6) = ulDataHalf;
+        break;
+    case TCU_TIMER5:
+        HWREGH(ulBase + TCU_O_DHR5) = ulDataHalf;
+        break;
+    case TCU_TIMER4:
+        HWREGH(ulBase + TCU_O_DHR4) = ulDataHalf;
+        break;
+    case TCU_TIMER3:
+        HWREGH(ulBase + TCU_O_DHR3) = ulDataHalf;
+        break;
+    case TCU_TIMER2:
+        HWREGH(ulBase + TCU_O_DHR2) = ulDataHalf;
+        break;
+    case TCU_TIMER1:
+        HWREGH(ulBase + TCU_O_DHR1) = ulDataHalf;
+        break;
+    case TCU_TIMER0:
+        HWREGH(ulBase + TCU_O_DHR0) = ulDataHalf;
+        break;
+    default:
+        ASSERT(false);
+        break;
+    }
+}
+
+//*****************************************************************************
+//
 //! Not supply(Stop) clock of a TCU timer.
 //!
 //! \param ulBase is the base address of the TCU.
@@ -399,6 +974,58 @@ TCUClockNotSupply(unsigned long ulBase, unsigned long ulTimerID)
 
 //*****************************************************************************
 //
+//! Set the 16-bit counter of a TCU timer.
+//!
+//! \param ulBase is the base address of the TCU.
+//! \param ulTimerID is the ID of the TCU timer.
+//!
+//! This function set the counter of a TCU timer.
+//!
+//! \return None.
+//
+//*****************************************************************************
+void
+TCUCounterSet(unsigned long ulBase, unsigned long ulTimerID, unsigned long ulCounter)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(TCUBaseValid(ulBase));
+    ASSERT(TCUTimerIDValid(ulTimerID));
+
+    switch (ulTimerID) {
+    case TCU_TIMER7:
+        HWREGH(ulBase + TCU_O_CNT7) = ulCounter;
+        break;
+    case TCU_TIMER6:
+        HWREGH(ulBase + TCU_O_CNT6) = ulCounter;
+        break;
+    case TCU_TIMER5:
+        HWREGH(ulBase + TCU_O_CNT5) = ulCounter;
+        break;
+    case TCU_TIMER4:
+        HWREGH(ulBase + TCU_O_CNT4) = ulCounter;
+        break;
+    case TCU_TIMER3:
+        HWREGH(ulBase + TCU_O_CNT3) = ulCounter;
+        break;
+    case TCU_TIMER2:
+        HWREGH(ulBase + TCU_O_CNT2) = ulCounter;
+        break;
+    case TCU_TIMER1:
+        HWREGH(ulBase + TCU_O_CNT1) = ulCounter;
+        break;
+    case TCU_TIMER0:
+        HWREGH(ulBase + TCU_O_CNT0) = ulCounter;
+        break;
+    default:
+        ASSERT(false);
+        break;
+    }
+}
+
+//*****************************************************************************
+//
 //! Shut down(Graceful mode) PWM output of a TCU1 timer.
 //!
 //! \param ulBase is the base address of the TCU.
@@ -437,6 +1064,245 @@ TCUPWMShutdownGraceful(unsigned long ulBase, unsigned long ulTimerID)
     case TCU_TIMER0:
         HWREGH(ulBase + TCU_O_CSR0) &= ~TCU_CSR0_SD;
         return((HWREGH(ulBase + TCU_O_CSR0) & TCU_CSR0_SD) != TCU_CSR0_SD);
+    default:
+        ASSERT(false);
+        return(false);
+    }
+}
+
+//*****************************************************************************
+//
+//! \internal
+//! Set PWM initial output low level of a TCU timer.
+//!
+//! \param ulBase is the base address of the TCU.
+//! \param ulTimerID is the ID of the TCU timer.
+//!
+//! This function set PWM initial output low level.
+//!
+//! \return Returns true if shutdown operation success, false others.
+//
+//*****************************************************************************
+static tBoolean
+TCUPWMInitialOutputLowLevelSet(unsigned long ulBase, unsigned long ulTimerID)
+{
+    //
+    // Check parameters
+    //
+    ASSERT(TCUBaseValid(ulBase));
+    ASSERT(TCUTimerIDValid(ulTimerID));
+
+    switch (ulTimerID) {
+    case TCU_TIMER7:
+        HWREGH(ulBase + TCU_O_CSR7) &= ~TCU_CSR7_INITL;
+        return((HWREGH(ulBase + TCU_O_CSR7) & TCU_CSR7_INITL) != TCU_CSR7_INITL);
+    case TCU_TIMER6:
+        HWREGH(ulBase + TCU_O_CSR6) &= ~TCU_CSR6_INITL;
+        return((HWREGH(ulBase + TCU_O_CSR6) & TCU_CSR6_INITL) != TCU_CSR6_INITL);
+    case TCU_TIMER5:
+        HWREGH(ulBase + TCU_O_CSR5) &= ~TCU_CSR5_INITL;
+        return((HWREGH(ulBase + TCU_O_CSR5) & TCU_CSR5_INITL) != TCU_CSR5_INITL);
+    case TCU_TIMER4:
+        HWREGH(ulBase + TCU_O_CSR4) &= ~TCU_CSR4_INITL;
+        return((HWREGH(ulBase + TCU_O_CSR4) & TCU_CSR4_INITL) != TCU_CSR4_INITL);
+    case TCU_TIMER3:
+        HWREGH(ulBase + TCU_O_CSR3) &= ~TCU_CSR3_INITL;
+        return((HWREGH(ulBase + TCU_O_CSR3) & TCU_CSR3_INITL) != TCU_CSR3_INITL);
+    case TCU_TIMER2:
+        HWREGH(ulBase + TCU_O_CSR2) &= ~TCU_CSR2_INITL;
+        return((HWREGH(ulBase + TCU_O_CSR2) & TCU_CSR2_INITL) != TCU_CSR2_INITL);
+    case TCU_TIMER1:
+        HWREGH(ulBase + TCU_O_CSR1) &= ~TCU_CSR1_INITL;
+        return((HWREGH(ulBase + TCU_O_CSR1) & TCU_CSR1_INITL) != TCU_CSR1_INITL);
+    case TCU_TIMER0:
+        HWREGH(ulBase + TCU_O_CSR0) &= ~TCU_CSR0_INITL;
+        return((HWREGH(ulBase + TCU_O_CSR0) & TCU_CSR0_INITL) != TCU_CSR0_INITL);
+    default:
+        ASSERT(false);
+        return(false);
+    }
+}
+
+//*****************************************************************************
+//
+//! \internal
+//! Set PWM initial output high level of a TCU timer.
+//!
+//! \param ulBase is the base address of the TCU.
+//! \param ulTimerID is the ID of the TCU timer.
+//!
+//! This function set PWM initial output high level.
+//!
+//! \return Returns true if shutdown operation success, false others.
+//
+//*****************************************************************************
+static tBoolean
+TCUPWMInitialOutputHighLevelSet(unsigned long ulBase, unsigned long ulTimerID)
+{
+    //
+    // Check parameters
+    //
+    ASSERT(TCUBaseValid(ulBase));
+    ASSERT(TCUTimerIDValid(ulTimerID));
+
+    switch (ulTimerID) {
+    case TCU_TIMER7:
+        HWREGH(ulBase + TCU_O_CSR7) |= TCU_CSR7_INITL;
+        return((HWREGH(ulBase + TCU_O_CSR7) & TCU_CSR7_INITL) == TCU_CSR7_INITL);
+    case TCU_TIMER6:
+        HWREGH(ulBase + TCU_O_CSR6) |= TCU_CSR6_INITL;
+        return((HWREGH(ulBase + TCU_O_CSR6) & TCU_CSR6_INITL) == TCU_CSR6_INITL);
+    case TCU_TIMER5:
+        HWREGH(ulBase + TCU_O_CSR5) |= TCU_CSR5_INITL;
+        return((HWREGH(ulBase + TCU_O_CSR5) & TCU_CSR5_INITL) == TCU_CSR5_INITL);
+    case TCU_TIMER4:
+        HWREGH(ulBase + TCU_O_CSR4) |= TCU_CSR4_INITL;
+        return((HWREGH(ulBase + TCU_O_CSR4) & TCU_CSR4_INITL) == TCU_CSR4_INITL);
+    case TCU_TIMER3:
+        HWREGH(ulBase + TCU_O_CSR3) |= TCU_CSR3_INITL;
+        return((HWREGH(ulBase + TCU_O_CSR3) & TCU_CSR3_INITL) == TCU_CSR3_INITL);
+    case TCU_TIMER2:
+        HWREGH(ulBase + TCU_O_CSR2) |= TCU_CSR2_INITL;
+        return((HWREGH(ulBase + TCU_O_CSR2) & TCU_CSR2_INITL) == TCU_CSR2_INITL);
+    case TCU_TIMER1:
+        HWREGH(ulBase + TCU_O_CSR1) |= TCU_CSR1_INITL;
+        return((HWREGH(ulBase + TCU_O_CSR1) & TCU_CSR1_INITL) == TCU_CSR1_INITL);
+    case TCU_TIMER0:
+        HWREGH(ulBase + TCU_O_CSR0) |= TCU_CSR0_INITL;
+        return((HWREGH(ulBase + TCU_O_CSR0) & TCU_CSR0_INITL) == TCU_CSR0_INITL);
+    default:
+        ASSERT(false);
+        return(false);
+    }
+}
+
+//*****************************************************************************
+//
+//! Enable PWM output function of a TCU timer.
+//!
+//! \param ulBase is the base address of the TCU.
+//! \param ulTimerID is the ID of the TCU timer.
+//!
+//! This function enable PWM output function.
+//!
+//! \return Returns true if enable PWM operation success, false others.
+//
+//*****************************************************************************
+tBoolean
+TCUPWMEnable(unsigned long ulBase, unsigned long ulTimerID)
+{
+    //
+    // Check parameters
+    //
+    ASSERT(TCUBaseValid(ulBase));
+
+    // Not support TCU_TIMER5/TCU_TIMER6/TCU_TIMER7
+    ASSERT((ulTimerID == TCU_TIMER4) ||
+           (ulTimerID == TCU_TIMER3) ||
+           (ulTimerID == TCU_TIMER2) ||
+           (ulTimerID == TCU_TIMER1) ||
+           (ulTimerID == TCU_TIMER0));
+
+    switch (ulTimerID) {
+    case TCU_TIMER4:
+        HWREGH(ulBase + TCU_O_CSR4) |= TCU_CSR4_PWMEN;
+        return((HWREGH(ulBase + TCU_O_CSR4) & TCU_CSR4_PWMEN) == TCU_CSR4_PWMEN);
+    case TCU_TIMER3:
+        HWREGH(ulBase + TCU_O_CSR3) |= TCU_CSR3_PWMEN;
+        return((HWREGH(ulBase + TCU_O_CSR3) & TCU_CSR3_PWMEN) == TCU_CSR3_PWMEN);
+    case TCU_TIMER2:
+        HWREGH(ulBase + TCU_O_CSR2) |= TCU_CSR2_PWMEN;
+        return((HWREGH(ulBase + TCU_O_CSR2) & TCU_CSR2_PWMEN) == TCU_CSR2_PWMEN);
+    case TCU_TIMER1:
+        HWREGH(ulBase + TCU_O_CSR1) |= TCU_CSR1_PWMEN;
+        return((HWREGH(ulBase + TCU_O_CSR1) & TCU_CSR1_PWMEN) == TCU_CSR1_PWMEN);
+    case TCU_TIMER0:
+        HWREGH(ulBase + TCU_O_CSR0) |= TCU_CSR0_PWMEN;
+        return((HWREGH(ulBase + TCU_O_CSR0) & TCU_CSR0_PWMEN) == TCU_CSR0_PWMEN);
+    default:
+        ASSERT(false);
+        return(false);
+    }
+}
+
+//*****************************************************************************
+//
+//! Disable PWM output function of a TCU timer(only pure timer function).
+//!
+//! \param ulBase is the base address of the TCU.
+//! \param ulTimerID is the ID of the TCU timer.
+//!
+//! This function disable PWM output function.
+//!
+//! \return Returns true if disable PWM operation success, false others.
+//
+//*****************************************************************************
+tBoolean
+TCUPWMDisable(unsigned long ulBase, unsigned long ulTimerID)
+{
+    //
+    // Check parameters
+    //
+    ASSERT(TCUBaseValid(ulBase));
+
+    // Not support TCU_TIMER5/TCU_TIMER6/TCU_TIMER7
+    ASSERT((ulTimerID == TCU_TIMER4) ||
+           (ulTimerID == TCU_TIMER3) ||
+           (ulTimerID == TCU_TIMER2) ||
+           (ulTimerID == TCU_TIMER1) ||
+           (ulTimerID == TCU_TIMER0));
+
+    switch (ulTimerID) {
+    case TCU_TIMER4:
+        HWREGH(ulBase + TCU_O_CSR4) &= ~TCU_CSR4_PWMEN;
+        return((HWREGH(ulBase + TCU_O_CSR4) & TCU_CSR4_PWMEN) != TCU_CSR4_PWMEN);
+    case TCU_TIMER3:
+        HWREGH(ulBase + TCU_O_CSR3) &= ~TCU_CSR3_PWMEN;
+        return((HWREGH(ulBase + TCU_O_CSR3) & TCU_CSR3_PWMEN) != TCU_CSR3_PWMEN);
+    case TCU_TIMER2:
+        HWREGH(ulBase + TCU_O_CSR2) &= ~TCU_CSR2_PWMEN;
+        return((HWREGH(ulBase + TCU_O_CSR2) & TCU_CSR2_PWMEN) != TCU_CSR2_PWMEN);
+    case TCU_TIMER1:
+        HWREGH(ulBase + TCU_O_CSR1) &= ~TCU_CSR1_PWMEN;
+        return((HWREGH(ulBase + TCU_O_CSR1) & TCU_CSR1_PWMEN) != TCU_CSR1_PWMEN);
+    case TCU_TIMER0:
+        HWREGH(ulBase + TCU_O_CSR0) &= ~TCU_CSR0_PWMEN;
+        return((HWREGH(ulBase + TCU_O_CSR0) & TCU_CSR0_PWMEN) != TCU_CSR0_PWMEN);
+    default:
+        ASSERT(false);
+        return(false);
+    }
+}
+
+//*****************************************************************************
+//
+//! PWM initialize output level set.
+//!
+//! \param ulBase is the base address of the TCU.
+//! \param ulTimerID is the ID of the TCU timer.
+//! \param ulPWMInitialOutputLevel is the the TCU PWM initial output level.
+//!
+//! This function set PWM initial output level of a TCU1 timer.
+//!
+//! \return Returns true if shutdown operation success, false others.
+//
+//*****************************************************************************
+tBoolean
+TCUPWMInitialOutputLevelSet(unsigned long ulBase, unsigned long ulTimerID, unsigned long ulPWMInitialOutputLevel)
+{
+    //
+    // Check parameters
+    //
+    ASSERT(TCUBaseValid(ulBase));
+    ASSERT(TCUTimerIDValid(ulTimerID));
+    ASSERT((ulPWMInitialOutputLevel == TCU_PWMINITOUTPUT_LOW) ||
+           (ulPWMInitialOutputLevel == TCU_PWMINITOUTPUT_HIGH));
+
+    switch (ulPWMInitialOutputLevel) {
+    case TCU_PWMINITOUTPUT_LOW:
+        return(TCUPWMInitialOutputLowLevelSet(ulBase, ulTimerID));
+    case TCU_PWMINITOUTPUT_HIGH:
+        return(TCUPWMInitialOutputHighLevelSet(ulBase, ulTimerID));
     default:
         ASSERT(false);
         return(false);

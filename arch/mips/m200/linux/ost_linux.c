@@ -18,18 +18,18 @@ static void ost_init(void)
 	unsigned int ost_irq;
 	
     /* 1. Initial the configuration */
-    /* a. Set the shutdown mode(graceful) */
+    /* a. Set the shutdown mode(abrupt) */
     OSTCounterModeSet(OST_BASE, OST_COUNTER_GOON);
     OSTShutdown(OST_BASE, OST_SHUTDOWN_ABRUPT);
 	
 	/* b. Set OSTCNT count clock frequency prescale */
-    OSTClockInputPrescaleSet(OST_BASE, OST_CLOCKPRESCALE_1);
+    OSTClockInputPrescaleSet(OST_BASE, OST_CLOCKPRESCALE_256);
 
     /* c. Set counter register(64-bit) */
     OSTCounterSet(OST_BASE, 0x00000000, 0x00000000);
 
     /* d. Set data register(32-bit) */
-    OSTDataSet(OST_BASE, 0xFFFFFFFF);
+    OSTDataSet(OST_BASE, 0x00000000);
 
 	/* 2. Enable clock */
     OSTClockInputSet(OST_BASE, OST_CLOCKINPUT_EXTAL);
@@ -106,29 +106,35 @@ static void ost_clocksource_resume(struct clocksource *cs)
     OSTClockSupply(OST_BASE);
 }
 
+static struct clocksource cs = {
+    .read = ost_cycle_read,
+    .name = "'ost clocksource'",
+    .rating = 400,
+    .mask = 0x7FFFFFFFFFFFFFFFULL,
+    .mult = 1,
+    .shift = 8,
+    .flags = CLOCK_SOURCE_WATCHDOG | CLOCK_SOURCE_IS_CONTINUOUS,
+    .enable = ost_clocksource_enable,
+    .disable = ost_clocksource_disable,
+    .suspend = ost_clocksource_suspend,
+    .resume = ost_clocksource_resume,
+};
+
 /*
  * Override sched_clock() in /kernel/sched/clock.c
- * TODO: clock frequency should be get by clk api
+ * This is must be done.
+ * using cs.mult and cs.shift make the calculation more precise
  */
 unsigned long long sched_clock(void)
 {
-    /* Cache the sched_clock multiplier to save a divide in the hot path. */
-    static unsigned long long mult = NSEC_PER_SEC / 24000000;
-    unsigned long long result = ost_cycle_read((struct clocksource *)0) * mult;
+    unsigned long long result = (ost_cycle_read((struct clocksource *)0) * cs.mult) >> cs.shift;
     return result;
 }
 
 void __init ost_clocksource_init(void)
 {
-    static struct clocksource cs;
-
-    cs.read = ost_cycle_read,
-    cs.name = "ost clocksource",
-    cs.rating = 400,
-    cs.enable = ost_clocksource_enable,
-    cs.disable = ost_clocksource_disable,
-    cs.suspend = ost_clocksource_suspend,
-    cs.resume = ost_clocksource_resume,
+    /* Override cs.mult */
+    cs.mult = clocksource_hz2mult(24000000/256, cs.shift),
 
 	ost_init();
     clocksource_register(&cs);

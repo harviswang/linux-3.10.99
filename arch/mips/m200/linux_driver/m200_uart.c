@@ -1,5 +1,5 @@
-/*-
- * Copyright (c) 2016 Harvis Wang.
+/*
+ * Copyright (c) 2017 Harvis Wang.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -38,8 +38,8 @@
 #include <linux/compiler.h> /* unlikely */
 #include <linux/interrupt.h> /* request_irq */
 #include <linux/spinlock.h> /* spin_lock_irqsave */
-#include "../../../arch/mips/m200/driverlib/uart.h" /* UARTTxEmpty */
-#include "../../../arch/mips/m200/driverlib/intc.h" /* IntEnable */
+#include "../driverlib/uart.h" /* UARTTxEmpty */
+#include "../driverlib/intc.h" /* IntEnable */
 
 #define DEBUG() printk("%s %s line:%d\n", __FILE__, __func__, __LINE__)
 

@@ -99,7 +99,7 @@ extern "C" {
 //*****************************************************************************
 #define TCU_FLAGTYPE_FIFOEMPTY  0x00040000  // FIFO empty flag
 #define TCU_FLAGTYPE_HALF       0x00020000  // HALF comparison match flag
-#define TCU_FLAGTYPE_FIFO       0x00010000  // FIFO comparison match flag
+#define TCU_FLAGTYPE_FIFOFULL   0x00010000  // FIFO comparison match flag
 #define TCU_FLAGTYPE_FULL       0x00008000  // FULL comparison match flag
 
 //*****************************************************************************
@@ -121,6 +121,22 @@ extern "C" {
 #define TCU_MASKTYPE_HALF       0x00000800  // TCU HALF interrupt mask
 #define TCU_MASKTYPE_FIFO       0x00000400  // TCU FIFO interrupt mask
 #define TCU_MASKTYPE_FULL       0x00000200  // TCU FULL interrupt mask
+
+//*****************************************************************************
+//
+// Values that can be passed to TCUMOdeSet as the ulMode parmeter
+//
+//*****************************************************************************
+#define TCU_MODE_NONFIFO        0x00000100  // Non FIFO mode
+#define TCU_MODE_FIFO           0x00000080  // FIFO mode
+
+//*****************************************************************************
+//
+// Values that can be passed to TCUFIFOMOdeSet as the ulFIFOMode parmeter
+//
+//*****************************************************************************
+#define TCU_FIFOMODE_FIFO1      0x00000040  // FIFO FIFO1 mode
+#define TCU_FIFOMODE_FIFO2      0x00000020  // FIFO FIFO2 mode
 
 //*****************************************************************************
 //
@@ -146,6 +162,8 @@ extern tBoolean TCUClockInputSet(unsigned long ulBase, unsigned long ulTimerID, 
 extern tBoolean TCUComparisonMatchFlagSet(unsigned long ulBase, unsigned long ulTimerID, unsigned long ulFlagType);
 extern tBoolean TCUComparisonMatchFlagClear(unsigned long ulBase, unsigned long ulTimerID, unsigned long ulFlagType);
 extern void TCURegisterDump(unsigned long ulBase, int (*print)(const char *format, ...));
+extern tBoolean TCUModeSet(unsigned long ulBase, unsigned long ulTimerID, unsigned long ulMode);
+extern tBoolean TCUFIFOModeSet(unsigned long ulBase, unsigned long ulTimerID, unsigned long ulFIFOMode);
 
 //*****************************************************************************
 //

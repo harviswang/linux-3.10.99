@@ -1787,7 +1787,7 @@ TCUComparisonMatchFlagSet(unsigned long ulBase, unsigned long ulTimerID, unsigne
     ASSERT(TCUTimerIDValid(ulTimerID));
     ASSERT((ulFlagType == TCU_FLAGTYPE_FIFOEMPTY) ||
            (ulFlagType == TCU_FLAGTYPE_HALF) ||
-           (ulFlagType == TCU_FLAGTYPE_FIFO) ||
+           (ulFlagType == TCU_FLAGTYPE_FIFOFULL) ||
            (ulFlagType == TCU_FLAGTYPE_FULL));
 
 
@@ -1796,7 +1796,7 @@ TCUComparisonMatchFlagSet(unsigned long ulBase, unsigned long ulTimerID, unsigne
         return(TCUComparisonFIFOEmptyMatchFlagSet(ulBase, ulTimerID));
     case TCU_FLAGTYPE_HALF:
         return(TCUComparisonHalfMatchFlagSet(ulBase, ulTimerID));
-    case TCU_FLAGTYPE_FIFO:
+    case TCU_FLAGTYPE_FIFOFULL:
         return(TCUComparisonFIFOMatchFlagSet(ulBase, ulTimerID));
     case TCU_FLAGTYPE_FULL:
         return(TCUComparisonFullMatchFlagSet(ulBase, ulTimerID));
@@ -2018,7 +2018,7 @@ TCUComparisonMatchFlagClear(unsigned long ulBase, unsigned long ulTimerID, unsig
     ASSERT(TCUTimerIDValid(ulTimerID));
     ASSERT((ulFlagType == TCU_FLAGTYPE_FIFOEMPTY) ||
            (ulFlagType == TCU_FLAGTYPE_HALF) ||
-           (ulFlagType == TCU_FLAGTYPE_FIFO) ||
+           (ulFlagType == TCU_FLAGTYPE_FIFOFULL) ||
            (ulFlagType == TCU_FLAGTYPE_FULL));
 
 
@@ -2027,7 +2027,7 @@ TCUComparisonMatchFlagClear(unsigned long ulBase, unsigned long ulTimerID, unsig
         return(TCUComparisonFIFOEmptyMatchFlagClear(ulBase, ulTimerID));
     case TCU_FLAGTYPE_HALF:
         return(TCUComparisonHalfMatchFlagClear(ulBase, ulTimerID));
-    case TCU_FLAGTYPE_FIFO:
+    case TCU_FLAGTYPE_FIFOFULL:
         return(TCUComparisonFIFOMatchFlagClear(ulBase, ulTimerID));
     case TCU_FLAGTYPE_FULL:
         return(TCUComparisonFullMatchFlagClear(ulBase, ulTimerID));
@@ -2052,6 +2052,11 @@ TCUComparisonMatchFlagClear(unsigned long ulBase, unsigned long ulTimerID, unsig
 void
 TCURegisterDump(unsigned long ulBase, int (*print)(const char *format, ...))
 {
+    //
+    // Checks the arguments
+    //
+    ASSERT(TCUBaseValid(ulBase));
+
     REGH_PRINT(TCU_O_ER, ulBase, print);
     REG_PRINT(TCU_O_SR, ulBase, print);
     REG_PRINT(TCU_O_FR, ulBase, print);
@@ -2091,14 +2096,306 @@ TCURegisterDump(unsigned long ulBase, int (*print)(const char *format, ...))
     REG_PRINT(TCU_O_STR, ulBase, print);
     REGH_PRINT(TCU_O_MODE0, ulBase, print);
     REGH_PRINT(TCU_O_FWD0, ulBase, print);
+    REGH_PRINT(TCU_O_FWD0, ulBase, print);
     REGH_PRINT(TCU_O_FIFOSR0, ulBase, print);
     REGH_PRINT(TCU_O_MODE3, ulBase, print);
+    REGH_PRINT(TCU_O_FWD3, ulBase, print);
     REGH_PRINT(TCU_O_FWD3, ulBase, print);
     REGH_PRINT(TCU_O_FIFOSR3, ulBase, print);
     REGH_PRINT(TCU_O_MODE4, ulBase, print);
     REGH_PRINT(TCU_O_FWD4, ulBase, print);
+    REGH_PRINT(TCU_O_FWD4, ulBase, print);
     REGH_PRINT(TCU_O_FIFOSR4, ulBase, print);
     REGH_PRINT(TCU_O_MODE5, ulBase, print);
     REGH_PRINT(TCU_O_FWD5, ulBase, print);
+    REGH_PRINT(TCU_O_FWD5, ulBase, print);
     REGH_PRINT(TCU_O_FIFOSR5, ulBase, print);
+}
+
+//*****************************************************************************
+//
+//! \internal
+//! Set the nonfifo mode of TCU timer.
+//!
+//! \param ulBase is the base address of the TCU.
+//! \param ulTimerID is the ID of a TCU timer.
+//!
+//! This function set non fifo mode of a TCU timer.
+//!
+//! \return Return true if set operation success, false others
+//
+//*****************************************************************************
+static tBoolean
+TCUModeNonFIFOSet(unsigned long ulBase, unsigned long ulTimerID)
+{
+    //
+    // Checks the arguments
+    //
+    ASSERT(TCUBaseValid(ulBase));
+    ASSERT((ulTimerID == TCU_TIMER5) ||
+           (ulTimerID == TCU_TIMER4) ||
+           (ulTimerID == TCU_TIMER3) ||
+           (ulTimerID == TCU_TIMER0));
+
+    switch (ulTimerID) {
+    case TCU_TIMER5:
+        HWREG(TCU_BASE + TCU_O_MODE5) &= ~TCU_MODE5_FIFOMOD;
+        return((HWREG(TCU_BASE + TCU_O_MODE5) & TCU_MODE5_FIFOMOD) != TCU_MODE5_FIFOMOD);
+    case TCU_TIMER4:
+        HWREG(TCU_BASE + TCU_O_MODE4) &= ~TCU_MODE4_FIFOMOD;
+        return((HWREG(TCU_BASE + TCU_O_MODE4) & TCU_MODE4_FIFOMOD) != TCU_MODE4_FIFOMOD);
+    case TCU_TIMER3:
+        HWREG(TCU_BASE + TCU_O_MODE3) &= ~TCU_MODE3_FIFOMOD;
+        return((HWREG(TCU_BASE + TCU_O_MODE3) & TCU_MODE3_FIFOMOD) != TCU_MODE3_FIFOMOD);
+    case TCU_TIMER0:
+        HWREG(TCU_BASE + TCU_O_MODE0) &= ~TCU_MODE0_FIFOMOD;
+        return((HWREG(TCU_BASE + TCU_O_MODE0) & TCU_MODE0_FIFOMOD) != TCU_MODE0_FIFOMOD);
+    default:
+        ASSERT(false);
+        return(false);
+    }
+}
+
+//*****************************************************************************
+//
+//! \internal
+//! Set the FIFO mode of TCU timer.
+//!
+//! \param ulBase is the base address of the TCU.
+//! \param ulTimerID is the ID of a TCU timer.
+//!
+//! This function set FIFO mode of a TCU timer.
+//!
+//! \return Return true if set operation success, false others
+//
+//*****************************************************************************
+static tBoolean
+TCUModeFIFOSet(unsigned long ulBase, unsigned long ulTimerID)
+{
+    //
+    // Checks the arguments
+    //
+    ASSERT(TCUBaseValid(ulBase));
+    ASSERT((ulTimerID == TCU_TIMER5) ||
+           (ulTimerID == TCU_TIMER4) ||
+           (ulTimerID == TCU_TIMER3) ||
+           (ulTimerID == TCU_TIMER0));
+
+    switch (ulTimerID) {
+    case TCU_TIMER5:
+        HWREG(TCU_BASE + TCU_O_MODE5) |= TCU_MODE5_FIFOMOD;
+        return((HWREG(TCU_BASE + TCU_O_MODE5) & TCU_MODE5_FIFOMOD) == TCU_MODE5_FIFOMOD);
+    case TCU_TIMER4:
+        HWREG(TCU_BASE + TCU_O_MODE4) |= TCU_MODE4_FIFOMOD;
+        return((HWREG(TCU_BASE + TCU_O_MODE4) & TCU_MODE4_FIFOMOD) == TCU_MODE4_FIFOMOD);
+    case TCU_TIMER3:
+        HWREG(TCU_BASE + TCU_O_MODE3) |= TCU_MODE3_FIFOMOD;
+        return((HWREG(TCU_BASE + TCU_O_MODE3) & TCU_MODE3_FIFOMOD) == TCU_MODE3_FIFOMOD);
+    case TCU_TIMER0:
+        HWREG(TCU_BASE + TCU_O_MODE0) |= TCU_MODE0_FIFOMOD;
+        return((HWREG(TCU_BASE + TCU_O_MODE0) & TCU_MODE0_FIFOMOD) == TCU_MODE0_FIFOMOD);
+    default:
+        ASSERT(false);
+        return(false);
+    }
+}
+
+//*****************************************************************************
+//
+//! Set the mode of TCU.
+//!
+//! \param ulBase is the base address of the TCU.
+//! \param ulTimerID is the ID of a TCU timer.
+//! \param ulMode is the mode of TCU timer.
+//!
+//! This function set a mode of a TCU timer, mode can be FIFO or NONFIFO.
+//!
+//! \return Return true if set operation success, false others
+//
+//*****************************************************************************
+tBoolean
+TCUModeSet(unsigned long ulBase, unsigned long ulTimerID, unsigned long ulMode)
+{
+    //
+    // Checks the arguments
+    //
+    ASSERT(TCUBaseValid(ulBase));
+    ASSERT((ulTimerID == TCU_TIMER5) ||
+           (ulTimerID == TCU_TIMER4) ||
+           (ulTimerID == TCU_TIMER3) ||
+           (ulTimerID == TCU_TIMER0));
+    ASSERT((ulMode == TCU_MODE_NONFIFO) ||
+           (ulMode == TCU_MODE_FIFO));
+
+    switch (ulMode) {
+    case TCU_MODE_NONFIFO:
+        return(TCUModeNonFIFOSet(ulBase, ulTimerID));
+    case TCU_MODE_FIFO:
+        return(TCUModeFIFOSet(ulBase, ulTimerID));
+    default:
+        ASSERT(false);
+        return(false);
+    }
+}
+
+//*****************************************************************************
+//
+//! \internal
+//! Set the FIFO1 mode of TCU.
+//!
+//! \param ulBase is the base address of the TCU.
+//! \param ulTimerID is the ID of a TCU timer.
+//!
+//! This function set a FIFO(FIFO1) mode of a TCU timer
+//!
+//! \return Return true if set operation success, false others
+//
+//*****************************************************************************
+static tBoolean
+TCUFIFOModeFIFO1Set(unsigned long ulBase, unsigned long ulTimerID)
+{
+    //
+    // Checks the arguments
+    //
+    ASSERT(TCUBaseValid(ulBase));
+    ASSERT((ulTimerID == TCU_TIMER5) ||
+           (ulTimerID == TCU_TIMER4) ||
+           (ulTimerID == TCU_TIMER3) ||
+           (ulTimerID == TCU_TIMER0));
+
+    switch (ulTimerID) {
+    case TCU_TIMER5:
+        HWREG(ulBase + TCU_O_MODE5) &= ~TCU_MODE5_CYCST;
+        return((HWREG(ulBase + TCU_O_MODE5) & TCU_MODE5_CYCST) != TCU_MODE5_CYCST);
+    case TCU_TIMER4:
+        HWREG(ulBase + TCU_O_MODE4) &= ~TCU_MODE4_CYCST;
+        return((HWREG(ulBase + TCU_O_MODE4) & TCU_MODE4_CYCST) != TCU_MODE4_CYCST);
+    case TCU_TIMER3:
+        HWREG(ulBase + TCU_O_MODE3) &= ~TCU_MODE3_CYCST;
+        return((HWREG(ulBase + TCU_O_MODE3) & TCU_MODE3_CYCST) != TCU_MODE3_CYCST);
+    case TCU_TIMER0:
+        HWREG(ulBase + TCU_O_MODE0) &= ~TCU_MODE0_CYCST;
+        return((HWREG(ulBase + TCU_O_MODE0) & TCU_MODE0_CYCST) != TCU_MODE0_CYCST);
+    default:
+        ASSERT(false);
+        return(false);
+    }
+}
+
+//*****************************************************************************
+//
+//! \internal
+//! Set the FIFO2 mode of TCU.
+//!
+//! \param ulBase is the base address of the TCU.
+//! \param ulTimerID is the ID of a TCU timer.
+//!
+//! This function set a FIFO(FIFO2) mode of a TCU timer.
+//!
+//! \return Return true if set operation success, false others.
+//
+//*****************************************************************************
+static tBoolean
+TCUFIFOModeFIFO2Set(unsigned long ulBase, unsigned long ulTimerID)
+{
+    //
+    // Checks the arguments
+    //
+    ASSERT(TCUBaseValid(ulBase));
+    ASSERT((ulTimerID == TCU_TIMER5) ||
+           (ulTimerID == TCU_TIMER4) ||
+           (ulTimerID == TCU_TIMER3) ||
+           (ulTimerID == TCU_TIMER0));
+
+    switch (ulTimerID) {
+    case TCU_TIMER5:
+        HWREG(ulBase + TCU_O_MODE5) |= TCU_MODE5_CYCST;
+        return((HWREG(ulBase + TCU_O_MODE5) & TCU_MODE5_CYCST) == TCU_MODE5_CYCST);
+    case TCU_TIMER4:
+        HWREG(ulBase + TCU_O_MODE4) |= TCU_MODE4_CYCST;
+        return((HWREG(ulBase + TCU_O_MODE4) & TCU_MODE4_CYCST) == TCU_MODE4_CYCST);
+    case TCU_TIMER3:
+        HWREG(ulBase + TCU_O_MODE3) |= TCU_MODE3_CYCST;
+        return((HWREG(ulBase + TCU_O_MODE3) & TCU_MODE3_CYCST) == TCU_MODE3_CYCST);
+    case TCU_TIMER0:
+        HWREG(ulBase + TCU_O_MODE0) |= TCU_MODE0_CYCST;
+        return((HWREG(ulBase + TCU_O_MODE0) & TCU_MODE0_CYCST) == TCU_MODE0_CYCST);
+    default:
+        ASSERT(false);
+        return(false);
+    }
+}
+
+//*****************************************************************************
+//
+//! Set the FIFO(1/2)mode of TCU.
+//!
+//! \param ulBase is the base address of the TCU.
+//! \param ulTimerID is the ID of a TCU timer.
+//! \param ulFIFOMode is the FIFO mode of TCU timer.
+//!
+//! This function set a FIFO mode of a TCU timer, mode can be FIFO1 or FIFO2.
+//!
+//! \return Return true if set operation success, false others
+//
+//*****************************************************************************
+tBoolean
+TCUFIFOModeSet(unsigned long ulBase, unsigned long ulTimerID, unsigned long ulFIFOMode)
+{
+    //
+    // Checks the arguments
+    //
+    ASSERT(TCUBaseValid(ulBase));
+    ASSERT((ulTimerID == TCU_TIMER5) ||
+           (ulTimerID == TCU_TIMER4) ||
+           (ulTimerID == TCU_TIMER3) ||
+           (ulTimerID == TCU_TIMER0));
+    ASSERT((ulFIFOMode == TCU_FIFOMODE_FIFO1) ||
+           (ulFIFOMode == TCU_FIFOMODE_FIFO2));
+
+    switch (ulFIFOMode) {
+    case TCU_FIFOMODE_FIFO1:
+        return(TCUFIFOModeFIFO1Set(ulBase, ulTimerID));
+    case TCU_FIFOMODE_FIFO2:
+        return(TCUFIFOModeFIFO2Set(ulBase, ulTimerID));
+    default:
+        ASSERT(false);
+        return(false);
+    }
+}
+
+//*****************************************************************************
+//
+//! Set the FIFO2 number of TCU.
+//!
+//! \param ulBase is the base address of the TCU.
+//! \param ulTimerID is the ID of a TCU timer.
+//! \param ulNumber is number(size) of FIFO2 TCU timer mode.
+//!
+//! This function set a FIFO2 FIFO number of a TCU timer.
+//!
+//! \return Return true if set operation success, false others
+//
+//*****************************************************************************
+tBoolean
+TCUFIFO2NumberSet(unsigned long ulBase, unsigned long ulTimerID, unsigned long ulNumber)
+{
+    //
+    // Checks the arguments
+    //
+    ASSERT(TCUBaseValid(ulBase));
+    ASSERT((ulTimerID == TCU_TIMER5) ||
+           (ulTimerID == TCU_TIMER4) ||
+           (ulTimerID == TCU_TIMER3) ||
+           (ulTimerID == TCU_TIMER0));
+
+    switch (ulTimerID) {
+    case TCU_TIMER5:
+        HWREG(ulBase + TCU_O_MODE5) |= TCU_MODE5_FIFONUMST;
+        HWREG(ulBase + TCU_O_MODE5) |= ulNumber << 4;
+        return(false);
+    default:
+        ASSERT(false);
+        return(false);
+    }
 }

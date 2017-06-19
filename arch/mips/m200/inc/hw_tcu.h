@@ -764,8 +764,11 @@
 //
 // The following are defines for the bit fields in the TCU_O_MODE0 register.
 //
+// Note: XX means fifo data numbers can be read out of the FIFO
 //*****************************************************************************
 #define TCU_MODE0_CYCNUM        0x0000FC00  // FIFO cycle numbers. when TCU work in FIFO mode 2
+                                            // One cycle would match XX data from FIFO
+                                            // For example, two cycle, the FIFO data will be used twice
 #define TCU_MODE0_CYCST         0x00000200  // 0: work in FIFO mode 1 
                                             // 1: work in FIFO mode 2
 #define TCU_MODE0_FIFONUM       0x000001F0  // Set the fifo data numbers can read out of the fifo.
@@ -785,7 +788,9 @@
 //
 //*****************************************************************************
 #define TCU_FWD0_HIGH           0xFFFF0000  // Fifo write data high 16-bit
+                                            // as full data value, can't be zero
 #define TCU_FWD0_LOW            0x0000FFFF  // Fifo write data low 16-bit
+                                            // as half data value, can't be zero
  
 //*****************************************************************************
 //

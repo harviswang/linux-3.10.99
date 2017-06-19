@@ -16,10 +16,245 @@
 #include "../inc/hw_gpio.h"
 #include "../inc/hw_types.h"
 
+#if 0
+static void pwm0_fifomode1_init(void)
+{
+    /* GPIO PE0 configure gpio PE0 as PWM function pin */
+    HWREG(GPIOE_BASE + GPIO_O_INTC) |= 0x00000001;
+    HWREG(GPIOE_BASE + GPIO_O_MASKC) |= 0x00000001;
+    HWREG(GPIOE_BASE + GPIO_O_PAT1C) |= 0x00000001;
+    HWREG(GPIOE_BASE + GPIO_O_PAT0C) |= 0x00000001;
+
+    /* 1. set TCSR, please keep PWM_EN to 0. */
+    TCUPWMDisable(TCU_BASE, TCU_TIMER0);
+
+    /* 2. set TCUMOD to 0x0000_0001 */
+    TCUModeSet(TCU_BASE, TCU_TIMER0, TCU_MODE_FIFO);
+
+    /* 3. push data into fifo, through write data in TFWD. fifo's depth is 16, do not over flow
+          do not push data like 0x0000_XXXX, or 0xXXXX_0000 X: nonzero value
+     */
+    HWREG(TCU_BASE + TCU_O_FWD0) = 0xF0008000;
+
+    /* 4. set the TCSR.PWM_EN to 1 */
+    TCUPWMEnable(TCU_BASE, TCU_TIMER0);
+
+    /* 5. set the TESR to enable the TCNT */
+    TCUCounterEnable(TCU_BASE, TCU_TIMER0);
+
+    /* a. set clock prescale and clock input */
+    TCUClockInputPrescaleSet(TCU_BASE, TCU_TIMER0, TCU_CLOCKPRESCALE_1024);
+    TCUClockInputSet(TCU_BASE, TCU_TIMER0, TCU_CLOCKINPUT_EXTAL);
+    TCUClockSupply(TCU_BASE, TCU_TIMER0);
+
+    /* 6. push some data into fifo is optional. Please insure the TFIFOSR. fifo_w_flag is 0, before push
+          data into fifo. and do not over flow. do not push data like 0x0000_XXXX, or 0xXXXX_0000
+     */
+    if ((HWREG(TCU_BASE + TCU_O_FIFOSR0) & TCU_FIFOSR0_FIFOWFLAG) != TCU_FIFOSR0_FIFOWFLAG) {
+        HWREG(TCU_BASE + TCU_O_FWD0) = 0xF0008000;
+    }
+
+    /* 7. when TFR.fifo_empty_flag is 1, symbol the fifo is empty */
+    if ((HWREG(TCU_BASE + TCU_O_FR) & TCU_FR_FIFOEFLAG0) == TCU_FR_FIFOEFLAG0) {
+        printk("FIFO mode1, the fifo is empty\n");
+    }
+}
+
+void pwm0_fifomode1_again(void)
+{
+    /* 8. when fifo match finished ,if you want to do it again, please stop the TCNT count */
+    TCUCounterDisable(TCU_BASE, TCU_TIMER0);
+
+    /* 9. set TCSR,please keep PWM_EN to 0 */
+    TCUPWMDisable(TCU_BASE, TCU_TIMER0);
+
+    /* 10. set TFCR to clr the flag */
+    TCUComparisonMatchFlagClear(TCU_BASE, TCU_TIMER0, TCU_FLAGTYPE_FIFOEMPTY);
+
+    /* 11. set TCUMOD.fifo_clr to 1 */
+    HWREG(TCU_BASE + TCU_O_MODE0) |= TCU_MODE0_FIFOCLR;
+
+    /* 12. set TCUMOD.fifo_clr to 0 */
+    HWREG(TCU_BASE + TCU_O_MODE0) &= ~TCU_MODE0_FIFOCLR;
+
+    /* 2. set TCUMOD to 0x0000_0001 */
+    TCUModeSet(TCU_BASE, TCU_TIMER0, TCU_MODE_FIFO);
+
+    /* 3. push data into fifo, through write data in TFWD. fifo's depth is 16, do not over flow
+          do not push data like 0x0000_XXXX, or 0xXXXX_0000 X: nonzero value
+     */
+    HWREG(TCU_BASE + TCU_O_FWD0) = 0xF0008000;
+
+    /* 4. set the TCSR.PWM_EN to 1 */
+    TCUPWMEnable(TCU_BASE, TCU_TIMER0);
+
+    /* 5. set the TESR to enable the TCNT */
+    TCUCounterEnable(TCU_BASE, TCU_TIMER0);
+
+    /* a. set clock prescale and clock input */
+    TCUClockInputPrescaleSet(TCU_BASE, TCU_TIMER0, TCU_CLOCKPRESCALE_1024);
+    TCUClockInputSet(TCU_BASE, TCU_TIMER0, TCU_CLOCKINPUT_EXTAL);
+    TCUClockSupply(TCU_BASE, TCU_TIMER0);
+
+    /* 6. push some data into fifo is optional. Please insure the TFIFOSR. fifo_w_flag is 0, before push
+          data into fifo. and do not over flow. do not push data like 0x0000_XXXX, or 0xXXXX_0000
+     */
+    if ((HWREG(TCU_BASE + TCU_O_FIFOSR0) & TCU_FIFOSR0_FIFOWFLAG) != TCU_FIFOSR0_FIFOWFLAG) {
+        HWREG(TCU_BASE + TCU_O_FWD0) = 0xF0008000;
+    }
+
+    /* 7. when TFR.fifo_empty_flag is 1, symbol the fifo is empty */
+    if ((HWREG(TCU_BASE + TCU_O_FR) & TCU_FR_FIFOEFLAG0) == TCU_FR_FIFOEFLAG0) {
+        printk("FIFO mode1, the fifo is empty\n");
+    }
+}
+#endif
+#if 1
+static void pwm0_fifomode2_init(void)
+{
+    unsigned int cyc_timer, cyc_num;
+
+    /* GPIO PE0 configure gpio PE0 as PWM function pin */
+    HWREG(GPIOE_BASE + GPIO_O_INTC) |= 0x00000001;
+    HWREG(GPIOE_BASE + GPIO_O_MASKC) |= 0x00000001;
+    HWREG(GPIOE_BASE + GPIO_O_PAT1C) |= 0x00000001;
+    HWREG(GPIOE_BASE + GPIO_O_PAT0C) |= 0x00000001;
+
+    TCUPWMInitialOutputLevelSet(TCU_BASE, TCU_TIMER0, TCU_PWMINITOUTPUT_LOW);
+    TCUPWMShutdown(TCU_BASE, TCU_TIMER0, TCU_SHUTDOWN_GRACEFUL);
+
+    /* 1. set the TCSR, Please keep PWM_EN to 0 */
+    TCUPWMDisable(TCU_BASE, TCU_TIMER0);
+
+    /* 2. set TCUMOD to 0x0000_0001. */
+    TCUModeSet(TCU_BASE, TCU_TIMER0, TCU_MODE_FIFO);
+
+    /* 3. push data into fifo, through write data in TFWD. fifo`s depth is 16, do not over flow */
+    HWREG(TCU_BASE + TCU_O_FWD0) = 0x20001000;
+    HWREG(TCU_BASE + TCU_O_FWD0) = 0x20001000;
+    HWREG(TCU_BASE + TCU_O_FWD0) = 0x20001000;
+    HWREG(TCU_BASE + TCU_O_FWD0) = 0x20001000;
+    HWREG(TCU_BASE + TCU_O_FWD0) = 0x20001000;
+    HWREG(TCU_BASE + TCU_O_FWD0) = 0x20001000;
+    HWREG(TCU_BASE + TCU_O_FWD0) = 0x20001000;
+    HWREG(TCU_BASE + TCU_O_FWD0) = 0x20001000;
+    HWREG(TCU_BASE + TCU_O_FWD0) = 0x20001000;
+    HWREG(TCU_BASE + TCU_O_FWD0) = 0x20001000;
+    HWREG(TCU_BASE + TCU_O_FWD0) = 0x20001000;
+    HWREG(TCU_BASE + TCU_O_FWD0) = 0x20001000;
+    HWREG(TCU_BASE + TCU_O_FWD0) = 0x20001000;
+    HWREG(TCU_BASE + TCU_O_FWD0) = 0x20001000;
+    HWREG(TCU_BASE + TCU_O_FWD0) = 0x20001000;
+    HWREG(TCU_BASE + TCU_O_FWD0) = 0x20001000;
+
+    /* 4. set TCUMOD */
+    TCUFIFOModeSet(TCU_BASE, TCU_TIMER0, TCU_FIFOMODE_FIFO2);
+
+    HWREG(TCU_BASE + TCU_O_MODE0) &= ~TCU_MODE0_CYCNUM;
+//    HWREG(TCU_BASE + TCU_O_MODE0) |= 0x3F << 10;
+    HWREG(TCU_BASE + TCU_O_MODE0) |= 0x2 << 10;
+    HWREG(TCU_BASE + TCU_O_MODE0) |= TCU_MODE0_FIFONUMST;
+    HWREG(TCU_BASE + TCU_O_MODE0) &= ~TCU_MODE0_FIFONUM;
+    HWREG(TCU_BASE + TCU_O_MODE0) |= 0x10 << 4; // FIFO num = 16
+
+    /* 5. set the TCSR.PWM_EN to 1. */
+    TCUPWMEnable(TCU_BASE, TCU_TIMER0);
+
+    /* a. set clock prescale and clock input */
+    TCUClockInputPrescaleSet(TCU_BASE, TCU_TIMER0, TCU_CLOCKPRESCALE_256);
+    TCUClockInputSet(TCU_BASE, TCU_TIMER0, TCU_CLOCKINPUT_EXTAL);
+    TCUClockSupply(TCU_BASE, TCU_TIMER0);
+
+    /* 6. set the TESR to enable the TCNT */
+    TCUCounterEnable(TCU_BASE, TCU_TIMER0);
+
+    /* 7. if step 4 has been done, do not push data into fifo */
+    /* 8. when TFIFOSR. cyc_timer == TCUMOD. cyc_num , It symbol finished. */
+    cyc_timer = (HWREG(TCU_BASE + TCU_O_FIFOSR0) & TCU_FIFOSR0_CYCTIMER) >> 6;
+    cyc_num = (HWREG(TCU_BASE + TCU_O_MODE0) & TCU_MODE0_CYCNUM) >> 10;
+    printk("cyc_timer:%d\n", cyc_timer);
+    printk("cyc_num:%d\n", cyc_num);
+    TCURegisterDump(TCU_BASE, printk);
+}
+#endif
+void pwm0_fifomode2_again(void)
+{
+    unsigned int ret;
+
+    /* 9. if you want do again, please stop the TCNT count */
+    ret = TCUCounterDisable(TCU_BASE, TCU_TIMER0);
+    printk("%s line:%d ret:%d\n", __func__, __LINE__, ret);
+
+    /* 10. set the TCSR, Please keep PWM_EN to 0 */
+    ret = TCUPWMDisable(TCU_BASE, TCU_TIMER0);
+    printk("%s line:%d ret:%d\n", __func__, __LINE__, ret);
+
+    /* 11. set TFCR to clr the flag */
+    ret = TCUComparisonMatchFlagClear(TCU_BASE, TCU_TIMER0, TCU_FLAGTYPE_FIFOEMPTY);
+    printk("%s line:%d ret:%d\n", __func__, __LINE__, ret);
+
+    /* 12. set TCUMOD.fifo_clr to 1 */
+    HWREG(TCU_BASE + TCU_O_MODE0) |= TCU_MODE0_FIFOCLR;
+
+    /* 13. set TCUMOD.fifo_clr to 0 */
+    HWREG(TCU_BASE + TCU_O_MODE0) &= ~TCU_MODE0_FIFOCLR;
+
+    /* 14. reset TCU_MODE0_CYCST/TCU_MODE0_FIFONUMST, must be done
+     *     or the again not works, since TCNT not count any more
+     */
+    HWREG(TCU_BASE + TCU_O_MODE0) &= ~TCU_MODE0_CYCST;
+    HWREG(TCU_BASE + TCU_O_MODE0) &= ~TCU_MODE0_FIFONUMST;
+
+    /* 2. set TCUMOD to 0x0000_0001. */
+    ret = TCUModeSet(TCU_BASE, TCU_TIMER0, TCU_MODE_FIFO);
+    printk("%s line:%d ret:%d\n", __func__, __LINE__, ret);
+
+    /* 3. push data into fifo, through write data in TFWD. fifo`s depth is 16, do not over flow */
+    HWREG(TCU_BASE + TCU_O_FWD0) = 0x20001000;
+    HWREG(TCU_BASE + TCU_O_FWD0) = 0x20001000;
+    HWREG(TCU_BASE + TCU_O_FWD0) = 0x20001000;
+    HWREG(TCU_BASE + TCU_O_FWD0) = 0x20001000;
+    HWREG(TCU_BASE + TCU_O_FWD0) = 0x20001000;
+    HWREG(TCU_BASE + TCU_O_FWD0) = 0x20001000;
+    HWREG(TCU_BASE + TCU_O_FWD0) = 0x20001000;
+    HWREG(TCU_BASE + TCU_O_FWD0) = 0x20001000;
+    HWREG(TCU_BASE + TCU_O_FWD0) = 0x20001000;
+    HWREG(TCU_BASE + TCU_O_FWD0) = 0x20001000;
+    HWREG(TCU_BASE + TCU_O_FWD0) = 0x20001000;
+    HWREG(TCU_BASE + TCU_O_FWD0) = 0x20001000;
+    HWREG(TCU_BASE + TCU_O_FWD0) = 0x20001000;
+    HWREG(TCU_BASE + TCU_O_FWD0) = 0x20001000;
+    HWREG(TCU_BASE + TCU_O_FWD0) = 0x20001000;
+    HWREG(TCU_BASE + TCU_O_FWD0) = 0x20001000;
+
+    /* 4. set TCUMOD */
+    ret = TCUFIFOModeSet(TCU_BASE, TCU_TIMER0, TCU_FIFOMODE_FIFO2);
+    printk("%s line:%d ret:%d\n", __func__, __LINE__, ret);
+
+    HWREG(TCU_BASE + TCU_O_MODE0) &= ~TCU_MODE0_CYCNUM;
+    HWREG(TCU_BASE + TCU_O_MODE0) |= 0x2 << 10;
+    HWREG(TCU_BASE + TCU_O_MODE0) |= TCU_MODE0_FIFONUMST;
+    HWREG(TCU_BASE + TCU_O_MODE0) &= ~TCU_MODE0_FIFONUM;
+    HWREG(TCU_BASE + TCU_O_MODE0) |= 0x10 << 4; // FIFO num = 16
+
+    /* 5. set the TCSR.PWM_EN to 1. */
+    ret = TCUPWMEnable(TCU_BASE, TCU_TIMER0);
+    printk("%s line:%d ret:%d\n", __func__, __LINE__, ret);
+
+    /* 6. set the TESR to enable the TCNT */
+    ret = TCUCounterEnable(TCU_BASE, TCU_TIMER0);
+    printk("%s line:%d ret:%d\n", __func__, __LINE__, ret);
+
+    /* 7. if step 4 has been done, do not push data into fifo */
+    /* 8. when TFIFOSR. cyc_timer == TCUMOD. cyc_num , It symbol finished. */
+    TCURegisterDump(TCU_BASE, printk);
+}
+
+#if 0
 static void pwm0_init(void)
 {
     unsigned int result = 0;
-    /* PE0 configure gpio PE0 as PWM function pin */
+    /* GPIO PE0 configure gpio PE0 as PWM function pin */
     HWREG(GPIOE_BASE + GPIO_O_INTC) |= 0x00000001;
     HWREG(GPIOE_BASE + GPIO_O_MASKC) |= 0x00000001;
     HWREG(GPIOE_BASE + GPIO_O_PAT1C) |= 0x00000001;
@@ -60,6 +295,7 @@ static void pwm0_init(void)
     result = TCUCounterEnable(TCU_BASE, TCU_TIMER0);
     printk("%s line:%d result:%d\n", __func__, __LINE__, result);
 }
+#endif
 
 static void tcu_timer5_init(void)
 {
@@ -105,7 +341,6 @@ static void tcu_timer5_init(void)
         INTCInterruptEnable(timer5_irq);
     }
 
-    TCURegisterDump(TCU_BASE, printk);
 }
 
 static void tcu_timer5_start(void)
@@ -134,8 +369,10 @@ tcu_timer5_interrupt_handle(int irq, void *dev_id)
 
     if (HWREG(TCU_BASE + TCU_O_FR) & TCU_FR_FFLAG5) {
         HWREG(TCU_BASE + TCU_O_FCR) |= TCU_FCR_FFCL5;
-        TCUCounterSet(TCU_BASE, TCU_TIMER5, 0x0000);
+// TCNT will become zero, after match full data register
+//        TCUCounterSet(TCU_BASE, TCU_TIMER5, 0x0000);
     }
+
     //printk("%s line:%d\n", __func__, __LINE__);
 
     ced->event_handler(ced);
@@ -178,8 +415,9 @@ void __init tcu_timer5_clockevent_init(void)
     static struct irqaction action;
     static struct clock_event_device ced;
 
-    pwm0_init();
+//    pwm0_fifomode1_init();
     tcu_timer5_init();
+    pwm0_fifomode2_init();
 
     action.name = "'TCU Timer5 IRQ'";
     action.handler = tcu_timer5_interrupt_handle;

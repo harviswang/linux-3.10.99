@@ -47,6 +47,7 @@
 #define INTC_BASE               0xB0001000  // INTC
 #define OST_BASE                0xB0002000  // OST
 #define TCU_BASE                0xB0002000  // TCU
+#define PWM_BASE                0xB0002000  // PWM
 #define GPIOA_BASE              0xB0010000  // GPIO PA
 #define GPIOB_BASE              0xB0010100  // GPIO PB
 #define GPIOC_BASE              0xB0010200  // GPIO PC

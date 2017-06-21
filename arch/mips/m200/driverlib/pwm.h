@@ -1,6 +1,6 @@
 //*****************************************************************************
 //
-// gpio.h - Defines and Macros for the GPIO module.
+// pwm.h - Defines and Macros for the PWM module(the sub of TCU mode).
 //
 // Copyright (c) 2017 Harvis Wang.  All rights reserved.
 // Software License Agreement
@@ -31,8 +31,8 @@
 //
 //*****************************************************************************
 
-#ifndef __GPIO_H__
-#define __GPIO_H__
+#ifndef __PWM_H__
+#define __PWM_H__
 
 #include "../inc/hw_types.h"
 
@@ -46,34 +46,32 @@
 extern "C" {
 #endif
 
-
 //*****************************************************************************
 //
-// Values that can be passed to xxx as the parameter ulGPIOFunction
+// Values that can be passed to PWMEnable/PWMDisable/PWMConfigure as the parameter ulPWMIndex
 //
 //*****************************************************************************
-#define GPIO_FUNCTION_RAISEINTM 0x0000000F  // Raise edge interrupt input function, interrupt is masked
-#define GPIO_FUNCTION_FALLINTM  0x0000000E  // Fall edge interrupt input function, interrupt is masked
-#define GPIO_FUNCTION_HIGHINTM  0x0000000D  // High level interrupt input function, interrupt is masked
-#define GPIO_FUNCTION_LOWINTM   0x0000000C  // Low level interrupt input function, interrupt is masked
-#define GPIO_FUNCTION_RAISEINT  0x0000000B  // Raise edge triggered interrupt input function
-#define GPIO_FUNCTION_FALLINT   0x0000000A  // Fall edge triggered interrupt input function
-#define GPIO_FUNCTION_HIGHINT   0x00000009  // High level triggered interrupt input function
-#define GPIO_FUNCTION_LOWINT    0x00000008  // Low level triggered interrupt input function
-#define GPIO_FUNCTION_INTPUT    0x00000007  // GPIO input function
-#define GPIO_FUNCTION_OUTPUT1   0x00000005  // GPIO output 1 function
-#define GPIO_FUNCTION_OUTPUT0   0x00000004  // GPIO output 0 function
-#define GPIO_FUNCTION_DEVICE3   0x00000003  // GPIO device 3 function
-#define GPIO_FUNCTION_DEVICE2   0x00000002  // GPIO device 2 function
-#define GPIO_FUNCTION_DEVICE1   0x00000001  // GPIO device 1 function
-#define GPIO_FUNCTION_DEVICE0   0x00000000  // GPIO device 0 function
-
+#define PWM_INDEX_7             0x00000007
+#define PWM_INDEX_6             0x00000006
+#define PWM_INDEX_5             0x00000005
+#define PWM_INDEX_4             0x00000004
+#define PWM_INDEX_3             0x00000003
+#define PWM_INDEX_2             0x00000002
+#define PWM_INDEX_1             0x00000001
+#define PWM_INDEX_0             0x00000000
 
 //*****************************************************************************
 //
 // API Function prototypes
 //
 //*****************************************************************************
+extern tBoolean PWMConfigure(unsigned long ulBase, unsigned long ulPWMIndex, unsigned long ulDuty, unsigned long ulPeriod);
+extern tBoolean PWMEnable(unsigned long ulBase, unsigned long ulPWMIndex);
+extern tBoolean PWMDisable(unsigned long ulBase, unsigned long ulPWMIndex);
+extern tBoolean PWMFIFOMode1Configure(unsigned long ulBase, unsigned long ulPWMIndex, unsigned long *pulDuty, unsigned long * pulPeriod, unsigned long ulFIFONumber);
+extern tBoolean PWMFIFOMode2Configure(unsigned long ulBase, unsigned long ulPWMIndex, unsigned long *pulDuty, unsigned long * pulPeriod, unsigned long ulFIFONumber, unsigned long ulFIFOCycleNumber);
+extern tBoolean TCUFIFOClear(unsigned long ulBase, unsigned long ulTimerID);
+extern tBoolean TCUFIFOWrite(unsigned long ulBase, unsigned long ulTimerID, unsigned long ulData);
 
 //*****************************************************************************
 //
@@ -84,5 +82,5 @@ extern "C" {
 }
 #endif
 
-#endif /* __OST_H__ */
+#endif /* __PWM_H__ */
 

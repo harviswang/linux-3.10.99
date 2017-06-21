@@ -402,8 +402,12 @@ EXPORT_SYMBOL_GPL(pwm_free);
  */
 int pwm_config(struct pwm_device *pwm, int duty_ns, int period_ns)
 {
-	if (!pwm || duty_ns < 0 || period_ns <= 0 || duty_ns > period_ns)
+	if (!pwm || duty_ns < 0 || period_ns <= 0 || duty_ns > period_ns) {
+        printk("%s line:%d\n", __func__, __LINE__);
 		return -EINVAL;
+    }
+
+    printk("%s line:%d\n", __func__, __LINE__);
 
 	return pwm->chip->ops->config(pwm->chip, pwm, duty_ns, period_ns);
 }
@@ -614,12 +618,14 @@ struct pwm_device *pwm_get(struct device *dev, const char *con_id)
 	mutex_lock(&pwm_lookup_lock);
 
 	list_for_each_entry(p, &pwm_lookup_list, list) {
+        printk("%s line:%d\n", __func__, __LINE__);
 		match = 0;
 
 		if (p->dev_id) {
 			if (!dev_id || strcmp(p->dev_id, dev_id))
 				continue;
 
+            printk("%s line:%d\n", __func__, __LINE__);
 			match += 2;
 		}
 
@@ -627,6 +633,7 @@ struct pwm_device *pwm_get(struct device *dev, const char *con_id)
 			if (!con_id || strcmp(p->con_id, con_id))
 				continue;
 
+            printk("%s line:%d\n", __func__, __LINE__);
 			match += 1;
 		}
 
@@ -634,13 +641,14 @@ struct pwm_device *pwm_get(struct device *dev, const char *con_id)
 			chip = pwmchip_find_by_name(p->provider);
 			index = p->index;
 
+            printk("%s line:%d\n", __func__, __LINE__);
 			if (match != 3)
 				best = match;
 			else
 				break;
 		}
 	}
-
+    printk("chip:%p index:%d con_id:%p dev_id:%s\n", chip, index, con_id, dev_id);
 	if (chip)
 		pwm = pwm_request_from_chip(chip, index, con_id ?: dev_id);
 
@@ -695,14 +703,17 @@ struct pwm_device *devm_pwm_get(struct device *dev, const char *con_id)
 	struct pwm_device **ptr, *pwm;
 
 	ptr = devres_alloc(devm_pwm_release, sizeof(**ptr), GFP_KERNEL);
-	if (!ptr)
+	if (!ptr) {
+        printk("%s line:%d\n", __func__, __LINE__);
 		return ERR_PTR(-ENOMEM);
+    }
 
 	pwm = pwm_get(dev, con_id);
 	if (!IS_ERR(pwm)) {
 		*ptr = pwm;
 		devres_add(dev, ptr);
 	} else {
+        printk("%s line:%d\n", __func__, __LINE__);
 		devres_free(ptr);
 	}
 

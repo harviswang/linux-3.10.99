@@ -140,6 +140,13 @@ extern "C" {
 
 //*****************************************************************************
 //
+// Macro define the depth/length of TCU Timer FIFO
+//
+//*****************************************************************************
+#define TCU_FIFO_LENGTH         0x00000010  // TCU Timer FIFO length is 16
+
+//*****************************************************************************
+//
 // API Function prototypes
 //
 //*****************************************************************************
@@ -164,6 +171,8 @@ extern tBoolean TCUComparisonMatchFlagClear(unsigned long ulBase, unsigned long 
 extern void TCURegisterDump(unsigned long ulBase, int (*print)(const char *format, ...));
 extern tBoolean TCUModeSet(unsigned long ulBase, unsigned long ulTimerID, unsigned long ulMode);
 extern tBoolean TCUFIFOModeSet(unsigned long ulBase, unsigned long ulTimerID, unsigned long ulFIFOMode);
+extern tBoolean TCUFIFONumberSet(unsigned long ulBase, unsigned long ulTimerID, unsigned long ulFIFONumber);
+extern tBoolean TCUFIFOCycleNumberSet(unsigned long ulBase, unsigned long ulTimerID, unsigned long ulFIFOCycleNumber);
 
 //*****************************************************************************
 //

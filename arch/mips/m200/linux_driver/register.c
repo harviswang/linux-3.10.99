@@ -30,8 +30,6 @@
 #include <linux/platform_device.h>
 #include <linux/device.h>
 
-extern void pwm0_fifomode2_again(void);
-
 static unsigned char bit_width = 32; /* can be 32/16/8 */
 static unsigned int  last_register_address = 0xB0002000; /* store register address coming from register_address_store() 
                                                           * show register address to register_address_show()
@@ -40,13 +38,22 @@ static unsigned int  last_register_address = 0xB0002000; /* store register addre
 static ssize_t register_address_show(struct device *dev, struct device_attribute *attr, 
     char *buf)
 {
-    return sprintf(buf, "0x%08X\n", last_register_address);
+    ssize_t count;
+
+    device_lock(dev);
+    count = sprintf(buf, "0x%08X\n", last_register_address);
+    device_unlock(dev);
+
+    return count;
 }
 
 static ssize_t register_address_store(struct device *dev, struct device_attribute *attr,
     const char *buf, size_t count)
 {
+    device_lock(dev);
     last_register_address = (unsigned int)simple_strtol(buf, NULL, 16);
+    device_unlock(dev);
+
     return count;
 }
 DEVICE_ATTR(register_address, S_IRUGO | S_IWUSR | S_IWGRP, register_address_show, register_address_store);
@@ -57,6 +64,7 @@ static ssize_t register_value_show(struct device *dev, struct device_attribute *
     unsigned int value;
     ssize_t count;
 
+    device_lock(dev);
     switch (bit_width) {
     case 32:
         value = readl((void *)last_register_address);
@@ -74,6 +82,7 @@ static ssize_t register_value_show(struct device *dev, struct device_attribute *
         count = sprintf(buf, "bit_width can only be 32/16/8\n");
         break;
     }
+    device_unlock(dev);
 
     return count;
 }
@@ -83,6 +92,7 @@ static ssize_t register_value_store(struct device *dev, struct device_attribute 
 {
     unsigned int value;
 
+    device_lock(dev);
     value = simple_strtol(buf, NULL, 16);
     switch (bit_width) {
     case 32:
@@ -98,6 +108,7 @@ static ssize_t register_value_store(struct device *dev, struct device_attribute 
         dev_err(dev, "invalid bitwidth, can be 32/16/8\n");
         break;
     }
+    device_unlock(dev);
 
     return count;
 }
@@ -106,13 +117,39 @@ DEVICE_ATTR(register_value, S_IRUGO | S_IWUSR | S_IWGRP, register_value_show, re
 static ssize_t register_bitwidth_show(struct device *dev, struct device_attribute *attr, 
     char *buf)
 {
-    pwm0_fifomode2_again();
-    return 0;
+    ssize_t count;
+
+    device_lock(dev);
+    count = sprintf(buf, "%d\n", bit_width);
+    device_unlock(dev);
+
+    return count;
 }
 
 static ssize_t register_bitwidth_store(struct device *dev, struct device_attribute *attr,
     const char *buf, size_t count)
 {
+    unsigned int value;
+
+    device_lock(dev);
+    value = simple_strtol(buf, NULL, 10);
+
+    switch (value) {
+    case 8:
+        bit_width = 8;
+        break;
+    case 16:
+        bit_width = 16;
+        break;
+    case 32:
+        bit_width = 32;
+        break;
+    default:
+        bit_width = 32;
+        break;
+    }
+    device_unlock(dev);
+
     return count;
 }
 DEVICE_ATTR(register_bitwidth, S_IRUGO | S_IWUSR | S_IWGRP, register_bitwidth_show, register_bitwidth_store);

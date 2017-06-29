@@ -242,6 +242,7 @@ config MACH_M200
 	select SYS_SUPPORTS_HIGHMEM
 	select MIPS_CPU_SCACHE
 	select IRQ_CPU
+	select USE_OF
 
 config LANTIQ
 	bool "Lantiq based platforms"

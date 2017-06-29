@@ -1,0 +1,9 @@
+/*
+ * w561a.dts - Device Tree file for W561A board
+ * Copyright (C) Harvis Wang<jiankangshiye@aliyun.com>
+ */
+
+/dts-v1/;
+/ {
+    model = "ingenic W561A";
+};

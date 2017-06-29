@@ -1,1 +1,12 @@
+choice
+    prompt "Device Tree"
+    default DTB_W561A
+    help
+        Select the devicetree.
+
+config DTB_W561A
+    bool "W561A device tree"
+
+endchoice
+
 source "arch/mips/m200/linux_driver/Kconfig"

@@ -1,8 +1,16 @@
 #include <linux/ioport.h>
+#include <linux/of_fdt.h> /* boot_param_header */
 
 #include <asm/io.h>
+#include <asm/prom.h> /* __dt_setup_arch */
 
-int plat_mem_setup(void)
+/*
+ * __dtb_start defined in arch/mips/kernel/vmlinux.lds
+ * mips device tree is built-in
+ */
+extern struct boot_param_header __dtb_start;
+
+void __init plat_mem_setup(void)
 {
 	/* ingenic mips cpu special */
 	__asm__ (
@@ -24,6 +32,11 @@ int plat_mem_setup(void)
 	iomem_resource.start = 0x00000000;
 	iomem_resource.end   = 0xffffffff;
 
-	return 0;
+    /*
+     * Load the builtin devicetree. This causes the chosen node to be
+     * parsed resulting in our memory appearing
+     */
+    __dt_setup_arch(&__dtb_start);
+
 }
 

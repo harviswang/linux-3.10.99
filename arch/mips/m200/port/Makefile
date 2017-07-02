@@ -8,5 +8,6 @@ obj-y += arch_init_irq.o         \
          prom_putchar.o
 
 obj-$(CONFIG_OF) +=  device_tree_init.o
+obj-$(CONFIG_OF) +=  plat_of_setup.o
 
 

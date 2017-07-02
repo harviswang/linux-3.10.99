@@ -33,6 +33,9 @@ static void intc_handle_level_irq(unsigned int irq, struct irq_desc *desc)
 }
 */
 
+/*
+ * deprecated, use ../port/arch_init_irq.c intc_map() instead
+ */
 void __init intc_irq_init()
 {
 	int irq;

@@ -1,0 +1,105 @@
+/*
+ * m200.dtsi - Device Tree Source Interface for M200 SoC
+ * Copyright (C) Harvis Wang<jiankangshiye@aliyun.com>
+ */
+
+/ {
+    #address-cells = <1>;
+    #size-cells    = <1>;
+    compatible = "ingenic,m200";
+
+    cpus {
+        #address-cells = <1>;
+        #size-cells    = <0>;
+
+        cpu@0 {
+            device_type = "cpu";
+            reg = <1>;
+            d-cache-line-size = <0x20>;	/* 32 bytes */
+            i-cache-line-size = <0x20>;	/* 32 bytes */
+            d-cache-size = <0x8000>;	/* L1, 32K */
+            i-cache-size = <0x8000>;	/* L1, 32K */
+            timebase-frequency = <49500000>;/* 49.5 MHz (csb/4) TBD */
+            clock-frequency = <1008000000>;
+        };
+    };
+
+    cpuintc: interrupt-controller {
+        compatible = "mti,cpu-interrupt-controller";
+        #address-cells   = <0>;
+        #interrupt-cells = <1>;
+        interrupt-controller;
+    };
+
+    soc@10000000 {
+        compatible = "simple-bus";
+        #address-cells      = <1>;
+        #size-cells         = <1>;
+        #interrupt-cells    = <2>;
+        device_type = "soc";
+        ranges = <0x10000000 0xB0000000 0x00100000>;
+        bus-frequency = <0>;
+        reg = <0x10000000 0x02000000>; /* TODO */
+
+        intc: interrupt-controller@10010000 {
+            compatible = "ingenic,m200-intc";
+            reg = <0x10010000 0x00000100>;
+
+            interrupt-controller;
+            #interrupt-cells = <1>;
+
+            interrupt-parent = <&cpuintc>;
+            interrupts = <2>;
+        };
+
+        uart0: serial@10030000 {
+            compatible = "ingenic,m200-uart";
+            reg = <0x10030000 0x00000100>;
+
+            interrupt-parent = <&intc>;
+            interrupts = <51>;
+
+            status = "disabled";
+        };
+
+        uart1: serial@10031000 {
+            compatible = "ingenic,m200-uart";
+            reg = <0x10031000 0x00000100>;
+
+            interrupt-parent = <&intc>;
+            interrupts = <50>;
+
+            status = "disabled";
+        };
+
+        uart2: serial@10032000 {
+            compatible = "ingenic,m200-uart";
+            reg = <0x10032000 0x00000100>;
+
+            interrupt-parent = <&intc>;
+            interrupts = <49>;
+
+            status = "disabled";
+        };
+
+        uart3: serial@10033000 {
+            compatible = "ingenic,m200-uart";
+            reg = <0x10033000 0x00000100>;
+
+            interrupt-parent = <&intc>;
+            interrupts = <48>;
+
+            status = "disabled";
+        };
+
+        uart4: serial@10034000 {
+            compatible = "ingenic,m200-uart";
+            reg = <0x10034000 0x000000100>;
+
+            interrupt-parent = <&intc>;
+            interrupts = <34>;
+
+            status = "disabled";
+        };
+    };
+};

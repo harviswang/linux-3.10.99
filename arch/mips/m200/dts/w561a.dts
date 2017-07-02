@@ -4,6 +4,42 @@
  */
 
 /dts-v1/;
+
+#include "m200.dtsi"
+
 / {
-    model = "ingenic W561A";
+    model = "W561A";
+    compatible = "ingenic,m200";
+
+    aliases {
+        serial0 = &uart0;
+        serial1 = &uart1;
+        serial2 = &uart2;
+        serial3 = &uart3;
+        serial4 = &uart4;
+    };
+
+    memory {
+        #address-cells = <1>;
+        #size-cells    = <1>;
+
+        mem@0 {
+            device_type = "memory";
+            reg = <0x00000000 0x0F900000>;
+        };
+
+        mem@30000000 {
+            device_type = "memory";
+            reg = <0x30000000 0x30000000>;
+        };
+    };
+
+    chosen {
+        bootargs = "console=ttyS3,115200n8 root=/dev/ram0 rw init=/init rd_start=0x81ef8000 rd_size=0xb1ef4"; /* TODO rd_start ?? */
+        linux,stdout-path = &uart3;
+    };
+};
+
+&uart3 {
+    status = "okay";
 };

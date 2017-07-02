@@ -38,6 +38,9 @@
 #include <linux/compiler.h> /* unlikely */
 #include <linux/interrupt.h> /* request_irq */
 #include <linux/spinlock.h> /* spin_lock_irqsave */
+#include <linux/of_device.h>
+#include <linux/of_address.h>
+#include <linux/of_irq.h>  /* irq_of_parse_and_map */
 #include "../driverlib/uart.h" /* UARTTxEmpty */
 #include "../driverlib/intc.h" /* IntEnable */
 
@@ -224,12 +227,10 @@ static int m200_uart_startup(struct uart_port *port)
 	
 	snprintf(m200_port->name, sizeof(m200_port->name),
 		"'UART %d'", port->line);
-	
-	port->irq = UARTIntNumberGet(port->iobase);
 	err = request_irq(port->irq, m200_uart_irq_handler, port->irqflags, 
 	                  m200_port->name, port);
 	if (err) {
-		dev_err(port->dev, "%s:%d request_irq() failed!\n", __FILE__, __LINE__);
+		dev_err(port->dev, "%s:%d request_irq() irq:%d failed!\n", __FILE__, __LINE__, port->irq);
 	}
 
 
@@ -353,7 +354,6 @@ static void m200_uart_config_port(struct uart_port *port, int flags)
 	if (flags & UART_CONFIG_TYPE) {
 		port->type = PORT_16550;
 	}
-	DEBUG();
 }
 
 static void m200_uart_release_port(struct uart_port *port)
@@ -417,7 +417,7 @@ static struct m200_uart_port m200_uart_ports[] = {
 	{     /* uart[3] */
 		.uart = {
 			.iotype = UPIO_MEM,
-			.iobase = 0xB0033000, /* TODO */
+			.iobase = -1,
 			.ops    = &m200_uart_ops,
 			.flags  = UPF_BOOT_AUTOCONF | UPF_FIXED_TYPE | UPF_SPD_VHI,
 			.fifosize = 64,
@@ -512,52 +512,61 @@ static struct uart_driver m200_uart_driver = {
 	.cons  = M200_CONSOLE,
 };
 
-static struct platform_device m200_uart_platform_device = {
-	.id = 3,
-	.name = "m200_uart",
-	.num_resources = 0,
+static struct of_device_id ingenic_uart_match_table[] = {
+	{ .compatible = "ingenic,m200-uart" },
+	{}
 };
+MODULE_DEVICE_TABLE(of, ingenic_uart_match_table);
+
 
 static int m200_uart_platform_driver_probe(struct platform_device *pdev)
 {
 	int err = 0;
 	struct uart_port *port;
+    const struct of_device_id *match;
+    struct resource resource;
+    struct device_node *device_node = pdev->dev.of_node;
 	
-	printk("%s %s %d pdev->id:%d\n", __FILE__, __func__, __LINE__, pdev->id);
-	if (unlikely(pdev->id >= M200_UART_NR || pdev->id < 0)) {
-		return -ENXIO;
+    pdev->id = of_alias_get_id(pdev->dev.of_node, "serial");
+	if (pdev->id < 0) {
+        dev_err(&pdev->dev, "Invalid parameter at %s\n", __func__);
+		return -EINVAL;
 	}
 	
+    match = of_match_device(ingenic_uart_match_table, &pdev->dev);
+    if (match == NULL) {
+        dev_err(&pdev->dev, "Error: No device match found at %s\n", __func__);
+        return -ENODEV;
+    }
+
 	port = get_port_from_line(pdev->id);
-	DEBUG();
+    port->line = pdev->id;
 	port->dev = &pdev->dev; /* parent device */
+    port->irq = irq_of_parse_and_map(device_node, 0);
+    err = of_address_to_resource(device_node, 0, &resource);
+    if (err) {
+        dev_err(&pdev->dev, "Error: None resource  at %s\n", __func__);
+        return -EINVAL;
+    }
+    port->iobase = resource.start;
 
 	platform_set_drvdata(pdev, port);
 	
 	err = uart_add_one_port(&m200_uart_driver, port);
 	if (err) {
 		dev_err(&pdev->dev, "Failed to add uart port, error:%d\n", err);
-		return err;
 	}
 
-	DEBUG();
 	return err;
 }
 
 static int m200_uart_platform_driver_remove(struct platform_device *pdev)
 {
-	int err = 0;
 	struct m200_uart_port *mup = platform_get_drvdata(pdev);
-	DEBUG();
+    struct uart_port *up = &mup->uart;
 
-	(void)mup;
-	return err;
+    return uart_remove_one_port(&m200_uart_driver, up);
 }
-
-//static struct of_device_id m200_uart_match_table[] = {
-//	{ .compatible = "m200_uart" },
-//	{}
-//};
 
 static struct platform_driver m200_uart_platform_driver = {
 	.probe  = m200_uart_platform_driver_probe,
@@ -565,15 +574,13 @@ static struct platform_driver m200_uart_platform_driver = {
 	.driver = {
 		.owner = THIS_MODULE,
 		.name = "m200_uart",
-//		.of_match_table = m200_uart_match_table,
+		.of_match_table = ingenic_uart_match_table,
 	},
 };
 
 static int __init m200_uart_init(void)
 {
 	int err = 0;
-
-	printk(KERN_INFO "Serial: M200 UART driver\n");
 
 	err = uart_register_driver(&m200_uart_driver);
 	if (err) {
@@ -582,25 +589,10 @@ static int __init m200_uart_init(void)
 		return err;
 	}
 
-// 	TODO
-//	err = platform_driver_probe(&m200_uart_platform_driver, m200_uart_platform_driver_probe);
-//	if (err) {
-//		pr_err("Uart platform driver register failed, error:%d\n", err);
-//		uart_unregister_driver(&m200_uart_driver);
-//		return err;
-//	}
-
 	err = platform_driver_register(&m200_uart_platform_driver);
 	if (err) {
 		pr_err("Uart platform driver register failed, error:%d\n", err);
 		uart_unregister_driver(&m200_uart_driver);
-		return err;
-	}
-	DEBUG();
-
-	err = platform_device_register(&m200_uart_platform_device);
-	if (err) {
-		pr_err("Uart platform device register failed, error:%d\n", err);
 	}
 
 	return err;
@@ -608,7 +600,6 @@ static int __init m200_uart_init(void)
 
 static void __exit m200_uart_exit(void)
 {
-	DEBUG();
 #ifdef CONFIG_SERIAL_M200_CONSOLE
 	unregister_console(&m200_console);
 #endif

@@ -6,11 +6,12 @@
 
 #include <linux/printk.h>
 #include <linux/smp.h> /* cpu_has_fpu */
+#include <linux/init.h> /* __init */
 
 
 #include "unittest.h"
 
-int cpu_has_test(void)
+int __init cpu_has_test(void)
 {
 	unittestAssert(cpu_has_vint == 524288);
 	unittestAssert(cpu_has_veic == 0);
@@ -29,3 +30,5 @@ int cpu_has_test(void)
 	unittestPrintk("cpu_has_mipsmt = %ld\n", cpu_has_mipsmt);
 	return 0;
 }
+
+module_init(cpu_has_test);

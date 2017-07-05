@@ -34,6 +34,8 @@
 #ifndef __INTC_H__
 #define __INTC_H__
 
+#include "../inc/hw_types.h"
+
 //*****************************************************************************
 //
 // If building with a C++ compiler, make all of the definitions in this header
@@ -43,6 +45,13 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+//*****************************************************************************
+//
+// The following are defines for the interrupt number.
+//
+//*****************************************************************************
+#define INTC_INTERRUPT_NUM      0x00000040  // Number of interrupts
 
 //*****************************************************************************
 //
@@ -117,14 +126,36 @@ enum {	IRQ_NO_DMIC,
 
 //*****************************************************************************
 //
+// Hardware IRQ model used in M200 SoC
+// level 0: [cpu-v0] [cpu-v1] [cpu-v2] [cpu-v3] [cpu-v4] [cpu-v5] [cpu-v6] [cpu-v7]  (cpu-level)
+//                               |
+// level 1: [lcd] [i2c] [gpio] [pdma] [vpu] [isp] [gpu] [efuse] [ethc] [pdmam] ...   (SoC-level)
+//                        |
+// level 2:  [pa0...31] [pb0...31] ... [pf0...31]                                    (SoC-level)
+//*****************************************************************************
+// 0 level: 8 cpu interrupts, using VINT(interrupt vector) deal with
+// 1 level: 64 INTC interrupts, using INTC module deal with
+// 2 level: xxx gpio interrupts, using INTC/GPIO two modules deal with
+// in practice, 0 level is dealed in vector mode, so we don't care it more.
+// 1/2 level is dealed with software using liner mode, [0, 63] for INTC, [64, 95]
+// for GPIOPA, [96, 127] for GPIOPB andd so on
+
+//*****************************************************************************
+//
 // API Function prototypes
 //
 //*****************************************************************************
-extern void INTCInterruptEnable(unsigned long ulInterrupt);
-extern void INTCInterruptDisable(unsigned long ulInterrupt);
+extern tBoolean INTCInterruptEnable(unsigned long ulInterrupt);
+extern tBoolean INTCInterruptDisable(unsigned long ulInterrupt);
 extern void INTCRegisterDump(int (*print)(const char *format, ...));
 extern unsigned long INTCSr0Get(void);
 extern unsigned long INTCSr1Get(void);
+extern tBoolean INTCInterruptPending(unsigned long ulInterrupt);
+extern unsigned long INTCDMASr0Get(void);
+extern unsigned long INTCDMASr1Get(void);
+extern tBoolean INTCDMAInterruptEnable(unsigned long ulInterrupt);
+extern tBoolean INTCDMAInterruptDisable(unsigned long ulInterrupt);
+extern tBoolean INTCDMAInterruptPending(unsigned long ulInterrupt);
 
 //*****************************************************************************
 //

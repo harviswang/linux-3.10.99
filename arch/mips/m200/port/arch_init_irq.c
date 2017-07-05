@@ -45,13 +45,16 @@ static void hardware_interrupt0_handler(void)
 	unsigned sr1 = (unsigned)INTCSr1Get();
 	unsigned irq0, irq1;
 	int i;
+    const int intc_virq_offset = 8; /* This works with 8 cpu interrupt, covert hw irq to virtual irq number
+                                     * irq0 as hw irq [0, 31], irq1 as hw irq [32, 63]
+                                     */
 
 	for (i = 31; i >= 0; i--) {
 		if (sr0 != 0) {
 			irq0 = ffs(sr0);
 			if (irq0 != 0) {
 				irq0 -= 1;
-		       		do_IRQ(irq0);
+                do_IRQ(irq0 + intc_virq_offset);
 				sr0 &= ~(1 << irq0);
 			}
 		}
@@ -60,7 +63,7 @@ static void hardware_interrupt0_handler(void)
 			irq1 = ffs(sr1);
 			if (irq1 != 0) {
 				irq1 -= 1;
-				do_IRQ(irq1 + 32);
+				do_IRQ(irq1 + 32 + intc_virq_offset);
 				sr1 &= ~(1 << irq1);
 			}
 		}
@@ -122,43 +125,33 @@ static void hardware_interrupt5_handler(void)
 
 static int intc_map(struct irq_domain *id, unsigned int irq, irq_hw_number_t hw)
 {
-    /*
-     * make hwirq <--> virq, they are the same in range [0, 63]
-     * in range [64, 128) I use bit[7, 5] and bit[4, 0] to encode GPIO IRQ
-     * bit[7, 5] can be 010, 011, 100, 101, 110, 111 corresponding
-     * gpio pa/pb/pc/pd/pe/pf respectively
-     */
-    char bit765 = (((char)hw) >> 5) & 0x07;
-
-    switch (bit765) {
-        case 0b000: /* [0, 63] INTC hardware interrupt */
-        case 0b001: /* intc_chip comes from ../linux/intc_linux.c */
-            irq_set_chip_and_handler(irq, &intc_chip, handle_level_irq);
-            break;
-        case 0b010: /* gpio pa */
-            break;
-        case 0b011: /* gpio pb */
-            break;
-        case 0b100: /* gpio pc */
-            break;
-        case 0b101: /* gpio pd */
-            break;
-        case 0b110: /* gpio pe */
-            break;
-        case 0b111: /* gpio pf */
-            break;
-        default:
-            printk("Unsupport irq at %s line:%d\n", __func__, __LINE__);
-            break;
-    }
+    //printk("%s line:%d irq:%d hw:%d\n", __func__, __LINE__, irq, (int)hw);
+    irq_set_chip_and_handler(irq, &intc_chip, handle_level_irq);
 
     return 0;
 }
 
-static const struct irq_domain_ops irq_domain_ops = {
+static const struct irq_domain_ops intc_irq_domain_ops = {
     .xlate = irq_domain_xlate_onecell,
     .map   = intc_map,
 };
+
+/*
+ * No choice to execute TBD, now using VINT
+ */
+static void m200_intc_irq_handler(unsigned int irq, struct irq_desc *desc)
+{
+    unsigned sr0 = (unsigned)INTCSr0Get();
+	unsigned sr1 = (unsigned)INTCSr1Get();
+
+    if (sr0 || sr1) {
+        struct irq_domain *domain = irq_get_handler_data(irq);
+        sr0 != 0 ? generic_handle_irq(irq_find_mapping(domain, __ffs(sr0))) : (void)sr0 ;
+        sr1 != 0 ? generic_handle_irq(irq_find_mapping(domain, __ffs(sr1) + 32)) : (void)sr1 ;
+    } else {
+        spurious_interrupt();
+    }
+}
 
 static int __init soc_intc_of_init(struct device_node *node,
                     struct device_node *parent)
@@ -194,20 +187,31 @@ static int __init soc_intc_of_init(struct device_node *node,
         return -EINVAL;
     }
 
-    domain = irq_domain_add_legacy(node, NR_IRQS, 0, 0, &irq_domain_ops, NULL);
+    /*
+     * use [0+8, 63+8] as INTC virtual irq number, cpu has occupied 8 irq numbers
+     * the intc domain is sencond domain, cpu-interrupt-controller as root domain
+     */
+    domain = irq_domain_add_legacy(node, INTC_INTERRUPT_NUM, 8, 0, &intc_irq_domain_ops, NULL);
     if (domain == NULL) {
         printk("Failed to add irq domain at %s line:%d\n", __func__, __LINE__);
         return -EINVAL;
     }
 
+    irq_set_chained_handler(irq, m200_intc_irq_handler);
     irq_set_handler_data(irq, domain);
+
+    /*
+     * Set default, after this we can use irq_find_mapping(NULL, hwirq) to get virtual irq
+     */
+    irq_set_default_host(domain);
 
     return 0;
 }
 
 /*
  * Not really use 'mti,cpu-interrupt-controller', we use vector table to deal with 8 cpu interrupts
- * in fact I'm not deal with cpu-interrupt-controller in irq subsystem, here used just for logical integrity
+ * in fact I'm not deal with cpu-interrupt-controller in irq subsystem, here used just for irq model
+ * can't be deleted.
  * Note: irq [0, 7] will be first set by map function mips_cpu_intc_map() in arch/mips/kernel/irq_cpu.c
  *       then overwrited by another map function intc_map() in port/arch_init_irq.c
  */
@@ -235,6 +239,7 @@ void __init arch_init_irq(void)
 	} else {
         printk("CPU can't support VINT %s line:%d\n", __func__, __LINE__);
         printk("'mti,cpu-interrupt-controller' can't be overwrite by intc irq at %s line:%d\n", __func__, __LINE__);
+        printk("will use plat_irq_dispatch() deal with irqs\n");
     }
 
     /*

@@ -19,9 +19,12 @@ static void intc_irq_unmask(struct irq_data *data)
 
 static struct irq_chip intc_chip = {
 	.name = "'Interrupt Controller IRQ'",
-	.irq_mask = intc_irq_mask,
+	.irq_mask   = intc_irq_mask,
 	.irq_unmask = intc_irq_unmask,
+    .irq_enable = intc_irq_unmask,
+    .irq_disable = intc_irq_mask,
 };
+
 /*
 static void intc_handle_level_irq(unsigned int irq, struct irq_desc *desc)
 {

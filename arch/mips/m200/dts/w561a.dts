@@ -17,6 +17,17 @@
         serial2 = &uart2;
         serial3 = &uart3;
         serial4 = &uart4;
+
+        ost = &ost;
+
+        timer0 = &timer0;
+        timer1 = &timer1;
+        timer2 = &timer2;
+        timer3 = &timer3;
+        timer4 = &timer4;
+        timer5 = &timer5;
+        timer6 = &timer6;
+        timer7 = &timer7;
     };
 
     memory {
@@ -35,11 +46,21 @@
     };
 
     chosen {
-        bootargs = "console=ttyS3,115200n8 root=/dev/ram0 rw init=/init rd_start=0x81ef8000 rd_size=0xb1ef4"; /* TODO rd_start ?? */
+        bootargs = "console=ttyS3,115200n8 root=/dev/ram0 rw init=/init rd_start=0x81ef8000 rd_size=0xb1ef4";
         linux,stdout-path = &uart3;
+        //linux,initrd-start = <0x81EF8000>; /* rd_start=0x81ef8000 not works TODO */
+        //linux,initrd-end   = <0x81EC9EF4>; /* rd_size=0xb1ef4 */
     };
 };
 
 &uart3 {
+    status = "okay";
+};
+
+&ost {
+    status = "okay";
+};
+
+&timer5 {
     status = "okay";
 };

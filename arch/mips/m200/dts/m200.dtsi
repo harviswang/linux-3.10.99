@@ -41,9 +41,9 @@
         bus-frequency = <0>;
         reg = <0x10000000 0x02000000>; /* TODO */
 
-        intc: interrupt-controller@10010000 {
+        intc: interrupt-controller@10001000 {
             compatible = "ingenic,m200-intc";
-            reg = <0x10010000 0x00000100>;
+            reg = <0x10001000 0x00000100>;
 
             interrupt-controller;
             #interrupt-cells = <1>;
@@ -98,6 +98,116 @@
 
             interrupt-parent = <&intc>;
             interrupts = <34>;
+
+            status = "disabled";
+        };
+
+        ost: ost@10002000 {
+            compatible = "ingenic,m200-ost";
+            reg = <0x10002000 0x00000100>;
+
+            interrupt-parent = <&intc>;
+            interrupts = <27>;
+
+            status = "disabled";
+        };
+
+        timer0: timer@10002040 {
+            compatible = "ingenic,m200-timer";
+            reg = <0x10002040 0x0000000C>;
+
+            interrupt-parent = <&intc>;
+            interrupts = <25>;
+
+            status = "disabled";
+        };
+
+        timer1: timer@10002050 {
+            compatible = "ingenic,m200-timer";
+            reg = <0x10002050 0x0000000C>;
+
+            interrupt-parent = <&intc>;
+            interrupts = <25>;
+
+            status = "disabled";
+        };
+
+        timer2: timer@10002060 {
+            compatible = "ingenic,m200-timer";
+            reg = <0x10002060 0x0000000C>;
+
+            interrupt-parent = <&intc>;
+            interrupts = <25>;
+
+            status = "disabled";
+        };
+
+        timer3: timer@10002070 {
+            compatible = "ingenic,m200-timer";
+            reg = <0x10002070 0x0000000C>;
+
+            interrupt-parent = <&intc>;
+            interrupts = <25>;
+
+            status = "disabled";
+        };
+
+        timer4: timer@10002080 {
+            compatible = "ingenic,m200-timer";
+            reg = <0x10002080 0x0000000C>;
+
+            interrupt-parent = <&intc>;
+            interrupts = <25>;
+
+            status = "disabled";
+        };
+
+        timer5: timer@10002090 {
+            compatible = "ingenic,m200-timer";
+            reg = <0x10002090 0x0000000C>;
+
+            interrupt-parent = <&intc>;
+            interrupts = <26>;
+
+            status = "disabled";
+        };
+
+        timer6: timer@100020A0 {
+            compatible = "ingenic,m200-timer";
+            reg = <0x100020A0 0x0000000C>;
+
+            interrupt-parent = <&intc>;
+            interrupts = <25>;
+
+            status = "disabled";
+        };
+
+        timer7: timer@100020B0 {
+            compatible = "ingenic,m200-timer";
+            reg = <0x100020B0 0x0000000C>;
+
+            interrupt-parent = <&intc>;
+            interrupts = <25>;
+
+            status = "disabled";
+        };
+
+        intc_gpio0: interrupt-controller@10010000 { /* intc_gpio0 can't be intc-gpio0 */
+            compatible = "ingenic,m200-gpio";
+            reg = <0x10010000 0x00000100>;
+            interrupt-controller;
+            #interrupt-cells = <2>; /* cell[0] hwirq, cell[1] irq type
+                                     * cell[1] note:
+                                     * 0: IRQ_TYPE_NONE
+                                     * 1: IRQ_TYPE_EDGE_RISING
+                                     * 2: IRQ_TYPE_EDGE_FALLING
+                                     * 3: IRQ_TYPE_EDGE_BOTH
+                                     * 4: IRQ_TYPE_LEVEL_HIGH
+                                     * 8: IRQ_TYPE_LEVEL_LOW
+                                     */
+
+            interrupt-parent = <&intc>;
+            #interrupts = <17>;
 
             status = "disabled";
         };

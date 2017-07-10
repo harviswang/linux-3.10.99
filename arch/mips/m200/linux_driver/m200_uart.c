@@ -614,6 +614,6 @@ static void __exit m200_uart_exit(void)
 arch_initcall(m200_uart_init);
 module_exit(m200_uart_exit);
 
-MODULE_AUTHOR("Ingenic Semiconductor Ltd");
-MODULE_DESCRIPTION("Ingenic M200 serial port driver");
-MODULE_LICENSE("GPL");
+MODULE_DESCRIPTION("M200 UART Driver");
+MODULE_LICENSE("Dual BSD/GPL");
+MODULE_AUTHOR("Harvis Wang");

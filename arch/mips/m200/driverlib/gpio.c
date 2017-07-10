@@ -581,7 +581,7 @@ GPIORaiseInterruptFunctionSet(unsigned long ulBase, unsigned long ulPinNumber)
 //*****************************************************************************
 //
 //! \internal
-//! Set GPIO function( function).
+//! Set GPIO function(falling interrupt function).
 //!
 //! \param ulBase is the base address of the GPIO port.
 //! \param ulPinNumber is the number of the GPIO pin.
@@ -966,6 +966,5024 @@ GPIOFallingInterruptFunctionSet(unsigned long ulBase, unsigned long ulPinNumber)
 
 //*****************************************************************************
 //
+//! \internal
+//! Set GPIO function(high level triggered interrupt function).
+//!
+//! \param ulBase is the base address of the GPIO port.
+//! \param ulPinNumber is the number of the GPIO pin.
+//!
+//! This function set gpio high level interrupt function type.
+//!
+//! \return Returns \b true if the high level interrupt function set operation
+//! is success and \b false otherwise.
+//
+//*****************************************************************************
+static tBoolean
+GPIOHighInterruptFunctionSet(unsigned long ulBase, unsigned long ulPinNumber)
+{
+    unsigned long ulGroupID;
+
+    //
+    // Check the arguments.
+    //
+    ASSERT(GPIOBaseValid(ulBase));
+    ASSERT(GPIOPinNumberValid(ulPinNumber));
+
+    ulGroupID = GPIOGroupIDGet(ulBase);
+    ASSERT(ulGroupID != -1);
+
+    switch (ulPinNumber) {
+    case 0:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS0;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC0;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C0;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S0;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT0)   == GPIO_INT_INT0)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK0) != GPIO_MASK_MASK0) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT10) != GPIO_PAT1_PAT10) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT00) == GPIO_PAT0_PAT00));
+    case 1:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS1;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC1;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C1;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S1;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT1)   == GPIO_INT_INT1)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK1) != GPIO_MASK_MASK1) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT11) != GPIO_PAT1_PAT11) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT01) == GPIO_PAT0_PAT01));
+    case 2:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS2;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC2;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C2;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S2;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT2)   == GPIO_INT_INT2)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK2) != GPIO_MASK_MASK2) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT12) != GPIO_PAT1_PAT12) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT02) == GPIO_PAT0_PAT02));
+    case 3:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS3;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC3;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C3;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S3;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT3)   == GPIO_INT_INT3)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK3) != GPIO_MASK_MASK3) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT13) != GPIO_PAT1_PAT13) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT03) == GPIO_PAT0_PAT03));
+    case 4:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS4;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC4;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C4;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S4;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT4)   == GPIO_INT_INT4)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK4) != GPIO_MASK_MASK4) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT14) != GPIO_PAT1_PAT14) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT04) == GPIO_PAT0_PAT04));
+    case 5:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS5;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC5;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C5;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S5;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT5)   == GPIO_INT_INT5)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK5) != GPIO_MASK_MASK5) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT15) != GPIO_PAT1_PAT15) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT05) == GPIO_PAT0_PAT05));
+    case 6:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS6;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC6;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C6;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S6;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT6)   == GPIO_INT_INT6)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK6) != GPIO_MASK_MASK6) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT16) != GPIO_PAT1_PAT16) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT06) == GPIO_PAT0_PAT06));
+    case 7:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS7;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC7;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C7;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S7;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT7)   == GPIO_INT_INT7)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK7) != GPIO_MASK_MASK7) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT17) != GPIO_PAT1_PAT17) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT07) == GPIO_PAT0_PAT07));
+    case 8:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS8;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC8;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C8;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S8;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT8)   == GPIO_INT_INT8)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK8) != GPIO_MASK_MASK8) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT18) != GPIO_PAT1_PAT18) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT08) == GPIO_PAT0_PAT08));
+    case 9:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS9;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC9;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C9;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S9;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT9)   == GPIO_INT_INT9)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK9) != GPIO_MASK_MASK9) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT19) != GPIO_PAT1_PAT19) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT09) == GPIO_PAT0_PAT09));
+    case 10:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS10;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC10;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C10;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S10;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT10)   == GPIO_INT_INT10)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK10) != GPIO_MASK_MASK10) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT110) != GPIO_PAT1_PAT110) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT010) == GPIO_PAT0_PAT010));
+    case 11:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS11;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC11;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C11;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S11;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT11)   == GPIO_INT_INT11)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK11) != GPIO_MASK_MASK11) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT111) != GPIO_PAT1_PAT111) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT011) == GPIO_PAT0_PAT011));
+    case 12:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS12;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC12;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C12;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S12;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT12)   == GPIO_INT_INT12)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK12) != GPIO_MASK_MASK12) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT112) != GPIO_PAT1_PAT112) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT012) == GPIO_PAT0_PAT012));
+    case 13:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS13;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC13;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C13;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S13;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT13)   == GPIO_INT_INT13)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK13) != GPIO_MASK_MASK13) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT113) != GPIO_PAT1_PAT113) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT013) == GPIO_PAT0_PAT013));
+    case 14:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS14;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC14;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C14;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S14;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT14)   == GPIO_INT_INT14)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK14) != GPIO_MASK_MASK14) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT114) != GPIO_PAT1_PAT114) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT014) == GPIO_PAT0_PAT014));
+    case 15:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS15;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC15;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C15;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S15;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT15)   == GPIO_INT_INT15)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK15) != GPIO_MASK_MASK15) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT115) != GPIO_PAT1_PAT115) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT015) == GPIO_PAT0_PAT015));
+    case 16:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS16;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC16;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C16;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S16;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT16)   == GPIO_INT_INT16)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK16) != GPIO_MASK_MASK16) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT116) != GPIO_PAT1_PAT116) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT016) == GPIO_PAT0_PAT016));
+    case 17:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS17;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC17;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C17;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S17;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT17)   == GPIO_INT_INT17)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK17) != GPIO_MASK_MASK17) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT117) != GPIO_PAT1_PAT117) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT017) == GPIO_PAT0_PAT017));
+    case 18:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS18;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC18;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C18;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S18;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT18)   == GPIO_INT_INT18)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK18) != GPIO_MASK_MASK18) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT118) != GPIO_PAT1_PAT118) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT018) == GPIO_PAT0_PAT018));
+    case 19:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS19;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC19;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C19;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S19;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT19)   == GPIO_INT_INT19)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK19) != GPIO_MASK_MASK19) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT119) != GPIO_PAT1_PAT119) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT019) == GPIO_PAT0_PAT019));
+    case 20:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS20;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC20;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C20;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S20;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT20)   == GPIO_INT_INT20)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK20) != GPIO_MASK_MASK20) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT120) != GPIO_PAT1_PAT120) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT020) == GPIO_PAT0_PAT020));
+    case 21:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS21;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC21;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C21;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S21;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT21)   == GPIO_INT_INT21)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK21) != GPIO_MASK_MASK21) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT121) != GPIO_PAT1_PAT121) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT021) == GPIO_PAT0_PAT021));
+    case 22:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS22;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC22;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C22;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S22;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT22)   == GPIO_INT_INT22)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK22) != GPIO_MASK_MASK22) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT122) != GPIO_PAT1_PAT122) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT022) == GPIO_PAT0_PAT022));
+    case 23:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS23;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC23;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C23;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S23;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT23)   == GPIO_INT_INT23)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK23) != GPIO_MASK_MASK23) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT123) != GPIO_PAT1_PAT123) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT023) == GPIO_PAT0_PAT023));
+    case 24:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS24;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC24;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C24;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S24;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT24)   == GPIO_INT_INT24)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK24) != GPIO_MASK_MASK24) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT124) != GPIO_PAT1_PAT124) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT024) == GPIO_PAT0_PAT024));
+    case 25:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS25;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC25;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C25;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S25;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT25)   == GPIO_INT_INT25)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK25) != GPIO_MASK_MASK25) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT125) != GPIO_PAT1_PAT125) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT025) == GPIO_PAT0_PAT025));
+    case 26:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS26;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC26;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C26;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S26;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT26)   == GPIO_INT_INT26)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK26) != GPIO_MASK_MASK26) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT126) != GPIO_PAT1_PAT126) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT026) == GPIO_PAT0_PAT026));
+    case 27:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS27;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC27;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C27;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S27;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT27)   == GPIO_INT_INT27)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK27) != GPIO_MASK_MASK27) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT127) != GPIO_PAT1_PAT127) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT027) == GPIO_PAT0_PAT027));
+    case 28:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS28;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC28;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C28;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S28;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT28)   == GPIO_INT_INT28)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK28) != GPIO_MASK_MASK28) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT128) != GPIO_PAT1_PAT128) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT028) == GPIO_PAT0_PAT028));
+    case 29:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS29;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC29;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C29;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S29;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT29)   == GPIO_INT_INT29)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK29) != GPIO_MASK_MASK29) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT129) != GPIO_PAT1_PAT129) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT029) == GPIO_PAT0_PAT029));
+    case 30:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS30;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC30;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C30;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S30;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT30)   == GPIO_INT_INT30)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK30) != GPIO_MASK_MASK30) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT130) != GPIO_PAT1_PAT130) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT030) == GPIO_PAT0_PAT030));
+    case 31:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS31;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC31;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C31;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S31;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT31)   == GPIO_INT_INT31)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK31) != GPIO_MASK_MASK31) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT131) != GPIO_PAT1_PAT131) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT031) == GPIO_PAT0_PAT031));
+    default:
+        return(false);
+    }
+}
+
+//*****************************************************************************
+//
+//! \internal
+//! Set GPIO function(low level triggered interrupt function).
+//!
+//! \param ulBase is the base address of the GPIO port.
+//! \param ulPinNumber is the number of the GPIO pin.
+//!
+//! This function set gpio low level interrupt function type.
+//!
+//! \return Returns \b true if the low level interrupt function set operation
+//! is success and \b false otherwise.
+//
+//*****************************************************************************
+static tBoolean
+GPIOLowInterruptFunctionSet(unsigned long ulBase, unsigned long ulPinNumber)
+{
+    unsigned long ulGroupID;
+
+    //
+    // Check the arguments.
+    //
+    ASSERT(GPIOBaseValid(ulBase));
+    ASSERT(GPIOPinNumberValid(ulPinNumber));
+
+    ulGroupID = GPIOGroupIDGet(ulBase);
+    ASSERT(ulGroupID != -1);
+
+    switch (ulPinNumber) {
+    case 0:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS0;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC0;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C0;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C0;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT0)   == GPIO_INT_INT0)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK0) != GPIO_MASK_MASK0) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT10) != GPIO_PAT1_PAT10) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT00) != GPIO_PAT0_PAT00));
+    case 1:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS1;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC1;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C1;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C1;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT1)   == GPIO_INT_INT1)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK1) != GPIO_MASK_MASK1) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT11) != GPIO_PAT1_PAT11) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT01) != GPIO_PAT0_PAT01));
+    case 2:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS2;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC2;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C2;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C2;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT2)   == GPIO_INT_INT2)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK2) != GPIO_MASK_MASK2) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT12) != GPIO_PAT1_PAT12) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT02) != GPIO_PAT0_PAT02));
+    case 3:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS3;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC3;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C3;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C3;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT3)   == GPIO_INT_INT3)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK3) != GPIO_MASK_MASK3) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT13) != GPIO_PAT1_PAT13) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT03) != GPIO_PAT0_PAT03));
+    case 4:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS4;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC4;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C4;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C4;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT4)   == GPIO_INT_INT4)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK4) != GPIO_MASK_MASK4) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT14) != GPIO_PAT1_PAT14) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT04) != GPIO_PAT0_PAT04));
+    case 5:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS5;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC5;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C5;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C5;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT5)   == GPIO_INT_INT5)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK5) != GPIO_MASK_MASK5) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT15) != GPIO_PAT1_PAT15) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT05) != GPIO_PAT0_PAT05));
+    case 6:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS6;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC6;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C6;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C6;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT6)   == GPIO_INT_INT6)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK6) != GPIO_MASK_MASK6) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT16) != GPIO_PAT1_PAT16) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT06) != GPIO_PAT0_PAT06));
+    case 7:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS7;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC7;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C7;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C7;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT7)   == GPIO_INT_INT7)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK7) != GPIO_MASK_MASK7) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT17) != GPIO_PAT1_PAT17) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT07) != GPIO_PAT0_PAT07));
+    case 8:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS8;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC8;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C8;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C8;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT8)   == GPIO_INT_INT8)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK8) != GPIO_MASK_MASK8) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT18) != GPIO_PAT1_PAT18) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT08) != GPIO_PAT0_PAT08));
+    case 9:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS9;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC9;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C9;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C9;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT9)   == GPIO_INT_INT9)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK9) != GPIO_MASK_MASK9) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT19) != GPIO_PAT1_PAT19) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT09) != GPIO_PAT0_PAT09));
+    case 10:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS10;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC10;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C10;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C10;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT10)   == GPIO_INT_INT10)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK10) != GPIO_MASK_MASK10) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT110) != GPIO_PAT1_PAT110) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT010) != GPIO_PAT0_PAT010));
+    case 11:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS11;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC11;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C11;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C11;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT11)   == GPIO_INT_INT11)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK11) != GPIO_MASK_MASK11) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT111) != GPIO_PAT1_PAT111) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT011) != GPIO_PAT0_PAT011));
+    case 12:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS12;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC12;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C12;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C12;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT12)   == GPIO_INT_INT12)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK12) != GPIO_MASK_MASK12) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT112) != GPIO_PAT1_PAT112) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT012) != GPIO_PAT0_PAT012));
+    case 13:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS13;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC13;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C13;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C13;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT13)   == GPIO_INT_INT13)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK13) != GPIO_MASK_MASK13) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT113) != GPIO_PAT1_PAT113) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT013) != GPIO_PAT0_PAT013));
+    case 14:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS14;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC14;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C14;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C14;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT14)   == GPIO_INT_INT14)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK14) != GPIO_MASK_MASK14) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT114) != GPIO_PAT1_PAT114) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT014) != GPIO_PAT0_PAT014));
+    case 15:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS15;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC15;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C15;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C15;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT15)   == GPIO_INT_INT15)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK15) != GPIO_MASK_MASK15) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT115) != GPIO_PAT1_PAT115) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT015) != GPIO_PAT0_PAT015));
+    case 16:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS16;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC16;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C16;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C16;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT16)   == GPIO_INT_INT16)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK16) != GPIO_MASK_MASK16) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT116) != GPIO_PAT1_PAT116) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT016) != GPIO_PAT0_PAT016));
+    case 17:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS17;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC17;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C17;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C17;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT17)   == GPIO_INT_INT17)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK17) != GPIO_MASK_MASK17) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT117) != GPIO_PAT1_PAT117) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT017) != GPIO_PAT0_PAT017));
+    case 18:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS18;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC18;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C18;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C18;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT18)   == GPIO_INT_INT18)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK18) != GPIO_MASK_MASK18) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT118) != GPIO_PAT1_PAT118) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT018) != GPIO_PAT0_PAT018));
+    case 19:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS19;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC19;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C19;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C19;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT19)   == GPIO_INT_INT19)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK19) != GPIO_MASK_MASK19) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT119) != GPIO_PAT1_PAT119) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT019) != GPIO_PAT0_PAT019));
+    case 20:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS20;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC20;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C20;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C20;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT20)   == GPIO_INT_INT20)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK20) != GPIO_MASK_MASK20) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT120) != GPIO_PAT1_PAT120) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT020) != GPIO_PAT0_PAT020));
+    case 21:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS21;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC21;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C21;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C21;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT21)   == GPIO_INT_INT21)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK21) != GPIO_MASK_MASK21) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT121) != GPIO_PAT1_PAT121) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT021) != GPIO_PAT0_PAT021));
+    case 22:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS22;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC22;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C22;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C22;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT22)   == GPIO_INT_INT22)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK22) != GPIO_MASK_MASK22) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT122) != GPIO_PAT1_PAT122) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT022) != GPIO_PAT0_PAT022));
+    case 23:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS23;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC23;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C23;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C23;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT23)   == GPIO_INT_INT23)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK23) != GPIO_MASK_MASK23) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT123) != GPIO_PAT1_PAT123) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT023) != GPIO_PAT0_PAT023));
+    case 24:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS24;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC24;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C24;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C24;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT24)   == GPIO_INT_INT24)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK24) != GPIO_MASK_MASK24) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT124) != GPIO_PAT1_PAT124) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT024) != GPIO_PAT0_PAT024));
+    case 25:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS25;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC25;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C25;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C25;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT25)   == GPIO_INT_INT25)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK25) != GPIO_MASK_MASK25) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT125) != GPIO_PAT1_PAT125) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT025) != GPIO_PAT0_PAT025));
+    case 26:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS26;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC26;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C26;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C26;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT26)   == GPIO_INT_INT26)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK26) != GPIO_MASK_MASK26) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT126) != GPIO_PAT1_PAT126) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT026) != GPIO_PAT0_PAT026));
+    case 27:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS27;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC27;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C27;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C27;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT27)   == GPIO_INT_INT27)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK27) != GPIO_MASK_MASK27) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT127) != GPIO_PAT1_PAT127) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT027) != GPIO_PAT0_PAT027));
+    case 28:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS28;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC28;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C28;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C28;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT28)   == GPIO_INT_INT28)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK28) != GPIO_MASK_MASK28) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT128) != GPIO_PAT1_PAT128) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT028) != GPIO_PAT0_PAT028));
+    case 29:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS29;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC29;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C29;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C29;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT29)   == GPIO_INT_INT29)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK29) != GPIO_MASK_MASK29) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT129) != GPIO_PAT1_PAT129) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT029) != GPIO_PAT0_PAT029));
+    case 30:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS30;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC30;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C30;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C30;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT30)   == GPIO_INT_INT30)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK30) != GPIO_MASK_MASK30) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT130) != GPIO_PAT1_PAT130) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT030) != GPIO_PAT0_PAT030));
+    case 31:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS31;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC31;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C31;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C31;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT31)   == GPIO_INT_INT31)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK31) != GPIO_MASK_MASK31) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT131) != GPIO_PAT1_PAT131) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT031) != GPIO_PAT0_PAT031));
+    default:
+        return(false);
+    }
+}
+
+//*****************************************************************************
+//
+//! \internal
+//! Set GPIO function(normal input function).
+//!
+//! \param ulBase is the base address of the GPIO port.
+//! \param ulPinNumber is the number of the GPIO pin.
+//!
+//! This function set gpio input function type.
+//!
+//! \return Returns \b true if the input function set operation
+//! is success and \b false otherwise.
+//
+//*****************************************************************************
+static tBoolean
+GPIOInputFunctionSet(unsigned long ulBase, unsigned long ulPinNumber)
+{
+    unsigned long ulGroupID;
+
+    //
+    // Check the arguments.
+    //
+    ASSERT(GPIOBaseValid(ulBase));
+    ASSERT(GPIOPinNumberValid(ulPinNumber));
+
+    ulGroupID = GPIOGroupIDGet(ulBase);
+    ASSERT(ulGroupID != -1);
+
+    switch (ulPinNumber) {
+    case 0:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC0;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS0;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S0;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S0;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT0)   != GPIO_INT_INT0)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK0) == GPIO_MASK_MASK0) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT10) == GPIO_PAT1_PAT10) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT00) == GPIO_PAT0_PAT00));
+    case 1:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC1;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS1;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S1;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S1;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT1)   != GPIO_INT_INT1)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK1) == GPIO_MASK_MASK1) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT11) == GPIO_PAT1_PAT11) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT01) == GPIO_PAT0_PAT01));
+    case 2:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC2;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS2;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S2;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S2;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT2)   != GPIO_INT_INT2)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK2) == GPIO_MASK_MASK2) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT12) == GPIO_PAT1_PAT12) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT02) == GPIO_PAT0_PAT02));
+    case 3:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC3;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS3;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S3;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S3;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT3)   != GPIO_INT_INT3)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK3) == GPIO_MASK_MASK3) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT13) == GPIO_PAT1_PAT13) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT03) == GPIO_PAT0_PAT03));
+    case 4:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC4;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS4;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S4;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S4;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT4)   != GPIO_INT_INT4)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK4) == GPIO_MASK_MASK4) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT14) == GPIO_PAT1_PAT14) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT04) == GPIO_PAT0_PAT04));
+    case 5:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC5;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS5;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S5;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S5;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT5)   != GPIO_INT_INT5)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK5) == GPIO_MASK_MASK5) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT15) == GPIO_PAT1_PAT15) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT05) == GPIO_PAT0_PAT05));
+    case 6:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC6;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS6;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S6;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S6;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT6)   != GPIO_INT_INT6)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK6) == GPIO_MASK_MASK6) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT16) == GPIO_PAT1_PAT16) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT06) == GPIO_PAT0_PAT06));
+    case 7:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC7;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS7;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S7;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S7;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT7)   != GPIO_INT_INT7)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK7) == GPIO_MASK_MASK7) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT17) == GPIO_PAT1_PAT17) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT07) == GPIO_PAT0_PAT07));
+    case 8:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC8;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS8;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S8;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S8;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT8)   != GPIO_INT_INT8)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK8) == GPIO_MASK_MASK8) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT18) == GPIO_PAT1_PAT18) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT08) == GPIO_PAT0_PAT08));
+    case 9:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC9;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS9;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S9;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S9;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT9)   != GPIO_INT_INT9)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK9) == GPIO_MASK_MASK9) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT19) == GPIO_PAT1_PAT19) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT09) == GPIO_PAT0_PAT09));
+    case 10:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC10;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS10;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S10;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S10;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT10)   != GPIO_INT_INT10)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK10) == GPIO_MASK_MASK10) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT110) == GPIO_PAT1_PAT110) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT010) == GPIO_PAT0_PAT010));
+    case 11:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC11;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS11;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S11;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S11;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT11)   != GPIO_INT_INT11)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK11) == GPIO_MASK_MASK11) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT111) == GPIO_PAT1_PAT111) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT011) == GPIO_PAT0_PAT011));
+    case 12:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC12;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS12;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S12;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S12;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT12)   != GPIO_INT_INT12)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK12) == GPIO_MASK_MASK12) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT112) == GPIO_PAT1_PAT112) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT012) == GPIO_PAT0_PAT012));
+    case 13:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC13;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS13;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S13;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S13;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT13)   != GPIO_INT_INT13)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK13) == GPIO_MASK_MASK13) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT113) == GPIO_PAT1_PAT113) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT013) == GPIO_PAT0_PAT013));
+    case 14:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC14;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS14;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S14;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S14;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT14)   != GPIO_INT_INT14)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK14) == GPIO_MASK_MASK14) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT114) == GPIO_PAT1_PAT114) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT014) == GPIO_PAT0_PAT014));
+    case 15:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC15;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS15;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S15;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S15;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT15)   != GPIO_INT_INT15)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK15) == GPIO_MASK_MASK15) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT115) == GPIO_PAT1_PAT115) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT015) == GPIO_PAT0_PAT015));
+    case 16:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC16;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS16;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S16;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S16;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT16)   != GPIO_INT_INT16)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK16) == GPIO_MASK_MASK16) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT116) == GPIO_PAT1_PAT116) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT016) == GPIO_PAT0_PAT016));
+    case 17:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC17;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS17;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S17;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S17;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT17)   != GPIO_INT_INT17)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK17) == GPIO_MASK_MASK17) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT117) == GPIO_PAT1_PAT117) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT017) == GPIO_PAT0_PAT017));
+    case 18:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC18;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS18;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S18;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S18;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT18)   != GPIO_INT_INT18)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK18) == GPIO_MASK_MASK18) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT118) == GPIO_PAT1_PAT118) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT018) == GPIO_PAT0_PAT018));
+    case 19:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC19;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS19;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S19;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S19;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT19)   != GPIO_INT_INT19)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK19) == GPIO_MASK_MASK19) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT119) == GPIO_PAT1_PAT119) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT019) == GPIO_PAT0_PAT019));
+    case 20:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC20;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS20;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S20;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S20;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT20)   != GPIO_INT_INT20)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK20) == GPIO_MASK_MASK20) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT120) == GPIO_PAT1_PAT120) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT020) == GPIO_PAT0_PAT020));
+    case 21:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC21;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS21;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S21;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S21;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT21)   != GPIO_INT_INT21)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK21) == GPIO_MASK_MASK21) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT121) == GPIO_PAT1_PAT121) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT021) == GPIO_PAT0_PAT021));
+    case 22:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC22;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS22;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S22;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S22;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT22)   != GPIO_INT_INT22)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK22) == GPIO_MASK_MASK22) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT122) == GPIO_PAT1_PAT122) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT022) == GPIO_PAT0_PAT022));
+    case 23:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC23;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS23;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S23;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S23;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT23)   != GPIO_INT_INT23)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK23) == GPIO_MASK_MASK23) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT123) == GPIO_PAT1_PAT123) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT023) == GPIO_PAT0_PAT023));
+    case 24:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC24;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS24;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S24;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S24;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT24)   != GPIO_INT_INT24)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK24) == GPIO_MASK_MASK24) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT124) == GPIO_PAT1_PAT124) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT024) == GPIO_PAT0_PAT024));
+    case 25:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC25;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS25;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S25;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S25;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT25)   != GPIO_INT_INT25)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK25) == GPIO_MASK_MASK25) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT125) == GPIO_PAT1_PAT125) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT025) == GPIO_PAT0_PAT025));
+    case 26:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC26;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS26;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S26;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S26;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT26)   != GPIO_INT_INT26)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK26) == GPIO_MASK_MASK26) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT126) == GPIO_PAT1_PAT126) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT026) == GPIO_PAT0_PAT026));
+    case 27:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC27;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS27;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S27;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S27;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT27)   != GPIO_INT_INT27)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK27) == GPIO_MASK_MASK27) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT127) == GPIO_PAT1_PAT127) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT027) == GPIO_PAT0_PAT027));
+    case 28:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC28;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS28;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S28;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S28;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT28)   != GPIO_INT_INT28)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK28) == GPIO_MASK_MASK28) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT128) == GPIO_PAT1_PAT128) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT028) == GPIO_PAT0_PAT028));
+    case 29:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC29;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS29;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S29;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S29;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT29)   != GPIO_INT_INT29)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK29) == GPIO_MASK_MASK29) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT129) == GPIO_PAT1_PAT129) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT029) == GPIO_PAT0_PAT029));
+    case 30:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC30;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS30;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S30;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S30;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT30)   != GPIO_INT_INT30)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK30) == GPIO_MASK_MASK30) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT130) == GPIO_PAT1_PAT130) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT030) == GPIO_PAT0_PAT030));
+    case 31:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC31;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS31;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S31;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S31;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT31)   != GPIO_INT_INT31)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK31) == GPIO_MASK_MASK31) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT131) == GPIO_PAT1_PAT131) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT031) == GPIO_PAT0_PAT031));
+    default:
+        return(false);
+    }
+}
+
+//*****************************************************************************
+//
+//! \internal
+//! Set GPIO function(output high function).
+//!
+//! \param ulBase is the base address of the GPIO port.
+//! \param ulPinNumber is the number of the GPIO pin.
+//!
+//! This function set gpio output high function type.
+//!
+//! \return Returns \b true if the output high function set operation
+//! is success and \b false otherwise.
+//
+//*****************************************************************************
+static tBoolean
+GPIOOutputHighFunctionSet(unsigned long ulBase, unsigned long ulPinNumber)
+{
+    unsigned long ulGroupID;
+
+    //
+    // Check the arguments.
+    //
+    ASSERT(GPIOBaseValid(ulBase));
+    ASSERT(GPIOPinNumberValid(ulPinNumber));
+
+    ulGroupID = GPIOGroupIDGet(ulBase);
+    ASSERT(ulGroupID != -1);
+
+    switch (ulPinNumber) {
+    case 0:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC0;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS0;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C0;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S0;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT0)   != GPIO_INT_INT0)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK0) == GPIO_MASK_MASK0) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT10) != GPIO_PAT1_PAT10) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT00) == GPIO_PAT0_PAT00));
+    case 1:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC1;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS1;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C1;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S1;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT1)   != GPIO_INT_INT1)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK1) == GPIO_MASK_MASK1) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT11) != GPIO_PAT1_PAT11) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT01) == GPIO_PAT0_PAT01));
+    case 2:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC2;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS2;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C2;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S2;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT2)   != GPIO_INT_INT2)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK2) == GPIO_MASK_MASK2) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT12) != GPIO_PAT1_PAT12) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT02) == GPIO_PAT0_PAT02));
+    case 3:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC3;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS3;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C3;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S3;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT3)   != GPIO_INT_INT3)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK3) == GPIO_MASK_MASK3) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT13) != GPIO_PAT1_PAT13) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT03) == GPIO_PAT0_PAT03));
+    case 4:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC4;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS4;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C4;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S4;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT4)   != GPIO_INT_INT4)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK4) == GPIO_MASK_MASK4) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT14) != GPIO_PAT1_PAT14) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT04) == GPIO_PAT0_PAT04));
+    case 5:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC5;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS5;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C5;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S5;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT5)   != GPIO_INT_INT5)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK5) == GPIO_MASK_MASK5) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT15) != GPIO_PAT1_PAT15) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT05) == GPIO_PAT0_PAT05));
+    case 6:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC6;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS6;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C6;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S6;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT6)   != GPIO_INT_INT6)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK6) == GPIO_MASK_MASK6) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT16) != GPIO_PAT1_PAT16) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT06) == GPIO_PAT0_PAT06));
+    case 7:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC7;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS7;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C7;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S7;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT7)   != GPIO_INT_INT7)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK7) == GPIO_MASK_MASK7) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT17) != GPIO_PAT1_PAT17) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT07) == GPIO_PAT0_PAT07));
+    case 8:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC8;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS8;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C8;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S8;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT8)   != GPIO_INT_INT8)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK8) == GPIO_MASK_MASK8) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT18) != GPIO_PAT1_PAT18) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT08) == GPIO_PAT0_PAT08));
+    case 9:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC9;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS9;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C9;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S9;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT9)   != GPIO_INT_INT9)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK9) == GPIO_MASK_MASK9) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT19) != GPIO_PAT1_PAT19) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT09) == GPIO_PAT0_PAT09));
+    case 10:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC10;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS10;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C10;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S10;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT10)   != GPIO_INT_INT10)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK10) == GPIO_MASK_MASK10) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT110) != GPIO_PAT1_PAT110) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT010) == GPIO_PAT0_PAT010));
+    case 11:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC11;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS11;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C11;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S11;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT11)   != GPIO_INT_INT11)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK11) == GPIO_MASK_MASK11) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT111) != GPIO_PAT1_PAT111) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT011) == GPIO_PAT0_PAT011));
+    case 12:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC12;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS12;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C12;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S12;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT12)   != GPIO_INT_INT12)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK12) == GPIO_MASK_MASK12) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT112) != GPIO_PAT1_PAT112) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT012) == GPIO_PAT0_PAT012));
+    case 13:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC13;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS13;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C13;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S13;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT13)   != GPIO_INT_INT13)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK13) == GPIO_MASK_MASK13) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT113) != GPIO_PAT1_PAT113) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT013) == GPIO_PAT0_PAT013));
+    case 14:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC14;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS14;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C14;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S14;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT14)   != GPIO_INT_INT14)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK14) == GPIO_MASK_MASK14) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT114) != GPIO_PAT1_PAT114) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT014) == GPIO_PAT0_PAT014));
+    case 15:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC15;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS15;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C15;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S15;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT15)   != GPIO_INT_INT15)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK15) == GPIO_MASK_MASK15) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT115) != GPIO_PAT1_PAT115) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT015) == GPIO_PAT0_PAT015));
+    case 16:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC16;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS16;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C16;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S16;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT16)   != GPIO_INT_INT16)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK16) == GPIO_MASK_MASK16) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT116) != GPIO_PAT1_PAT116) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT016) == GPIO_PAT0_PAT016));
+    case 17:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC17;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS17;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C17;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S17;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT17)   != GPIO_INT_INT17)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK17) == GPIO_MASK_MASK17) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT117) != GPIO_PAT1_PAT117) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT017) == GPIO_PAT0_PAT017));
+    case 18:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC18;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS18;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C18;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S18;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT18)   != GPIO_INT_INT18)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK18) == GPIO_MASK_MASK18) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT118) != GPIO_PAT1_PAT118) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT018) == GPIO_PAT0_PAT018));
+    case 19:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC19;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS19;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C19;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S19;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT19)   != GPIO_INT_INT19)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK19) == GPIO_MASK_MASK19) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT119) != GPIO_PAT1_PAT119) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT019) == GPIO_PAT0_PAT019));
+    case 20:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC20;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS20;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C20;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S20;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT20)   != GPIO_INT_INT20)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK20) == GPIO_MASK_MASK20) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT120) != GPIO_PAT1_PAT120) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT020) == GPIO_PAT0_PAT020));
+    case 21:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC21;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS21;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C21;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S21;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT21)   != GPIO_INT_INT21)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK21) == GPIO_MASK_MASK21) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT121) != GPIO_PAT1_PAT121) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT021) == GPIO_PAT0_PAT021));
+    case 22:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC22;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS22;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C22;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S22;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT22)   != GPIO_INT_INT22)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK22) == GPIO_MASK_MASK22) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT122) != GPIO_PAT1_PAT122) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT022) == GPIO_PAT0_PAT022));
+    case 23:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC23;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS23;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C23;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S23;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT23)   != GPIO_INT_INT23)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK23) == GPIO_MASK_MASK23) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT123) != GPIO_PAT1_PAT123) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT023) == GPIO_PAT0_PAT023));
+    case 24:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC24;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS24;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C24;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S24;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT24)   != GPIO_INT_INT24)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK24) == GPIO_MASK_MASK24) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT124) != GPIO_PAT1_PAT124) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT024) == GPIO_PAT0_PAT024));
+    case 25:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC25;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS25;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C25;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S25;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT25)   != GPIO_INT_INT25)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK25) == GPIO_MASK_MASK25) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT125) != GPIO_PAT1_PAT125) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT025) == GPIO_PAT0_PAT025));
+    case 26:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC26;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS26;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C26;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S26;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT26)   != GPIO_INT_INT26)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK26) == GPIO_MASK_MASK26) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT126) != GPIO_PAT1_PAT126) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT026) == GPIO_PAT0_PAT026));
+    case 27:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC27;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS27;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C27;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S27;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT27)   != GPIO_INT_INT27)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK27) == GPIO_MASK_MASK27) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT127) != GPIO_PAT1_PAT127) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT027) == GPIO_PAT0_PAT027));
+    case 28:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC28;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS28;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C28;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S28;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT28)   != GPIO_INT_INT28)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK28) == GPIO_MASK_MASK28) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT128) != GPIO_PAT1_PAT128) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT028) == GPIO_PAT0_PAT028));
+    case 29:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC29;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS29;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C29;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S29;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT29)   != GPIO_INT_INT29)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK29) == GPIO_MASK_MASK29) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT129) != GPIO_PAT1_PAT129) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT029) == GPIO_PAT0_PAT029));
+    case 30:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC30;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS30;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C30;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S30;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT30)   != GPIO_INT_INT30)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK30) == GPIO_MASK_MASK30) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT130) != GPIO_PAT1_PAT130) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT030) == GPIO_PAT0_PAT030));
+    case 31:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC31;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS31;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C31;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S31;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT31)   != GPIO_INT_INT31)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK31) == GPIO_MASK_MASK31) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT131) != GPIO_PAT1_PAT131) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT031) == GPIO_PAT0_PAT031));
+    default:
+        return(false);
+    }
+}
+
+//*****************************************************************************
+//
+//! \internal
+//! Set GPIO function(output low function).
+//!
+//! \param ulBase is the base address of the GPIO port.
+//! \param ulPinNumber is the number of the GPIO pin.
+//!
+//! This function set gpio output low function type.
+//!
+//! \return Returns \b true if the output low function set operation
+//! is success and \b false otherwise.
+//
+//*****************************************************************************
+static tBoolean
+GPIOOuptLowFunctionSet(unsigned long ulBase, unsigned long ulPinNumber)
+{
+    unsigned long ulGroupID;
+
+    //
+    // Check the arguments.
+    //
+    ASSERT(GPIOBaseValid(ulBase));
+    ASSERT(GPIOPinNumberValid(ulPinNumber));
+
+    ulGroupID = GPIOGroupIDGet(ulBase);
+    ASSERT(ulGroupID != -1);
+
+    switch (ulPinNumber) {
+    case 0:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC0;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS0;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C0;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C0;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT0)   != GPIO_INT_INT0)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK0) == GPIO_MASK_MASK0) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT10) != GPIO_PAT1_PAT10) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT00) != GPIO_PAT0_PAT00));
+    case 1:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC1;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS1;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C1;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C1;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT1)   != GPIO_INT_INT1)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK1) == GPIO_MASK_MASK1) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT11) != GPIO_PAT1_PAT11) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT01) != GPIO_PAT0_PAT01));
+    case 2:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC2;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS2;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C2;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C2;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT2)   != GPIO_INT_INT2)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK2) == GPIO_MASK_MASK2) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT12) != GPIO_PAT1_PAT12) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT02) != GPIO_PAT0_PAT02));
+    case 3:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC3;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS3;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C3;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C3;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT3)   != GPIO_INT_INT3)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK3) == GPIO_MASK_MASK3) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT13) != GPIO_PAT1_PAT13) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT03) != GPIO_PAT0_PAT03));
+    case 4:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC4;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS4;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C4;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C4;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT4)   != GPIO_INT_INT4)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK4) == GPIO_MASK_MASK4) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT14) != GPIO_PAT1_PAT14) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT04) != GPIO_PAT0_PAT04));
+    case 5:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC5;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS5;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C5;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C5;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT5)   != GPIO_INT_INT5)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK5) == GPIO_MASK_MASK5) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT15) != GPIO_PAT1_PAT15) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT05) != GPIO_PAT0_PAT05));
+    case 6:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC6;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS6;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C6;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C6;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT6)   != GPIO_INT_INT6)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK6) == GPIO_MASK_MASK6) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT16) != GPIO_PAT1_PAT16) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT06) != GPIO_PAT0_PAT06));
+    case 7:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC7;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS7;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C7;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C7;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT7)   != GPIO_INT_INT7)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK7) == GPIO_MASK_MASK7) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT17) != GPIO_PAT1_PAT17) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT07) != GPIO_PAT0_PAT07));
+    case 8:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC8;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS8;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C8;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C8;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT8)   != GPIO_INT_INT8)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK8) == GPIO_MASK_MASK8) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT18) != GPIO_PAT1_PAT18) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT08) != GPIO_PAT0_PAT08));
+    case 9:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC9;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS9;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C9;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C9;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT9)   != GPIO_INT_INT9)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK9) == GPIO_MASK_MASK9) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT19) != GPIO_PAT1_PAT19) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT09) != GPIO_PAT0_PAT09));
+    case 10:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC10;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS10;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C10;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C10;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT10)   != GPIO_INT_INT10)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK10) == GPIO_MASK_MASK10) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT110) != GPIO_PAT1_PAT110) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT010) != GPIO_PAT0_PAT010));
+    case 11:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC11;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS11;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C11;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C11;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT11)   != GPIO_INT_INT11)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK11) == GPIO_MASK_MASK11) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT111) != GPIO_PAT1_PAT111) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT011) != GPIO_PAT0_PAT011));
+    case 12:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC12;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS12;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C12;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C12;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT12)   != GPIO_INT_INT12)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK12) == GPIO_MASK_MASK12) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT112) != GPIO_PAT1_PAT112) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT012) != GPIO_PAT0_PAT012));
+    case 13:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC13;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS13;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C13;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C13;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT13)   != GPIO_INT_INT13)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK13) == GPIO_MASK_MASK13) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT113) != GPIO_PAT1_PAT113) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT013) != GPIO_PAT0_PAT013));
+    case 14:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC14;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS14;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C14;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C14;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT14)   != GPIO_INT_INT14)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK14) == GPIO_MASK_MASK14) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT114) != GPIO_PAT1_PAT114) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT014) != GPIO_PAT0_PAT014));
+    case 15:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC15;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS15;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C15;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C15;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT15)   != GPIO_INT_INT15)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK15) == GPIO_MASK_MASK15) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT115) != GPIO_PAT1_PAT115) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT015) != GPIO_PAT0_PAT015));
+    case 16:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC16;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS16;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C16;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C16;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT16)   != GPIO_INT_INT16)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK16) == GPIO_MASK_MASK16) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT116) != GPIO_PAT1_PAT116) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT016) != GPIO_PAT0_PAT016));
+    case 17:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC17;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS17;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C17;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C17;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT17)   != GPIO_INT_INT17)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK17) == GPIO_MASK_MASK17) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT117) != GPIO_PAT1_PAT117) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT017) != GPIO_PAT0_PAT017));
+    case 18:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC18;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS18;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C18;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C18;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT18)   != GPIO_INT_INT18)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK18) == GPIO_MASK_MASK18) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT118) != GPIO_PAT1_PAT118) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT018) != GPIO_PAT0_PAT018));
+    case 19:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC19;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS19;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C19;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C19;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT19)   != GPIO_INT_INT19)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK19) == GPIO_MASK_MASK19) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT119) != GPIO_PAT1_PAT119) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT019) != GPIO_PAT0_PAT019));
+    case 20:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC20;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS20;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C20;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C20;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT20)   != GPIO_INT_INT20)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK20) == GPIO_MASK_MASK20) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT120) != GPIO_PAT1_PAT120) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT020) != GPIO_PAT0_PAT020));
+    case 21:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC21;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS21;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C21;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C21;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT21)   != GPIO_INT_INT21)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK21) == GPIO_MASK_MASK21) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT121) != GPIO_PAT1_PAT121) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT021) != GPIO_PAT0_PAT021));
+    case 22:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC22;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS22;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C22;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C22;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT22)   != GPIO_INT_INT22)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK22) == GPIO_MASK_MASK22) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT122) != GPIO_PAT1_PAT122) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT022) != GPIO_PAT0_PAT022));
+    case 23:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC23;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS23;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C23;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C23;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT23)   != GPIO_INT_INT23)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK23) == GPIO_MASK_MASK23) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT123) != GPIO_PAT1_PAT123) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT023) != GPIO_PAT0_PAT023));
+    case 24:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC24;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS24;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C24;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C24;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT24)   != GPIO_INT_INT24)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK24) == GPIO_MASK_MASK24) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT124) != GPIO_PAT1_PAT124) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT024) != GPIO_PAT0_PAT024));
+    case 25:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC25;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS25;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C25;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C25;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT25)   != GPIO_INT_INT25)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK25) == GPIO_MASK_MASK25) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT125) != GPIO_PAT1_PAT125) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT025) != GPIO_PAT0_PAT025));
+    case 26:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC26;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS26;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C26;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C26;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT26)   != GPIO_INT_INT26)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK26) == GPIO_MASK_MASK26) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT126) != GPIO_PAT1_PAT126) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT026) != GPIO_PAT0_PAT026));
+    case 27:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC27;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS27;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C27;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C27;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT27)   != GPIO_INT_INT27)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK27) == GPIO_MASK_MASK27) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT127) != GPIO_PAT1_PAT127) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT027) != GPIO_PAT0_PAT027));
+    case 28:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC28;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS28;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C28;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C28;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT28)   != GPIO_INT_INT28)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK28) == GPIO_MASK_MASK28) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT128) != GPIO_PAT1_PAT128) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT028) != GPIO_PAT0_PAT028));
+    case 29:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC29;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS29;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C29;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C29;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT29)   != GPIO_INT_INT29)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK29) == GPIO_MASK_MASK29) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT129) != GPIO_PAT1_PAT129) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT029) != GPIO_PAT0_PAT029));
+    case 30:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC30;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS30;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C30;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C30;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT30)   != GPIO_INT_INT30)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK30) == GPIO_MASK_MASK30) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT130) != GPIO_PAT1_PAT130) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT030) != GPIO_PAT0_PAT030));
+    case 31:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC31;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS31;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C31;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C31;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT31)   != GPIO_INT_INT31)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK31) == GPIO_MASK_MASK31) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT131) != GPIO_PAT1_PAT131) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT031) != GPIO_PAT0_PAT031));
+    default:
+        return(false);
+    }
+}
+
+//*****************************************************************************
+//
+//! \internal
+//! Set GPIO function(device 3 function).
+//!
+//! \param ulBase is the base address of the GPIO port.
+//! \param ulPinNumber is the number of the GPIO pin.
+//!
+//! This function set gpio device 3 function type.
+//!
+//! \return Returns \b true if the device 3 function set operation
+//! is success and \b false otherwise.
+//
+//*****************************************************************************
+static tBoolean
+GPIODevice3FunctionSet(unsigned long ulBase, unsigned long ulPinNumber)
+{
+    unsigned long ulGroupID;
+
+    //
+    // Check the arguments.
+    //
+    ASSERT(GPIOBaseValid(ulBase));
+    ASSERT(GPIOPinNumberValid(ulPinNumber));
+
+    ulGroupID = GPIOGroupIDGet(ulBase);
+    ASSERT(ulGroupID != -1);
+
+    switch (ulPinNumber) {
+    case 0:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC0;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC0;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S0;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S0;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT0)   != GPIO_INT_INT0)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK0) != GPIO_MASK_MASK0) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT10) == GPIO_PAT1_PAT10) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT00) == GPIO_PAT0_PAT00));
+    case 1:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC1;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC1;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S1;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S1;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT1)   != GPIO_INT_INT1)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK1) != GPIO_MASK_MASK1) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT11) == GPIO_PAT1_PAT11) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT01) == GPIO_PAT0_PAT01));
+    case 2:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC2;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC2;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S2;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S2;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT2)   != GPIO_INT_INT2)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK2) != GPIO_MASK_MASK2) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT12) == GPIO_PAT1_PAT12) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT02) == GPIO_PAT0_PAT02));
+    case 3:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC3;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC3;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S3;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S3;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT3)   != GPIO_INT_INT3)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK3) != GPIO_MASK_MASK3) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT13) == GPIO_PAT1_PAT13) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT03) == GPIO_PAT0_PAT03));
+    case 4:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC4;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC4;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S4;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S4;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT4)   != GPIO_INT_INT4)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK4) != GPIO_MASK_MASK4) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT14) == GPIO_PAT1_PAT14) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT04) == GPIO_PAT0_PAT04));
+    case 5:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC5;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC5;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S5;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S5;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT5)   != GPIO_INT_INT5)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK5) != GPIO_MASK_MASK5) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT15) == GPIO_PAT1_PAT15) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT05) == GPIO_PAT0_PAT05));
+    case 6:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC6;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC6;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S6;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S6;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT6)   != GPIO_INT_INT6)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK6) != GPIO_MASK_MASK6) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT16) == GPIO_PAT1_PAT16) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT06) == GPIO_PAT0_PAT06));
+    case 7:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC7;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC7;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S7;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S7;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT7)   != GPIO_INT_INT7)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK7) != GPIO_MASK_MASK7) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT17) == GPIO_PAT1_PAT17) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT07) == GPIO_PAT0_PAT07));
+    case 8:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC8;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC8;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S8;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S8;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT8)   != GPIO_INT_INT8)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK8) != GPIO_MASK_MASK8) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT18) == GPIO_PAT1_PAT18) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT08) == GPIO_PAT0_PAT08));
+    case 9:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC9;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC9;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S9;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S9;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT9)   != GPIO_INT_INT9)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK9) != GPIO_MASK_MASK9) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT19) == GPIO_PAT1_PAT19) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT09) == GPIO_PAT0_PAT09));
+    case 10:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC10;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC10;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S10;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S10;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT10)   != GPIO_INT_INT10)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK10) != GPIO_MASK_MASK10) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT110) == GPIO_PAT1_PAT110) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT010) == GPIO_PAT0_PAT010));
+    case 11:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC11;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC11;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S11;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S11;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT11)   != GPIO_INT_INT11)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK11) != GPIO_MASK_MASK11) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT111) == GPIO_PAT1_PAT111) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT011) == GPIO_PAT0_PAT011));
+    case 12:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC12;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC12;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S12;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S12;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT12)   != GPIO_INT_INT12)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK12) != GPIO_MASK_MASK12) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT112) == GPIO_PAT1_PAT112) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT012) == GPIO_PAT0_PAT012));
+    case 13:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC13;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC13;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S13;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S13;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT13)   != GPIO_INT_INT13)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK13) != GPIO_MASK_MASK13) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT113) == GPIO_PAT1_PAT113) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT013) == GPIO_PAT0_PAT013));
+    case 14:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC14;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC14;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S14;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S14;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT14)   != GPIO_INT_INT14)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK14) != GPIO_MASK_MASK14) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT114) == GPIO_PAT1_PAT114) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT014) == GPIO_PAT0_PAT014));
+    case 15:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC15;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC15;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S15;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S15;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT15)   != GPIO_INT_INT15)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK15) != GPIO_MASK_MASK15) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT115) == GPIO_PAT1_PAT115) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT015) == GPIO_PAT0_PAT015));
+    case 16:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC16;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC16;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S16;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S16;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT16)   != GPIO_INT_INT16)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK16) != GPIO_MASK_MASK16) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT116) == GPIO_PAT1_PAT116) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT016) == GPIO_PAT0_PAT016));
+    case 17:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC17;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC17;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S17;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S17;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT17)   != GPIO_INT_INT17)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK17) != GPIO_MASK_MASK17) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT117) == GPIO_PAT1_PAT117) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT017) == GPIO_PAT0_PAT017));
+    case 18:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC18;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC18;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S18;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S18;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT18)   != GPIO_INT_INT18)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK18) != GPIO_MASK_MASK18) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT118) == GPIO_PAT1_PAT118) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT018) == GPIO_PAT0_PAT018));
+    case 19:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC19;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC19;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S19;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S19;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT19)   != GPIO_INT_INT19)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK19) != GPIO_MASK_MASK19) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT119) == GPIO_PAT1_PAT119) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT019) == GPIO_PAT0_PAT019));
+    case 20:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC20;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC20;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S20;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S20;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT20)   != GPIO_INT_INT20)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK20) != GPIO_MASK_MASK20) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT120) == GPIO_PAT1_PAT120) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT020) == GPIO_PAT0_PAT020));
+    case 21:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC21;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC21;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S21;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S21;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT21)   != GPIO_INT_INT21)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK21) != GPIO_MASK_MASK21) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT121) == GPIO_PAT1_PAT121) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT021) == GPIO_PAT0_PAT021));
+    case 22:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC22;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC22;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S22;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S22;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT22)   != GPIO_INT_INT22)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK22) != GPIO_MASK_MASK22) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT122) == GPIO_PAT1_PAT122) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT022) == GPIO_PAT0_PAT022));
+    case 23:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC23;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC23;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S23;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S23;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT23)   != GPIO_INT_INT23)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK23) != GPIO_MASK_MASK23) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT123) == GPIO_PAT1_PAT123) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT023) == GPIO_PAT0_PAT023));
+    case 24:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC24;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC24;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S24;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S24;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT24)   != GPIO_INT_INT24)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK24) != GPIO_MASK_MASK24) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT124) == GPIO_PAT1_PAT124) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT024) == GPIO_PAT0_PAT024));
+    case 25:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC25;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC25;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S25;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S25;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT25)   != GPIO_INT_INT25)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK25) != GPIO_MASK_MASK25) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT125) == GPIO_PAT1_PAT125) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT025) == GPIO_PAT0_PAT025));
+    case 26:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC26;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC26;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S26;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S26;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT26)   != GPIO_INT_INT26)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK26) != GPIO_MASK_MASK26) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT126) == GPIO_PAT1_PAT126) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT026) == GPIO_PAT0_PAT026));
+    case 27:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC27;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC27;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S27;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S27;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT27)   != GPIO_INT_INT27)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK27) != GPIO_MASK_MASK27) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT127) == GPIO_PAT1_PAT127) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT027) == GPIO_PAT0_PAT027));
+    case 28:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC28;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC28;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S28;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S28;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT28)   != GPIO_INT_INT28)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK28) != GPIO_MASK_MASK28) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT128) == GPIO_PAT1_PAT128) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT028) == GPIO_PAT0_PAT028));
+    case 29:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC29;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC29;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S29;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S29;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT29)   != GPIO_INT_INT29)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK29) != GPIO_MASK_MASK29) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT129) == GPIO_PAT1_PAT129) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT029) == GPIO_PAT0_PAT029));
+    case 30:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC30;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC30;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S30;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S30;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT30)   != GPIO_INT_INT30)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK30) != GPIO_MASK_MASK30) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT130) == GPIO_PAT1_PAT130) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT030) == GPIO_PAT0_PAT030));
+    case 31:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC31;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC31;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S31;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S31;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT31)   != GPIO_INT_INT31)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK31) != GPIO_MASK_MASK31) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT131) == GPIO_PAT1_PAT131) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT031) == GPIO_PAT0_PAT031));
+    default:
+        return(false);
+    }
+}
+
+//*****************************************************************************
+//
+//! \internal
+//! Set GPIO function(device 2 function).
+//!
+//! \param ulBase is the base address of the GPIO port.
+//! \param ulPinNumber is the number of the GPIO pin.
+//!
+//! This function set gpio device 2 function type.
+//!
+//! \return Returns \b true if the device 2 function set operation
+//! is success and \b false otherwise.
+//
+//*****************************************************************************
+static tBoolean
+GPIODevice2FunctionSet(unsigned long ulBase, unsigned long ulPinNumber)
+{
+    unsigned long ulGroupID;
+
+    //
+    // Check the arguments.
+    //
+    ASSERT(GPIOBaseValid(ulBase));
+    ASSERT(GPIOPinNumberValid(ulPinNumber));
+
+    ulGroupID = GPIOGroupIDGet(ulBase);
+    ASSERT(ulGroupID != -1);
+
+    switch (ulPinNumber) {
+    case 0:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC0;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC0;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S0;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C0;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT0)   != GPIO_INT_INT0)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK0) != GPIO_MASK_MASK0) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT10) == GPIO_PAT1_PAT10) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT00) != GPIO_PAT0_PAT00));
+    case 1:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC1;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC1;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S1;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C1;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT1)   != GPIO_INT_INT1)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK1) != GPIO_MASK_MASK1) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT11) == GPIO_PAT1_PAT11) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT01) != GPIO_PAT0_PAT01));
+    case 2:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC2;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC2;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S2;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C2;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT2)   != GPIO_INT_INT2)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK2) != GPIO_MASK_MASK2) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT12) == GPIO_PAT1_PAT12) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT02) != GPIO_PAT0_PAT02));
+    case 3:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC3;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC3;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S3;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C3;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT3)   != GPIO_INT_INT3)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK3) != GPIO_MASK_MASK3) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT13) == GPIO_PAT1_PAT13) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT03) != GPIO_PAT0_PAT03));
+    case 4:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC4;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC4;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S4;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C4;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT4)   != GPIO_INT_INT4)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK4) != GPIO_MASK_MASK4) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT14) == GPIO_PAT1_PAT14) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT04) != GPIO_PAT0_PAT04));
+    case 5:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC5;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC5;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S5;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C5;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT5)   != GPIO_INT_INT5)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK5) != GPIO_MASK_MASK5) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT15) == GPIO_PAT1_PAT15) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT05) != GPIO_PAT0_PAT05));
+    case 6:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC6;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC6;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S6;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C6;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT6)   != GPIO_INT_INT6)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK6) != GPIO_MASK_MASK6) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT16) == GPIO_PAT1_PAT16) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT06) != GPIO_PAT0_PAT06));
+    case 7:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC7;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC7;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S7;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C7;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT7)   != GPIO_INT_INT7)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK7) != GPIO_MASK_MASK7) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT17) == GPIO_PAT1_PAT17) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT07) != GPIO_PAT0_PAT07));
+    case 8:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC8;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC8;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S8;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C8;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT8)   != GPIO_INT_INT8)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK8) != GPIO_MASK_MASK8) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT18) == GPIO_PAT1_PAT18) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT08) != GPIO_PAT0_PAT08));
+    case 9:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC9;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC9;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S9;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C9;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT9)   != GPIO_INT_INT9)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK9) != GPIO_MASK_MASK9) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT19) == GPIO_PAT1_PAT19) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT09) != GPIO_PAT0_PAT09));
+    case 10:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC10;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC10;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S10;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C10;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT10)   != GPIO_INT_INT10)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK10) != GPIO_MASK_MASK10) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT110) == GPIO_PAT1_PAT110) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT010) != GPIO_PAT0_PAT010));
+    case 11:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC11;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC11;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S11;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C11;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT11)   != GPIO_INT_INT11)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK11) != GPIO_MASK_MASK11) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT111) == GPIO_PAT1_PAT111) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT011) != GPIO_PAT0_PAT011));
+    case 12:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC12;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC12;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S12;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C12;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT12)   != GPIO_INT_INT12)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK12) != GPIO_MASK_MASK12) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT112) == GPIO_PAT1_PAT112) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT012) != GPIO_PAT0_PAT012));
+    case 13:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC13;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC13;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S13;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C13;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT13)   != GPIO_INT_INT13)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK13) != GPIO_MASK_MASK13) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT113) == GPIO_PAT1_PAT113) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT013) != GPIO_PAT0_PAT013));
+    case 14:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC14;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC14;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S14;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C14;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT14)   != GPIO_INT_INT14)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK14) != GPIO_MASK_MASK14) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT114) == GPIO_PAT1_PAT114) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT014) != GPIO_PAT0_PAT014));
+    case 15:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC15;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC15;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S15;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C15;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT15)   != GPIO_INT_INT15)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK15) != GPIO_MASK_MASK15) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT115) == GPIO_PAT1_PAT115) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT015) != GPIO_PAT0_PAT015));
+    case 16:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC16;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC16;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S16;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C16;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT16)   != GPIO_INT_INT16)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK16) != GPIO_MASK_MASK16) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT116) == GPIO_PAT1_PAT116) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT016) != GPIO_PAT0_PAT016));
+    case 17:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC17;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC17;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S17;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C17;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT17)   != GPIO_INT_INT17)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK17) != GPIO_MASK_MASK17) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT117) == GPIO_PAT1_PAT117) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT017) != GPIO_PAT0_PAT017));
+    case 18:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC18;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC18;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S18;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C18;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT18)   != GPIO_INT_INT18)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK18) != GPIO_MASK_MASK18) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT118) == GPIO_PAT1_PAT118) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT018) != GPIO_PAT0_PAT018));
+    case 19:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC19;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC19;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S19;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C19;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT19)   != GPIO_INT_INT19)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK19) != GPIO_MASK_MASK19) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT119) == GPIO_PAT1_PAT119) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT019) != GPIO_PAT0_PAT019));
+    case 20:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC20;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC20;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S20;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C20;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT20)   != GPIO_INT_INT20)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK20) != GPIO_MASK_MASK20) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT120) == GPIO_PAT1_PAT120) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT020) != GPIO_PAT0_PAT020));
+    case 21:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC21;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC21;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S21;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C21;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT21)   != GPIO_INT_INT21)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK21) != GPIO_MASK_MASK21) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT121) == GPIO_PAT1_PAT121) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT021) != GPIO_PAT0_PAT021));
+    case 22:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC22;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC22;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S22;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C22;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT22)   != GPIO_INT_INT22)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK22) != GPIO_MASK_MASK22) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT122) == GPIO_PAT1_PAT122) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT022) != GPIO_PAT0_PAT022));
+    case 23:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC23;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC23;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S23;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C23;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT23)   != GPIO_INT_INT23)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK23) != GPIO_MASK_MASK23) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT123) == GPIO_PAT1_PAT123) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT023) != GPIO_PAT0_PAT023));
+    case 24:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC24;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC24;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S24;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C24;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT24)   != GPIO_INT_INT24)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK24) != GPIO_MASK_MASK24) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT124) == GPIO_PAT1_PAT124) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT024) != GPIO_PAT0_PAT024));
+    case 25:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC25;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC25;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S25;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C25;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT25)   != GPIO_INT_INT25)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK25) != GPIO_MASK_MASK25) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT125) == GPIO_PAT1_PAT125) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT025) != GPIO_PAT0_PAT025));
+    case 26:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC26;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC26;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S26;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C26;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT26)   != GPIO_INT_INT26)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK26) != GPIO_MASK_MASK26) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT126) == GPIO_PAT1_PAT126) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT026) != GPIO_PAT0_PAT026));
+    case 27:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC27;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC27;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S27;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C27;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT27)   != GPIO_INT_INT27)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK27) != GPIO_MASK_MASK27) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT127) == GPIO_PAT1_PAT127) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT027) != GPIO_PAT0_PAT027));
+    case 28:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC28;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC28;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S28;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C28;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT28)   != GPIO_INT_INT28)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK28) != GPIO_MASK_MASK28) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT128) == GPIO_PAT1_PAT128) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT028) != GPIO_PAT0_PAT028));
+    case 29:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC29;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC29;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S29;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C29;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT29)   != GPIO_INT_INT29)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK29) != GPIO_MASK_MASK29) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT129) == GPIO_PAT1_PAT129) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT029) != GPIO_PAT0_PAT029));
+    case 30:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC30;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC30;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S30;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C30;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT30)   != GPIO_INT_INT30)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK30) != GPIO_MASK_MASK30) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT130) == GPIO_PAT1_PAT130) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT030) != GPIO_PAT0_PAT030));
+    case 31:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC31;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC31;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S31;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C31;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT31)   != GPIO_INT_INT31)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK31) != GPIO_MASK_MASK31) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT131) == GPIO_PAT1_PAT131) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT031) != GPIO_PAT0_PAT031));
+    default:
+        return(false);
+    }
+}
+
+//*****************************************************************************
+//
+//! \internal
+//! Set GPIO function(device 1 function).
+//!
+//! \param ulBase is the base address of the GPIO port.
+//! \param ulPinNumber is the number of the GPIO pin.
+//!
+//! This function set gpio device 1 function type.
+//!
+//! \return Returns \b true if the device 1 function set operation
+//! is success and \b false otherwise.
+//
+//*****************************************************************************
+static tBoolean
+GPIODevice1FunctionSet(unsigned long ulBase, unsigned long ulPinNumber)
+{
+    unsigned long ulGroupID;
+
+    //
+    // Check the arguments.
+    //
+    ASSERT(GPIOBaseValid(ulBase));
+    ASSERT(GPIOPinNumberValid(ulPinNumber));
+
+    ulGroupID = GPIOGroupIDGet(ulBase);
+    ASSERT(ulGroupID != -1);
+
+    switch (ulPinNumber) {
+    case 0:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC0;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC0;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C0;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S0;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT0)   != GPIO_INT_INT0)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK0) != GPIO_MASK_MASK0) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT10) != GPIO_PAT1_PAT10) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT00) == GPIO_PAT0_PAT00));
+    case 1:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC1;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC1;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C1;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S1;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT1)   != GPIO_INT_INT1)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK1) != GPIO_MASK_MASK1) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT11) != GPIO_PAT1_PAT11) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT01) == GPIO_PAT0_PAT01));
+    case 2:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC2;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC2;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C2;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S2;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT2)   != GPIO_INT_INT2)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK2) != GPIO_MASK_MASK2) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT12) != GPIO_PAT1_PAT12) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT02) == GPIO_PAT0_PAT02));
+    case 3:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC3;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC3;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C3;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S3;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT3)   != GPIO_INT_INT3)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK3) != GPIO_MASK_MASK3) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT13) != GPIO_PAT1_PAT13) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT03) == GPIO_PAT0_PAT03));
+    case 4:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC4;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC4;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C4;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S4;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT4)   != GPIO_INT_INT4)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK4) != GPIO_MASK_MASK4) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT14) != GPIO_PAT1_PAT14) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT04) == GPIO_PAT0_PAT04));
+    case 5:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC5;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC5;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C5;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S5;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT5)   != GPIO_INT_INT5)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK5) != GPIO_MASK_MASK5) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT15) != GPIO_PAT1_PAT15) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT05) == GPIO_PAT0_PAT05));
+    case 6:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC6;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC6;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C6;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S6;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT6)   != GPIO_INT_INT6)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK6) != GPIO_MASK_MASK6) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT16) != GPIO_PAT1_PAT16) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT06) == GPIO_PAT0_PAT06));
+    case 7:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC7;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC7;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C7;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S7;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT7)   != GPIO_INT_INT7)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK7) != GPIO_MASK_MASK7) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT17) != GPIO_PAT1_PAT17) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT07) == GPIO_PAT0_PAT07));
+    case 8:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC8;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC8;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C8;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S8;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT8)   != GPIO_INT_INT8)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK8) != GPIO_MASK_MASK8) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT18) != GPIO_PAT1_PAT18) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT08) == GPIO_PAT0_PAT08));
+    case 9:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC9;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC9;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C9;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S9;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT9)   != GPIO_INT_INT9)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK9) != GPIO_MASK_MASK9) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT19) != GPIO_PAT1_PAT19) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT09) == GPIO_PAT0_PAT09));
+    case 10:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC10;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC10;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C10;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S10;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT10)   != GPIO_INT_INT10)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK10) != GPIO_MASK_MASK10) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT110) != GPIO_PAT1_PAT110) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT010) == GPIO_PAT0_PAT010));
+    case 11:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC11;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC11;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C11;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S11;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT11)   != GPIO_INT_INT11)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK11) != GPIO_MASK_MASK11) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT111) != GPIO_PAT1_PAT111) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT011) == GPIO_PAT0_PAT011));
+    case 12:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC12;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC12;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C12;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S12;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT12)   != GPIO_INT_INT12)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK12) != GPIO_MASK_MASK12) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT112) != GPIO_PAT1_PAT112) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT012) == GPIO_PAT0_PAT012));
+    case 13:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC13;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC13;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C13;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S13;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT13)   != GPIO_INT_INT13)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK13) != GPIO_MASK_MASK13) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT113) != GPIO_PAT1_PAT113) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT013) == GPIO_PAT0_PAT013));
+    case 14:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC14;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC14;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C14;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S14;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT14)   != GPIO_INT_INT14)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK14) != GPIO_MASK_MASK14) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT114) != GPIO_PAT1_PAT114) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT014) == GPIO_PAT0_PAT014));
+    case 15:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC15;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC15;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C15;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S15;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT15)   != GPIO_INT_INT15)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK15) != GPIO_MASK_MASK15) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT115) != GPIO_PAT1_PAT115) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT015) == GPIO_PAT0_PAT015));
+    case 16:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC16;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC16;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C16;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S16;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT16)   != GPIO_INT_INT16)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK16) != GPIO_MASK_MASK16) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT116) != GPIO_PAT1_PAT116) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT016) == GPIO_PAT0_PAT016));
+    case 17:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC17;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC17;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C17;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S17;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT17)   != GPIO_INT_INT17)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK17) != GPIO_MASK_MASK17) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT117) != GPIO_PAT1_PAT117) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT017) == GPIO_PAT0_PAT017));
+    case 18:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC18;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC18;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C18;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S18;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT18)   != GPIO_INT_INT18)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK18) != GPIO_MASK_MASK18) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT118) != GPIO_PAT1_PAT118) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT018) == GPIO_PAT0_PAT018));
+    case 19:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC19;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC19;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C19;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S19;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT19)   != GPIO_INT_INT19)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK19) != GPIO_MASK_MASK19) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT119) != GPIO_PAT1_PAT119) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT019) == GPIO_PAT0_PAT019));
+    case 20:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC20;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC20;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C20;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S20;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT20)   != GPIO_INT_INT20)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK20) != GPIO_MASK_MASK20) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT120) != GPIO_PAT1_PAT120) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT020) == GPIO_PAT0_PAT020));
+    case 21:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC21;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC21;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C21;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S21;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT21)   != GPIO_INT_INT21)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK21) != GPIO_MASK_MASK21) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT121) != GPIO_PAT1_PAT121) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT021) == GPIO_PAT0_PAT021));
+    case 22:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC22;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC22;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C22;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S22;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT22)   != GPIO_INT_INT22)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK22) != GPIO_MASK_MASK22) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT122) != GPIO_PAT1_PAT122) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT022) == GPIO_PAT0_PAT022));
+    case 23:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC23;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC23;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C23;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S23;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT23)   != GPIO_INT_INT23)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK23) != GPIO_MASK_MASK23) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT123) != GPIO_PAT1_PAT123) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT023) == GPIO_PAT0_PAT023));
+    case 24:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC24;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC24;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C24;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S24;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT24)   != GPIO_INT_INT24)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK24) != GPIO_MASK_MASK24) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT124) != GPIO_PAT1_PAT124) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT024) == GPIO_PAT0_PAT024));
+    case 25:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC25;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC25;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C25;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S25;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT25)   != GPIO_INT_INT25)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK25) != GPIO_MASK_MASK25) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT125) != GPIO_PAT1_PAT125) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT025) == GPIO_PAT0_PAT025));
+    case 26:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC26;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC26;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C26;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S26;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT26)   != GPIO_INT_INT26)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK26) != GPIO_MASK_MASK26) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT126) != GPIO_PAT1_PAT126) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT026) == GPIO_PAT0_PAT026));
+    case 27:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC27;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC27;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C27;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S27;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT27)   != GPIO_INT_INT27)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK27) != GPIO_MASK_MASK27) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT127) != GPIO_PAT1_PAT127) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT027) == GPIO_PAT0_PAT027));
+    case 28:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC28;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC28;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C28;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S28;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT28)   != GPIO_INT_INT28)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK28) != GPIO_MASK_MASK28) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT128) != GPIO_PAT1_PAT128) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT028) == GPIO_PAT0_PAT028));
+    case 29:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC29;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC29;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C29;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S29;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT29)   != GPIO_INT_INT29)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK29) != GPIO_MASK_MASK29) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT129) != GPIO_PAT1_PAT129) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT029) == GPIO_PAT0_PAT029));
+    case 30:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC30;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC30;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C30;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S30;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT30)   != GPIO_INT_INT30)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK30) != GPIO_MASK_MASK30) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT130) != GPIO_PAT1_PAT130) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT030) == GPIO_PAT0_PAT030));
+    case 31:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC31;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC31;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C31;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S31;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT31)   != GPIO_INT_INT31)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK31) != GPIO_MASK_MASK31) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT131) != GPIO_PAT1_PAT131) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT031) == GPIO_PAT0_PAT031));
+    default:
+        return(false);
+    }
+}
+
+//*****************************************************************************
+//
+//! \internal
+//! Set GPIO function(device 0 function).
+//!
+//! \param ulBase is the base address of the GPIO port.
+//! \param ulPinNumber is the number of the GPIO pin.
+//!
+//! This function set gpio device 0 function type.
+//!
+//! \return Returns \b true if the device 0 function set operation
+//! is success and \b false otherwise.
+//
+//*****************************************************************************
+static tBoolean
+GPIODevice0FunctionSet(unsigned long ulBase, unsigned long ulPinNumber)
+{
+    unsigned long ulGroupID;
+
+    //
+    // Check the arguments.
+    //
+    ASSERT(GPIOBaseValid(ulBase));
+    ASSERT(GPIOPinNumberValid(ulPinNumber));
+
+    ulGroupID = GPIOGroupIDGet(ulBase);
+    ASSERT(ulGroupID != -1);
+
+    switch (ulPinNumber) {
+    case 0:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC0;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC0;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C0;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C0;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT0)   != GPIO_INT_INT0)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK0) != GPIO_MASK_MASK0) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT10) != GPIO_PAT1_PAT10) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT00) != GPIO_PAT0_PAT00));
+    case 1:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC1;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC1;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C1;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C1;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT1)   != GPIO_INT_INT1)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK1) != GPIO_MASK_MASK1) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT11) != GPIO_PAT1_PAT11) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT01) != GPIO_PAT0_PAT01));
+    case 2:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC2;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC2;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C2;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C2;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT2)   != GPIO_INT_INT2)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK2) != GPIO_MASK_MASK2) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT12) != GPIO_PAT1_PAT12) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT02) != GPIO_PAT0_PAT02));
+    case 3:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC3;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC3;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C3;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C3;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT3)   != GPIO_INT_INT3)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK3) != GPIO_MASK_MASK3) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT13) != GPIO_PAT1_PAT13) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT03) != GPIO_PAT0_PAT03));
+    case 4:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC4;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC4;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C4;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C4;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT4)   != GPIO_INT_INT4)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK4) != GPIO_MASK_MASK4) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT14) != GPIO_PAT1_PAT14) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT04) != GPIO_PAT0_PAT04));
+    case 5:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC5;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC5;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C5;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C5;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT5)   != GPIO_INT_INT5)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK5) != GPIO_MASK_MASK5) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT15) != GPIO_PAT1_PAT15) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT05) != GPIO_PAT0_PAT05));
+    case 6:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC6;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC6;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C6;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C6;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT6)   != GPIO_INT_INT6)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK6) != GPIO_MASK_MASK6) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT16) != GPIO_PAT1_PAT16) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT06) != GPIO_PAT0_PAT06));
+    case 7:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC7;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC7;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C7;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C7;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT7)   != GPIO_INT_INT7)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK7) != GPIO_MASK_MASK7) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT17) != GPIO_PAT1_PAT17) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT07) != GPIO_PAT0_PAT07));
+    case 8:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC8;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC8;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C8;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C8;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT8)   != GPIO_INT_INT8)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK8) != GPIO_MASK_MASK8) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT18) != GPIO_PAT1_PAT18) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT08) != GPIO_PAT0_PAT08));
+    case 9:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC9;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC9;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C9;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C9;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT9)   != GPIO_INT_INT9)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK9) != GPIO_MASK_MASK9) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT19) != GPIO_PAT1_PAT19) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT09) != GPIO_PAT0_PAT09));
+    case 10:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC10;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC10;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C10;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C10;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT10)   != GPIO_INT_INT10)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK10) != GPIO_MASK_MASK10) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT110) != GPIO_PAT1_PAT110) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT010) != GPIO_PAT0_PAT010));
+    case 11:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC11;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC11;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C11;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C11;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT11)   != GPIO_INT_INT11)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK11) != GPIO_MASK_MASK11) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT111) != GPIO_PAT1_PAT111) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT011) != GPIO_PAT0_PAT011));
+    case 12:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC12;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC12;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C12;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C12;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT12)   != GPIO_INT_INT12)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK12) != GPIO_MASK_MASK12) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT112) != GPIO_PAT1_PAT112) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT012) != GPIO_PAT0_PAT012));
+    case 13:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC13;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC13;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C13;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C13;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT13)   != GPIO_INT_INT13)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK13) != GPIO_MASK_MASK13) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT113) != GPIO_PAT1_PAT113) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT013) != GPIO_PAT0_PAT013));
+    case 14:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC14;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC14;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C14;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C14;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT14)   != GPIO_INT_INT14)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK14) != GPIO_MASK_MASK14) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT114) != GPIO_PAT1_PAT114) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT014) != GPIO_PAT0_PAT014));
+    case 15:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC15;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC15;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C15;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C15;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT15)   != GPIO_INT_INT15)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK15) != GPIO_MASK_MASK15) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT115) != GPIO_PAT1_PAT115) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT015) != GPIO_PAT0_PAT015));
+    case 16:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC16;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC16;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C16;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C16;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT16)   != GPIO_INT_INT16)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK16) != GPIO_MASK_MASK16) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT116) != GPIO_PAT1_PAT116) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT016) != GPIO_PAT0_PAT016));
+    case 17:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC17;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC17;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C17;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C17;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT17)   != GPIO_INT_INT17)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK17) != GPIO_MASK_MASK17) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT117) != GPIO_PAT1_PAT117) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT017) != GPIO_PAT0_PAT017));
+    case 18:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC18;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC18;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C18;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C18;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT18)   != GPIO_INT_INT18)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK18) != GPIO_MASK_MASK18) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT118) != GPIO_PAT1_PAT118) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT018) != GPIO_PAT0_PAT018));
+    case 19:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC19;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC19;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C19;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C19;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT19)   != GPIO_INT_INT19)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK19) != GPIO_MASK_MASK19) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT119) != GPIO_PAT1_PAT119) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT019) != GPIO_PAT0_PAT019));
+    case 20:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC20;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC20;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C20;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C20;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT20)   != GPIO_INT_INT20)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK20) != GPIO_MASK_MASK20) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT120) != GPIO_PAT1_PAT120) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT020) != GPIO_PAT0_PAT020));
+    case 21:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC21;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC21;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C21;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C21;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT21)   != GPIO_INT_INT21)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK21) != GPIO_MASK_MASK21) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT121) != GPIO_PAT1_PAT121) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT021) != GPIO_PAT0_PAT021));
+    case 22:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC22;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC22;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C22;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C22;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT22)   != GPIO_INT_INT22)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK22) != GPIO_MASK_MASK22) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT122) != GPIO_PAT1_PAT122) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT022) != GPIO_PAT0_PAT022));
+    case 23:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC23;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC23;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C23;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C23;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT23)   != GPIO_INT_INT23)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK23) != GPIO_MASK_MASK23) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT123) != GPIO_PAT1_PAT123) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT023) != GPIO_PAT0_PAT023));
+    case 24:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC24;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC24;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C24;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C24;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT24)   != GPIO_INT_INT24)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK24) != GPIO_MASK_MASK24) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT124) != GPIO_PAT1_PAT124) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT024) != GPIO_PAT0_PAT024));
+    case 25:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC25;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC25;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C25;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C25;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT25)   != GPIO_INT_INT25)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK25) != GPIO_MASK_MASK25) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT125) != GPIO_PAT1_PAT125) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT025) != GPIO_PAT0_PAT025));
+    case 26:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC26;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC26;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C26;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C26;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT26)   != GPIO_INT_INT26)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK26) != GPIO_MASK_MASK26) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT126) != GPIO_PAT1_PAT126) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT026) != GPIO_PAT0_PAT026));
+    case 27:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC27;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC27;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C27;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C27;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT27)   != GPIO_INT_INT27)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK27) != GPIO_MASK_MASK27) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT127) != GPIO_PAT1_PAT127) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT027) != GPIO_PAT0_PAT027));
+    case 28:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC28;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC28;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C28;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C28;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT28)   != GPIO_INT_INT28)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK28) != GPIO_MASK_MASK28) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT128) != GPIO_PAT1_PAT128) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT028) != GPIO_PAT0_PAT028));
+    case 29:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC29;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC29;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C29;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C29;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT29)   != GPIO_INT_INT29)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK29) != GPIO_MASK_MASK29) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT129) != GPIO_PAT1_PAT129) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT029) != GPIO_PAT0_PAT029));
+    case 30:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC30;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC30;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C30;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C30;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT30)   != GPIO_INT_INT30)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK30) != GPIO_MASK_MASK30) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT130) != GPIO_PAT1_PAT130) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT030) != GPIO_PAT0_PAT030));
+    case 31:
+        HWREG(GPIOZ_BASE + GPIO_O_INTC)  |= GPIO_INTC_INTC31;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKC) |= GPIO_MASKC_MASKC31;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C31;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C31;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT31)   != GPIO_INT_INT31)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK31) != GPIO_MASK_MASK31) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT131) != GPIO_PAT1_PAT131) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT031) != GPIO_PAT0_PAT031));
+    default:
+        return(false);
+    }
+}
+
+//*****************************************************************************
+//
+//! \internal
+//! Set GPIO function(rising edge interrupt mask function).
+//!
+//! \param ulBase is the base address of the GPIO port.
+//! \param ulPinNumber is the number of the GPIO pin.
+//!
+//! This function set rising edge mask interrupt function type.
+//!
+//! \return Returns \b true if the rising edge mask function set operation
+//! is success and \b false otherwise.
+//
+//*****************************************************************************
+static tBoolean
+GPIORaiseInterruptMaskFunctionSet(unsigned long ulBase, unsigned long ulPinNumber)
+{
+    unsigned long ulGroupID;
+
+    //
+    // Check the arguments.
+    //
+    ASSERT(GPIOBaseValid(ulBase));
+    ASSERT(GPIOPinNumberValid(ulPinNumber));
+
+    ulGroupID = GPIOGroupIDGet(ulBase);
+    ASSERT(ulGroupID != -1);
+
+    switch (ulPinNumber) {
+    case 0:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS0;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS0;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S0;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S0;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT0)   == GPIO_INT_INT0)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK0) == GPIO_MASK_MASK0) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT10) == GPIO_PAT1_PAT10) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT00) == GPIO_PAT0_PAT00));
+    case 1:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS1;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS1;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S1;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S1;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT1)   == GPIO_INT_INT1)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK1) == GPIO_MASK_MASK1) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT11) == GPIO_PAT1_PAT11) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT01) == GPIO_PAT0_PAT01));
+    case 2:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS2;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS2;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S2;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S2;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT2)   == GPIO_INT_INT2)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK2) == GPIO_MASK_MASK2) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT12) == GPIO_PAT1_PAT12) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT02) == GPIO_PAT0_PAT02));
+    case 3:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS3;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS3;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S3;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S3;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT3)   == GPIO_INT_INT3)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK3) == GPIO_MASK_MASK3) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT13) == GPIO_PAT1_PAT13) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT03) == GPIO_PAT0_PAT03));
+    case 4:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS4;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS4;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S4;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S4;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT4)   == GPIO_INT_INT4)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK4) == GPIO_MASK_MASK4) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT14) == GPIO_PAT1_PAT14) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT04) == GPIO_PAT0_PAT04));
+    case 5:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS5;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS5;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S5;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S5;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT5)   == GPIO_INT_INT5)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK5) == GPIO_MASK_MASK5) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT15) == GPIO_PAT1_PAT15) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT05) == GPIO_PAT0_PAT05));
+    case 6:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS6;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS6;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S6;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S6;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT6)   == GPIO_INT_INT6)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK6) == GPIO_MASK_MASK6) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT16) == GPIO_PAT1_PAT16) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT06) == GPIO_PAT0_PAT06));
+    case 7:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS7;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS7;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S7;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S7;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT7)   == GPIO_INT_INT7)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK7) == GPIO_MASK_MASK7) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT17) == GPIO_PAT1_PAT17) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT07) == GPIO_PAT0_PAT07));
+    case 8:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS8;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS8;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S8;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S8;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT8)   == GPIO_INT_INT8)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK8) == GPIO_MASK_MASK8) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT18) == GPIO_PAT1_PAT18) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT08) == GPIO_PAT0_PAT08));
+    case 9:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS9;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS9;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S9;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S9;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT9)   == GPIO_INT_INT9)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK9) == GPIO_MASK_MASK9) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT19) == GPIO_PAT1_PAT19) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT09) == GPIO_PAT0_PAT09));
+    case 10:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS10;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS10;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S10;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S10;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT10)   == GPIO_INT_INT10)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK10) == GPIO_MASK_MASK10) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT110) == GPIO_PAT1_PAT110) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT010) == GPIO_PAT0_PAT010));
+    case 11:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS11;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS11;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S11;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S11;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT11)   == GPIO_INT_INT11)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK11) == GPIO_MASK_MASK11) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT111) == GPIO_PAT1_PAT111) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT011) == GPIO_PAT0_PAT011));
+    case 12:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS12;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS12;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S12;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S12;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT12)   == GPIO_INT_INT12)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK12) == GPIO_MASK_MASK12) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT112) == GPIO_PAT1_PAT112) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT012) == GPIO_PAT0_PAT012));
+    case 13:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS13;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS13;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S13;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S13;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT13)   == GPIO_INT_INT13)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK13) == GPIO_MASK_MASK13) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT113) == GPIO_PAT1_PAT113) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT013) == GPIO_PAT0_PAT013));
+    case 14:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS14;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS14;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S14;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S14;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT14)   == GPIO_INT_INT14)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK14) == GPIO_MASK_MASK14) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT114) == GPIO_PAT1_PAT114) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT014) == GPIO_PAT0_PAT014));
+    case 15:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS15;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS15;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S15;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S15;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT15)   == GPIO_INT_INT15)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK15) == GPIO_MASK_MASK15) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT115) == GPIO_PAT1_PAT115) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT015) == GPIO_PAT0_PAT015));
+    case 16:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS16;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS16;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S16;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S16;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT16)   == GPIO_INT_INT16)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK16) == GPIO_MASK_MASK16) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT116) == GPIO_PAT1_PAT116) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT016) == GPIO_PAT0_PAT016));
+    case 17:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS17;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS17;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S17;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S17;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT17)   == GPIO_INT_INT17)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK17) == GPIO_MASK_MASK17) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT117) == GPIO_PAT1_PAT117) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT017) == GPIO_PAT0_PAT017));
+    case 18:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS18;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS18;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S18;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S18;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT18)   == GPIO_INT_INT18)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK18) == GPIO_MASK_MASK18) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT118) == GPIO_PAT1_PAT118) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT018) == GPIO_PAT0_PAT018));
+    case 19:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS19;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS19;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S19;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S19;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT19)   == GPIO_INT_INT19)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK19) == GPIO_MASK_MASK19) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT119) == GPIO_PAT1_PAT119) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT019) == GPIO_PAT0_PAT019));
+    case 20:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS20;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS20;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S20;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S20;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT20)   == GPIO_INT_INT20)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK20) == GPIO_MASK_MASK20) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT120) == GPIO_PAT1_PAT120) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT020) == GPIO_PAT0_PAT020));
+    case 21:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS21;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS21;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S21;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S21;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT21)   == GPIO_INT_INT21)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK21) == GPIO_MASK_MASK21) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT121) == GPIO_PAT1_PAT121) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT021) == GPIO_PAT0_PAT021));
+    case 22:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS22;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS22;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S22;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S22;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT22)   == GPIO_INT_INT22)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK22) == GPIO_MASK_MASK22) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT122) == GPIO_PAT1_PAT122) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT022) == GPIO_PAT0_PAT022));
+    case 23:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS23;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS23;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S23;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S23;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT23)   == GPIO_INT_INT23)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK23) == GPIO_MASK_MASK23) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT123) == GPIO_PAT1_PAT123) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT023) == GPIO_PAT0_PAT023));
+    case 24:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS24;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS24;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S24;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S24;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT24)   == GPIO_INT_INT24)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK24) == GPIO_MASK_MASK24) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT124) == GPIO_PAT1_PAT124) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT024) == GPIO_PAT0_PAT024));
+    case 25:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS25;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS25;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S25;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S25;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT25)   == GPIO_INT_INT25)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK25) == GPIO_MASK_MASK25) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT125) == GPIO_PAT1_PAT125) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT025) == GPIO_PAT0_PAT025));
+    case 26:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS26;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS26;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S26;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S26;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT26)   == GPIO_INT_INT26)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK26) == GPIO_MASK_MASK26) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT126) == GPIO_PAT1_PAT126) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT026) == GPIO_PAT0_PAT026));
+    case 27:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS27;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS27;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S27;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S27;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT27)   == GPIO_INT_INT27)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK27) == GPIO_MASK_MASK27) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT127) == GPIO_PAT1_PAT127) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT027) == GPIO_PAT0_PAT027));
+    case 28:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS28;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS28;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S28;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S28;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT28)   == GPIO_INT_INT28)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK28) == GPIO_MASK_MASK28) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT128) == GPIO_PAT1_PAT128) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT028) == GPIO_PAT0_PAT028));
+    case 29:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS29;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS29;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S29;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S29;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT29)   == GPIO_INT_INT29)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK29) == GPIO_MASK_MASK29) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT129) == GPIO_PAT1_PAT129) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT029) == GPIO_PAT0_PAT029));
+    case 30:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS30;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS30;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S30;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S30;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT30)   == GPIO_INT_INT30)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK30) == GPIO_MASK_MASK30) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT130) == GPIO_PAT1_PAT130) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT030) == GPIO_PAT0_PAT030));
+    case 31:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS31;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS31;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S31;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S31;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT31)   == GPIO_INT_INT31)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK31) == GPIO_MASK_MASK31) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT131) == GPIO_PAT1_PAT131) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT031) == GPIO_PAT0_PAT031));
+    default:
+        return(false);
+    }
+}
+
+//*****************************************************************************
+//
+//! \internal
+//! Set GPIO function(falling edge interrupt mask function).
+//!
+//! \param ulBase is the base address of the GPIO port.
+//! \param ulPinNumber is the number of the GPIO pin.
+//!
+//! This function set falling edge mask interrupt function type.
+//!
+//! \return Returns \b true if the falling edge mask function set operation
+//! is success and \b false otherwise.
+//
+//*****************************************************************************
+static tBoolean
+GPIOFallingInterruptMaskFunctionSet(unsigned long ulBase, unsigned long ulPinNumber)
+{
+    unsigned long ulGroupID;
+
+    //
+    // Check the arguments.
+    //
+    ASSERT(GPIOBaseValid(ulBase));
+    ASSERT(GPIOPinNumberValid(ulPinNumber));
+
+    ulGroupID = GPIOGroupIDGet(ulBase);
+    ASSERT(ulGroupID != -1);
+
+    switch (ulPinNumber) {
+    case 0:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS0;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS0;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S0;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C0;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT0)   == GPIO_INT_INT0)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK0) == GPIO_MASK_MASK0) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT10) == GPIO_PAT1_PAT10) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT00) != GPIO_PAT0_PAT00));
+    case 1:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS1;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS1;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S1;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C1;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT1)   == GPIO_INT_INT1)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK1) == GPIO_MASK_MASK1) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT11) == GPIO_PAT1_PAT11) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT01) != GPIO_PAT0_PAT01));
+    case 2:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS2;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS2;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S2;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C2;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT2)   == GPIO_INT_INT2)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK2) == GPIO_MASK_MASK2) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT12) == GPIO_PAT1_PAT12) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT02) != GPIO_PAT0_PAT02));
+    case 3:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS3;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS3;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S3;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C3;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT3)   == GPIO_INT_INT3)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK3) == GPIO_MASK_MASK3) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT13) == GPIO_PAT1_PAT13) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT03) != GPIO_PAT0_PAT03));
+    case 4:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS4;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS4;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S4;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C4;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT4)   == GPIO_INT_INT4)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK4) == GPIO_MASK_MASK4) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT14) == GPIO_PAT1_PAT14) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT04) != GPIO_PAT0_PAT04));
+    case 5:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS5;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS5;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S5;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C5;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT5)   == GPIO_INT_INT5)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK5) == GPIO_MASK_MASK5) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT15) == GPIO_PAT1_PAT15) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT05) != GPIO_PAT0_PAT05));
+    case 6:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS6;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS6;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S6;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C6;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT6)   == GPIO_INT_INT6)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK6) == GPIO_MASK_MASK6) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT16) == GPIO_PAT1_PAT16) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT06) != GPIO_PAT0_PAT06));
+    case 7:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS7;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS7;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S7;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C7;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT7)   == GPIO_INT_INT7)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK7) == GPIO_MASK_MASK7) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT17) == GPIO_PAT1_PAT17) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT07) != GPIO_PAT0_PAT07));
+    case 8:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS8;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS8;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S8;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C8;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT8)   == GPIO_INT_INT8)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK8) == GPIO_MASK_MASK8) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT18) == GPIO_PAT1_PAT18) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT08) != GPIO_PAT0_PAT08));
+    case 9:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS9;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS9;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S9;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C9;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT9)   == GPIO_INT_INT9)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK9) == GPIO_MASK_MASK9) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT19) == GPIO_PAT1_PAT19) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT09) != GPIO_PAT0_PAT09));
+    case 10:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS10;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS10;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S10;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C10;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT10)   == GPIO_INT_INT10)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK10) == GPIO_MASK_MASK10) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT110) == GPIO_PAT1_PAT110) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT010) != GPIO_PAT0_PAT010));
+    case 11:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS11;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS11;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S11;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C11;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT11)   == GPIO_INT_INT11)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK11) == GPIO_MASK_MASK11) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT111) == GPIO_PAT1_PAT111) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT011) != GPIO_PAT0_PAT011));
+    case 12:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS12;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS12;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S12;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C12;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT12)   == GPIO_INT_INT12)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK12) == GPIO_MASK_MASK12) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT112) == GPIO_PAT1_PAT112) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT012) != GPIO_PAT0_PAT012));
+    case 13:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS13;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS13;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S13;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C13;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT13)   == GPIO_INT_INT13)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK13) == GPIO_MASK_MASK13) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT113) == GPIO_PAT1_PAT113) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT013) != GPIO_PAT0_PAT013));
+    case 14:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS14;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS14;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S14;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C14;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT14)   == GPIO_INT_INT14)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK14) == GPIO_MASK_MASK14) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT114) == GPIO_PAT1_PAT114) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT014) != GPIO_PAT0_PAT014));
+    case 15:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS15;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS15;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S15;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C15;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT15)   == GPIO_INT_INT15)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK15) == GPIO_MASK_MASK15) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT115) == GPIO_PAT1_PAT115) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT015) != GPIO_PAT0_PAT015));
+    case 16:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS16;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS16;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S16;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C16;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT16)   == GPIO_INT_INT16)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK16) == GPIO_MASK_MASK16) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT116) == GPIO_PAT1_PAT116) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT016) != GPIO_PAT0_PAT016));
+    case 17:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS17;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS17;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S17;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C17;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT17)   == GPIO_INT_INT17)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK17) == GPIO_MASK_MASK17) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT117) == GPIO_PAT1_PAT117) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT017) != GPIO_PAT0_PAT017));
+    case 18:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS18;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS18;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S18;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C18;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT18)   == GPIO_INT_INT18)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK18) == GPIO_MASK_MASK18) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT118) == GPIO_PAT1_PAT118) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT018) != GPIO_PAT0_PAT018));
+    case 19:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS19;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS19;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S19;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C19;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT19)   == GPIO_INT_INT19)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK19) == GPIO_MASK_MASK19) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT119) == GPIO_PAT1_PAT119) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT019) != GPIO_PAT0_PAT019));
+    case 20:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS20;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS20;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S20;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C20;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT20)   == GPIO_INT_INT20)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK20) == GPIO_MASK_MASK20) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT120) == GPIO_PAT1_PAT120) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT020) != GPIO_PAT0_PAT020));
+    case 21:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS21;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS21;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S21;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C21;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT21)   == GPIO_INT_INT21)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK21) == GPIO_MASK_MASK21) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT121) == GPIO_PAT1_PAT121) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT021) != GPIO_PAT0_PAT021));
+    case 22:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS22;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS22;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S22;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C22;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT22)   == GPIO_INT_INT22)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK22) == GPIO_MASK_MASK22) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT122) == GPIO_PAT1_PAT122) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT022) != GPIO_PAT0_PAT022));
+    case 23:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS23;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS23;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S23;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C23;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT23)   == GPIO_INT_INT23)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK23) == GPIO_MASK_MASK23) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT123) == GPIO_PAT1_PAT123) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT023) != GPIO_PAT0_PAT023));
+    case 24:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS24;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS24;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S24;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C24;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT24)   == GPIO_INT_INT24)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK24) == GPIO_MASK_MASK24) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT124) == GPIO_PAT1_PAT124) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT024) != GPIO_PAT0_PAT024));
+    case 25:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS25;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS25;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S25;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C25;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT25)   == GPIO_INT_INT25)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK25) == GPIO_MASK_MASK25) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT125) == GPIO_PAT1_PAT125) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT025) != GPIO_PAT0_PAT025));
+    case 26:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS26;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS26;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S26;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C26;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT26)   == GPIO_INT_INT26)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK26) == GPIO_MASK_MASK26) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT126) == GPIO_PAT1_PAT126) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT026) != GPIO_PAT0_PAT026));
+    case 27:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS27;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS27;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S27;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C27;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT27)   == GPIO_INT_INT27)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK27) == GPIO_MASK_MASK27) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT127) == GPIO_PAT1_PAT127) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT027) != GPIO_PAT0_PAT027));
+    case 28:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS28;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS28;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S28;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C28;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT28)   == GPIO_INT_INT28)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK28) == GPIO_MASK_MASK28) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT128) == GPIO_PAT1_PAT128) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT028) != GPIO_PAT0_PAT028));
+    case 29:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS29;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS29;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S29;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C29;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT29)   == GPIO_INT_INT29)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK29) == GPIO_MASK_MASK29) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT129) == GPIO_PAT1_PAT129) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT029) != GPIO_PAT0_PAT029));
+    case 30:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS30;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS30;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S30;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C30;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT30)   == GPIO_INT_INT30)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK30) == GPIO_MASK_MASK30) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT130) == GPIO_PAT1_PAT130) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT030) != GPIO_PAT0_PAT030));
+    case 31:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS31;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS31;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1S) |= GPIO_PAT1S_PAT1S31;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C31;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT31)   == GPIO_INT_INT31)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK31) == GPIO_MASK_MASK31) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT131) == GPIO_PAT1_PAT131) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT031) != GPIO_PAT0_PAT031));
+    default:
+        return(false);
+    }
+}
+
+//*****************************************************************************
+//
+//! \internal
+//! Set GPIO function(high interrupt mask function).
+//!
+//! \param ulBase is the base address of the GPIO port.
+//! \param ulPinNumber is the number of the GPIO pin.
+//!
+//! This function set high interrupt mask function type.
+//!
+//! \return Returns \b true if the high interrupt mask function set operation
+//! is success and \b false otherwise.
+//
+//*****************************************************************************
+static tBoolean
+GPIOHighInterruptMaskFunctionSet(unsigned long ulBase, unsigned long ulPinNumber)
+{
+    unsigned long ulGroupID;
+
+    //
+    // Check the arguments.
+    //
+    ASSERT(GPIOBaseValid(ulBase));
+    ASSERT(GPIOPinNumberValid(ulPinNumber));
+
+    ulGroupID = GPIOGroupIDGet(ulBase);
+    ASSERT(ulGroupID != -1);
+
+    switch (ulPinNumber) {
+    case 0:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS0;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS0;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C0;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S0;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT0)   == GPIO_INT_INT0)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK0) == GPIO_MASK_MASK0) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT10) != GPIO_PAT1_PAT10) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT00) == GPIO_PAT0_PAT00));
+    case 1:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS1;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS1;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C1;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S1;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT1)   == GPIO_INT_INT1)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK1) == GPIO_MASK_MASK1) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT11) != GPIO_PAT1_PAT11) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT01) == GPIO_PAT0_PAT01));
+    case 2:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS2;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS2;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C2;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S2;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT2)   == GPIO_INT_INT2)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK2) == GPIO_MASK_MASK2) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT12) != GPIO_PAT1_PAT12) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT02) == GPIO_PAT0_PAT02));
+    case 3:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS3;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS3;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C3;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S3;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT3)   == GPIO_INT_INT3)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK3) == GPIO_MASK_MASK3) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT13) != GPIO_PAT1_PAT13) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT03) == GPIO_PAT0_PAT03));
+    case 4:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS4;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS4;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C4;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S4;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT4)   == GPIO_INT_INT4)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK4) == GPIO_MASK_MASK4) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT14) != GPIO_PAT1_PAT14) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT04) == GPIO_PAT0_PAT04));
+    case 5:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS5;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS5;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C5;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S5;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT5)   == GPIO_INT_INT5)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK5) == GPIO_MASK_MASK5) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT15) != GPIO_PAT1_PAT15) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT05) == GPIO_PAT0_PAT05));
+    case 6:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS6;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS6;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C6;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S6;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT6)   == GPIO_INT_INT6)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK6) == GPIO_MASK_MASK6) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT16) != GPIO_PAT1_PAT16) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT06) == GPIO_PAT0_PAT06));
+    case 7:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS7;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS7;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C7;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S7;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT7)   == GPIO_INT_INT7)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK7) == GPIO_MASK_MASK7) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT17) != GPIO_PAT1_PAT17) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT07) == GPIO_PAT0_PAT07));
+    case 8:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS8;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS8;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C8;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S8;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT8)   == GPIO_INT_INT8)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK8) == GPIO_MASK_MASK8) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT18) != GPIO_PAT1_PAT18) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT08) == GPIO_PAT0_PAT08));
+    case 9:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS9;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS9;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C9;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S9;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT9)   == GPIO_INT_INT9)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK9) == GPIO_MASK_MASK9) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT19) != GPIO_PAT1_PAT19) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT09) == GPIO_PAT0_PAT09));
+    case 10:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS10;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS10;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C10;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S10;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT10)   == GPIO_INT_INT10)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK10) == GPIO_MASK_MASK10) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT110) != GPIO_PAT1_PAT110) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT010) == GPIO_PAT0_PAT010));
+    case 11:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS11;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS11;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C11;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S11;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT11)   == GPIO_INT_INT11)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK11) == GPIO_MASK_MASK11) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT111) != GPIO_PAT1_PAT111) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT011) == GPIO_PAT0_PAT011));
+    case 12:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS12;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS12;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C12;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S12;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT12)   == GPIO_INT_INT12)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK12) == GPIO_MASK_MASK12) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT112) != GPIO_PAT1_PAT112) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT012) == GPIO_PAT0_PAT012));
+    case 13:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS13;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS13;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C13;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S13;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT13)   == GPIO_INT_INT13)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK13) == GPIO_MASK_MASK13) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT113) != GPIO_PAT1_PAT113) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT013) == GPIO_PAT0_PAT013));
+    case 14:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS14;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS14;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C14;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S14;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT14)   == GPIO_INT_INT14)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK14) == GPIO_MASK_MASK14) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT114) != GPIO_PAT1_PAT114) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT014) == GPIO_PAT0_PAT014));
+    case 15:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS15;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS15;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C15;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S15;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT15)   == GPIO_INT_INT15)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK15) == GPIO_MASK_MASK15) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT115) != GPIO_PAT1_PAT115) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT015) == GPIO_PAT0_PAT015));
+    case 16:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS16;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS16;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C16;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S16;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT16)   == GPIO_INT_INT16)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK16) == GPIO_MASK_MASK16) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT116) != GPIO_PAT1_PAT116) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT016) == GPIO_PAT0_PAT016));
+    case 17:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS17;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS17;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C17;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S17;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT17)   == GPIO_INT_INT17)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK17) == GPIO_MASK_MASK17) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT117) != GPIO_PAT1_PAT117) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT017) == GPIO_PAT0_PAT017));
+    case 18:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS18;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS18;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C18;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S18;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT18)   == GPIO_INT_INT18)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK18) == GPIO_MASK_MASK18) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT118) != GPIO_PAT1_PAT118) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT018) == GPIO_PAT0_PAT018));
+    case 19:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS19;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS19;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C19;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S19;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT19)   == GPIO_INT_INT19)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK19) == GPIO_MASK_MASK19) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT119) != GPIO_PAT1_PAT119) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT019) == GPIO_PAT0_PAT019));
+    case 20:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS20;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS20;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C20;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S20;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT20)   == GPIO_INT_INT20)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK20) == GPIO_MASK_MASK20) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT120) != GPIO_PAT1_PAT120) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT020) == GPIO_PAT0_PAT020));
+    case 21:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS21;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS21;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C21;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S21;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT21)   == GPIO_INT_INT21)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK21) == GPIO_MASK_MASK21) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT121) != GPIO_PAT1_PAT121) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT021) == GPIO_PAT0_PAT021));
+    case 22:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS22;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS22;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C22;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S22;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT22)   == GPIO_INT_INT22)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK22) == GPIO_MASK_MASK22) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT122) != GPIO_PAT1_PAT122) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT022) == GPIO_PAT0_PAT022));
+    case 23:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS23;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS23;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C23;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S23;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT23)   == GPIO_INT_INT23)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK23) == GPIO_MASK_MASK23) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT123) != GPIO_PAT1_PAT123) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT023) == GPIO_PAT0_PAT023));
+    case 24:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS24;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS24;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C24;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S24;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT24)   == GPIO_INT_INT24)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK24) == GPIO_MASK_MASK24) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT124) != GPIO_PAT1_PAT124) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT024) == GPIO_PAT0_PAT024));
+    case 25:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS25;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS25;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C25;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S25;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT25)   == GPIO_INT_INT25)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK25) == GPIO_MASK_MASK25) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT125) != GPIO_PAT1_PAT125) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT025) == GPIO_PAT0_PAT025));
+    case 26:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS26;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS26;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C26;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S26;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT26)   == GPIO_INT_INT26)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK26) == GPIO_MASK_MASK26) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT126) != GPIO_PAT1_PAT126) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT026) == GPIO_PAT0_PAT026));
+    case 27:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS27;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS27;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C27;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S27;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT27)   == GPIO_INT_INT27)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK27) == GPIO_MASK_MASK27) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT127) != GPIO_PAT1_PAT127) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT027) == GPIO_PAT0_PAT027));
+    case 28:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS28;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS28;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C28;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S28;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT28)   == GPIO_INT_INT28)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK28) == GPIO_MASK_MASK28) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT128) != GPIO_PAT1_PAT128) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT028) == GPIO_PAT0_PAT028));
+    case 29:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS29;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS29;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C29;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S29;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT29)   == GPIO_INT_INT29)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK29) == GPIO_MASK_MASK29) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT129) != GPIO_PAT1_PAT129) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT029) == GPIO_PAT0_PAT029));
+    case 30:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS30;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS30;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C30;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S30;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT30)   == GPIO_INT_INT30)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK30) == GPIO_MASK_MASK30) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT130) != GPIO_PAT1_PAT130) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT030) == GPIO_PAT0_PAT030));
+    case 31:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS31;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS31;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C31;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0S) |= GPIO_PAT0S_PAT0S31;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT31)   == GPIO_INT_INT31)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK31) == GPIO_MASK_MASK31) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT131) != GPIO_PAT1_PAT131) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT031) == GPIO_PAT0_PAT031));
+    default:
+        return(false);
+    }
+}
+
+//*****************************************************************************
+//
+//! \internal
+//! Set GPIO function(low interrupt mask function).
+//!
+//! \param ulBase is the base address of the GPIO port.
+//! \param ulPinNumber is the number of the GPIO pin.
+//!
+//! This function set low interrupt mask function type.
+//!
+//! \return Returns \b true if the low interrupt mask function set operation
+//! is success and \b false otherwise.
+//
+//*****************************************************************************
+static tBoolean
+GPIOLowInterruptMaskFunctionSet(unsigned long ulBase, unsigned long ulPinNumber)
+{
+    unsigned long ulGroupID;
+
+    //
+    // Check the arguments.
+    //
+    ASSERT(GPIOBaseValid(ulBase));
+    ASSERT(GPIOPinNumberValid(ulPinNumber));
+
+    ulGroupID = GPIOGroupIDGet(ulBase);
+    ASSERT(ulGroupID != -1);
+
+    switch (ulPinNumber) {
+    case 0:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS0;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS0;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C0;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C0;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT0)   == GPIO_INT_INT0)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK0) == GPIO_MASK_MASK0) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT10) != GPIO_PAT1_PAT10) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT00) != GPIO_PAT0_PAT00));
+    case 1:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS1;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS1;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C1;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C1;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT1)   == GPIO_INT_INT1)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK1) == GPIO_MASK_MASK1) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT11) != GPIO_PAT1_PAT11) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT01) != GPIO_PAT0_PAT01));
+    case 2:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS2;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS2;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C2;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C2;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT2)   == GPIO_INT_INT2)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK2) == GPIO_MASK_MASK2) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT12) != GPIO_PAT1_PAT12) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT02) != GPIO_PAT0_PAT02));
+    case 3:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS3;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS3;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C3;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C3;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT3)   == GPIO_INT_INT3)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK3) == GPIO_MASK_MASK3) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT13) != GPIO_PAT1_PAT13) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT03) != GPIO_PAT0_PAT03));
+    case 4:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS4;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS4;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C4;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C4;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT4)   == GPIO_INT_INT4)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK4) == GPIO_MASK_MASK4) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT14) != GPIO_PAT1_PAT14) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT04) != GPIO_PAT0_PAT04));
+    case 5:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS5;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS5;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C5;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C5;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT5)   == GPIO_INT_INT5)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK5) == GPIO_MASK_MASK5) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT15) != GPIO_PAT1_PAT15) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT05) != GPIO_PAT0_PAT05));
+    case 6:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS6;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS6;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C6;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C6;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT6)   == GPIO_INT_INT6)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK6) == GPIO_MASK_MASK6) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT16) != GPIO_PAT1_PAT16) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT06) != GPIO_PAT0_PAT06));
+    case 7:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS7;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS7;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C7;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C7;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT7)   == GPIO_INT_INT7)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK7) == GPIO_MASK_MASK7) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT17) != GPIO_PAT1_PAT17) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT07) != GPIO_PAT0_PAT07));
+    case 8:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS8;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS8;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C8;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C8;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT8)   == GPIO_INT_INT8)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK8) == GPIO_MASK_MASK8) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT18) != GPIO_PAT1_PAT18) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT08) != GPIO_PAT0_PAT08));
+    case 9:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS9;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS9;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C9;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C9;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT9)   == GPIO_INT_INT9)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK9) == GPIO_MASK_MASK9) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT19) != GPIO_PAT1_PAT19) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT09) != GPIO_PAT0_PAT09));
+    case 10:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS10;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS10;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C10;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C10;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT10)   == GPIO_INT_INT10)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK10) == GPIO_MASK_MASK10) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT110) != GPIO_PAT1_PAT110) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT010) != GPIO_PAT0_PAT010));
+    case 11:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS11;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS11;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C11;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C11;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT11)   == GPIO_INT_INT11)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK11) == GPIO_MASK_MASK11) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT111) != GPIO_PAT1_PAT111) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT011) != GPIO_PAT0_PAT011));
+    case 12:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS12;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS12;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C12;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C12;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT12)   == GPIO_INT_INT12)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK12) == GPIO_MASK_MASK12) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT112) != GPIO_PAT1_PAT112) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT012) != GPIO_PAT0_PAT012));
+    case 13:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS13;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS13;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C13;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C13;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT13)   == GPIO_INT_INT13)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK13) == GPIO_MASK_MASK13) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT113) != GPIO_PAT1_PAT113) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT013) != GPIO_PAT0_PAT013));
+    case 14:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS14;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS14;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C14;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C14;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT14)   == GPIO_INT_INT14)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK14) == GPIO_MASK_MASK14) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT114) != GPIO_PAT1_PAT114) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT014) != GPIO_PAT0_PAT014));
+    case 15:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS15;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS15;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C15;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C15;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT15)   == GPIO_INT_INT15)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK15) == GPIO_MASK_MASK15) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT115) != GPIO_PAT1_PAT115) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT015) != GPIO_PAT0_PAT015));
+    case 16:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS16;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS16;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C16;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C16;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT16)   == GPIO_INT_INT16)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK16) == GPIO_MASK_MASK16) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT116) != GPIO_PAT1_PAT116) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT016) != GPIO_PAT0_PAT016));
+    case 17:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS17;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS17;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C17;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C17;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT17)   == GPIO_INT_INT17)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK17) == GPIO_MASK_MASK17) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT117) != GPIO_PAT1_PAT117) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT017) != GPIO_PAT0_PAT017));
+    case 18:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS18;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS18;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C18;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C18;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT18)   == GPIO_INT_INT18)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK18) == GPIO_MASK_MASK18) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT118) != GPIO_PAT1_PAT118) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT018) != GPIO_PAT0_PAT018));
+    case 19:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS19;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS19;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C19;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C19;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT19)   == GPIO_INT_INT19)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK19) == GPIO_MASK_MASK19) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT119) != GPIO_PAT1_PAT119) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT019) != GPIO_PAT0_PAT019));
+    case 20:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS20;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS20;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C20;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C20;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT20)   == GPIO_INT_INT20)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK20) == GPIO_MASK_MASK20) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT120) != GPIO_PAT1_PAT120) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT020) != GPIO_PAT0_PAT020));
+    case 21:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS21;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS21;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C21;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C21;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT21)   == GPIO_INT_INT21)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK21) == GPIO_MASK_MASK21) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT121) != GPIO_PAT1_PAT121) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT021) != GPIO_PAT0_PAT021));
+    case 22:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS22;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS22;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C22;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C22;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT22)   == GPIO_INT_INT22)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK22) == GPIO_MASK_MASK22) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT122) != GPIO_PAT1_PAT122) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT022) != GPIO_PAT0_PAT022));
+    case 23:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS23;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS23;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C23;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C23;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT23)   == GPIO_INT_INT23)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK23) == GPIO_MASK_MASK23) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT123) != GPIO_PAT1_PAT123) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT023) != GPIO_PAT0_PAT023));
+    case 24:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS24;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS24;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C24;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C24;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT24)   == GPIO_INT_INT24)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK24) == GPIO_MASK_MASK24) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT124) != GPIO_PAT1_PAT124) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT024) != GPIO_PAT0_PAT024));
+    case 25:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS25;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS25;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C25;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C25;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT25)   == GPIO_INT_INT25)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK25) == GPIO_MASK_MASK25) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT125) != GPIO_PAT1_PAT125) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT025) != GPIO_PAT0_PAT025));
+    case 26:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS26;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS26;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C26;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C26;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT26)   == GPIO_INT_INT26)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK26) == GPIO_MASK_MASK26) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT126) != GPIO_PAT1_PAT126) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT026) != GPIO_PAT0_PAT026));
+    case 27:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS27;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS27;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C27;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C27;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT27)   == GPIO_INT_INT27)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK27) == GPIO_MASK_MASK27) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT127) != GPIO_PAT1_PAT127) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT027) != GPIO_PAT0_PAT027));
+    case 28:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS28;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS28;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C28;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C28;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT28)   == GPIO_INT_INT28)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK28) == GPIO_MASK_MASK28) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT128) != GPIO_PAT1_PAT128) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT028) != GPIO_PAT0_PAT028));
+    case 29:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS29;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS29;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C29;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C29;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT29)   == GPIO_INT_INT29)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK29) == GPIO_MASK_MASK29) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT129) != GPIO_PAT1_PAT129) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT029) != GPIO_PAT0_PAT029));
+    case 30:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS30;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS30;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C30;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C30;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT30)   == GPIO_INT_INT30)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK30) == GPIO_MASK_MASK30) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT130) != GPIO_PAT1_PAT130) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT030) != GPIO_PAT0_PAT030));
+    case 31:
+        HWREG(GPIOZ_BASE + GPIO_O_INTS)  |= GPIO_INTS_INTS31;
+        HWREG(GPIOZ_BASE + GPIO_O_MASKS) |= GPIO_MASKS_MASKS31;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT1C) |= GPIO_PAT1C_PAT1C31;
+        HWREG(GPIOZ_BASE + GPIO_O_PAT0C) |= GPIO_PAT0C_PAT0C31;
+        HWREG(GPIOZ_BASE + GPIO_O_PGZIDLD) = ulGroupID;
+
+        return(((HWREG(ulBase + GPIO_O_INT)  & GPIO_INT_INT31)   == GPIO_INT_INT31)   &&
+               ((HWREG(ulBase + GPIO_O_MASK) & GPIO_MASK_MASK31) == GPIO_MASK_MASK31) &&
+               ((HWREG(ulBase + GPIO_O_PAT1) & GPIO_PAT1_PAT131) != GPIO_PAT1_PAT131) &&
+               ((HWREG(ulBase + GPIO_O_PAT0) & GPIO_PAT0_PAT031) != GPIO_PAT0_PAT031));
+    default:
+        return(false);
+    }
+}
+
+//*****************************************************************************
+//
 //! Set GPIO function.
 //!
 //! \param ulBase is the base address of the GPIO port.
@@ -1011,12 +6029,32 @@ GPIOFunctionSet(unsigned long ulBase, unsigned long ulPinNumber, unsigned long u
         return(GPIORaiseInterruptFunctionSet(ulBase, ulPinNumber));
     case GPIO_FUNCTION_FALLINT:
         return(GPIOFallingInterruptFunctionSet(ulBase, ulPinNumber));
-/*
     case GPIO_FUNCTION_HIGHINT:
         return(GPIOHighInterruptFunctionSet(ulBase, ulPinNumber));
     case GPIO_FUNCTION_LOWINT:
         return(GPIOLowInterruptFunctionSet(ulBase, ulPinNumber));
-*/
+    case GPIO_FUNCTION_INTPUT:
+        return(GPIOInputFunctionSet(ulBase, ulPinNumber));
+    case GPIO_FUNCTION_OUTPUT1:
+        return(GPIOOutputHighFunctionSet(ulBase, ulPinNumber));
+    case GPIO_FUNCTION_OUTPUT0:
+        return(GPIOOuptLowFunctionSet(ulBase, ulPinNumber));
+    case GPIO_FUNCTION_DEVICE3:
+        return(GPIODevice3FunctionSet(ulBase, ulPinNumber));
+    case GPIO_FUNCTION_DEVICE2:
+        return(GPIODevice2FunctionSet(ulBase, ulPinNumber));
+    case GPIO_FUNCTION_DEVICE1:
+        return(GPIODevice1FunctionSet(ulBase, ulPinNumber));
+    case GPIO_FUNCTION_DEVICE0:
+        return(GPIODevice0FunctionSet(ulBase, ulPinNumber));
+    case GPIO_FUNCTION_RAISEINTM:
+        return(GPIORaiseInterruptMaskFunctionSet(ulBase, ulPinNumber));
+    case GPIO_FUNCTION_FALLINTM:
+        return(GPIOFallingInterruptMaskFunctionSet(ulBase, ulPinNumber));
+    case GPIO_FUNCTION_HIGHINTM:
+        return(GPIOHighInterruptMaskFunctionSet(ulBase, ulPinNumber));
+    case GPIO_FUNCTION_LOWINTM:
+        return(GPIOLowInterruptMaskFunctionSet(ulBase, ulPinNumber));
     default:
         return(false);
     }

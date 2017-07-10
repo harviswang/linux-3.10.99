@@ -190,6 +190,10 @@ __init gpio_interrupt_of_init(struct device_node *node, struct device_node *pare
 
     irq_set_chained_handler(irq, gpio_irq_handler);
     irq_set_handler_data(irq, gpio_irq_domain);
+    /*
+     * I alse store res.start in node->data as private usage in m200_gpio.c
+     */
+    node->data = (void *)res.start;
 
     return 0;
 }

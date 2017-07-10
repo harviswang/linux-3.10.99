@@ -5,6 +5,9 @@
 
 /dts-v1/;
 
+#include "include/dt-bindings/gpio/gpio.h"
+#include "include/dt-bindings/input/input.h"
+
 #include "m200.dtsi"
 
 / {
@@ -28,6 +31,13 @@
         timer5 = &timer5;
         timer6 = &timer6;
         timer7 = &timer7;
+
+        gpio0 = &gpio0; /* used in gpio_interrupt_of_init() */
+        gpio1 = &gpio1;
+        gpio2 = &gpio2;
+        gpio3 = &gpio3;
+        gpio4 = &gpio4;
+        gpio5 = &gpio5;
     };
 
     memory {
@@ -51,6 +61,18 @@
         //linux,initrd-start = <0x81EF8000>; /* rd_start=0x81ef8000 not works TODO */
         //linux,initrd-end   = <0x81EC9EF4>; /* rd_size=0xb1ef4 */
     };
+
+    gpio-keys {
+        compatible = "gpio-keys";
+        #address-cells = <1>;
+        #size-cells = <0>;
+
+        button@0 {
+            label = "power";
+            linux,code = <KEY_POWER>;
+            gpios = <&gpio0 30 GPIO_ACTIVE_LOW>;
+        };
+    };
 };
 
 &uart3 {
@@ -62,5 +84,13 @@
 };
 
 &timer5 {
+    status = "okay";
+};
+
+&gpio0 {
+    status = "okay";
+};
+
+&gpio1 {
     status = "okay";
 };

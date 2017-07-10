@@ -74,6 +74,14 @@ extern "C" {
 // API Function prototypes
 //
 //*****************************************************************************
+extern tBoolean GPIOInterruptEnable(unsigned long ulBase, unsigned long ulPinNumber);
+extern tBoolean GPIOInterruptDisable(unsigned long ulBase, unsigned long ulPinNumber);
+extern tBoolean GPIOInterruptClear(unsigned long ulBase, unsigned long ulPinNumber);
+extern tBoolean GPIOInterruptTypeSet(unsigned long ulBase, unsigned long ulPinNumber, unsigned long ulInterruptType);
+extern tBoolean GPIOFunctionSet(unsigned long ulBase, unsigned long ulPinNumber, unsigned long ulFunction);
+extern unsigned long GPIONumberBaseGet(unsigned long ulBase);
+extern unsigned long GPIOBaseGet(unsigned long ulNumberBase);
+extern unsigned long GPIOPinLevelGet(unsigned long ulBase, unsigned long ulPinNumber);
 
 //*****************************************************************************
 //

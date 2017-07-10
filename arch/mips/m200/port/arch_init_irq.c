@@ -17,6 +17,7 @@
 #include <asm/bitops.h> /* ffs */
 #include "../driverlib/intc.h" /* IRQ_NO_TCU0 */
 #include "../linux/intc_linux.c" /* intc_chip */
+#include "../linux/gpio_linux.c" /* gpio_irq_chip */
 
 /*
  * interrupt 0: soft interrupt 0
@@ -144,6 +145,7 @@ static void m200_intc_irq_handler(unsigned int irq, struct irq_desc *desc)
     unsigned sr0 = (unsigned)INTCSr0Get();
 	unsigned sr1 = (unsigned)INTCSr1Get();
 
+    printk("%s line:%d\n", __func__, __LINE__);
     if (sr0 || sr1) {
         struct irq_domain *domain = irq_get_handler_data(irq);
         sr0 != 0 ? generic_handle_irq(irq_find_mapping(domain, __ffs(sr0))) : (void)sr0 ;
@@ -161,7 +163,6 @@ static int __init soc_intc_of_init(struct device_node *node,
     struct irq_domain *domain;
     int irq;
     int err;
-    void __iomem *intc_membase;
 
     irq = irq_of_parse_and_map(node, 0);
     if (!irq) {
@@ -174,16 +175,11 @@ static int __init soc_intc_of_init(struct device_node *node,
         printk("Failed to get INTC memory range at %s line:%d err:%d\n", __func__, __LINE__, err);
         return err;
     }
+    printk("%s line:%d res.start:0x%x\n", __func__, __LINE__, res.start);
 
     pres = request_mem_region(res.start, resource_size(&res), res.name);
     if (pres == NULL) {
         printk("Failed to request INTC memory at %s line:%d\n", __func__, __LINE__);
-        return -EINVAL;
-    }
-
-    intc_membase = ioremap_nocache(res.start, resource_size(&res));
-    if (intc_membase == NULL) {
-        printk("Failed to ioremap INTC memory at %s line:%d\n", __func__, __LINE__);
         return -EINVAL;
     }
 
@@ -218,6 +214,7 @@ static int __init soc_intc_of_init(struct device_node *node,
 static struct of_device_id __initdata of_irq_ids[] = {
     { .compatible = "mti,cpu-interrupt-controller", .data = mips_cpu_intc_init },
     { .compatible = "ingenic,m200-intc",            .data = soc_intc_of_init },
+    { .compatible = "ingenic,m200-gpio",            .data = gpio_interrupt_of_init },
     { },
 };
 

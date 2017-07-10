@@ -9,12 +9,20 @@
 
 static void intc_irq_mask(struct irq_data *data)
 {
-	INTCInterruptDisable(data->irq);
+    struct irq_desc *desc = irq_to_desc(data->irq);
+    if (desc != NULL) {
+        unsigned long hwirq = desc->irq_data.hwirq;
+	    INTCInterruptDisable(hwirq);
+    }
 }
 
 static void intc_irq_unmask(struct irq_data *data)
 {
-	INTCInterruptEnable(data->irq);
+    struct irq_desc *desc = irq_to_desc(data->irq);
+    if (desc != NULL) {
+        unsigned long hwirq = desc->irq_data.hwirq;
+	    INTCInterruptEnable(hwirq);
+    }
 }
 
 static struct irq_chip intc_chip = {

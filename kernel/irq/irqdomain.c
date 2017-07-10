@@ -231,9 +231,6 @@ struct irq_domain *irq_domain_add_legacy(struct device_node *of_node,
 
 	mutex_lock(&irq_domain_mutex);
 	/* Verify that all the irqs are available */
-/*
- * don't need to verify, if overlap just rewrite it
- * @Harvis Wang
 	for (i = 0; i < size; i++) {
 		int irq = first_irq + i;
 		struct irq_data *irq_data = irq_get_irq_data(irq);
@@ -244,7 +241,6 @@ struct irq_domain *irq_domain_add_legacy(struct device_node *of_node,
 			return NULL;
 		}
 	}
-*/
 
 	/* Claim all of the irqs before registering a legacy domain */
 	for (i = 0; i < size; i++) {
@@ -259,9 +255,8 @@ struct irq_domain *irq_domain_add_legacy(struct device_node *of_node,
 		int hwirq = first_hwirq + i;
 
 		/* IRQ0 gets ignored */
-        /* I don't think so @Harvis Wang */
-		//if (!irq)
-	    //	continue;
+		if (!irq)
+			continue;
 
 		/* Legacy flags are left to default at this point,
 		 * one can then use irq_create_mapping() to

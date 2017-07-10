@@ -35,7 +35,6 @@
         compatible = "simple-bus";
         #address-cells      = <1>;
         #size-cells         = <1>;
-        #interrupt-cells    = <2>;
         device_type = "soc";
         ranges = <0x10000000 0xB0000000 0x00100000>;
         bus-frequency = <0>;
@@ -192,9 +191,10 @@
             status = "disabled";
         };
 
-        intc_gpio0: interrupt-controller@10010000 { /* intc_gpio0 can't be intc-gpio0 */
+        gpio0: gpio-controller@10010000 {
             compatible = "ingenic,m200-gpio";
             reg = <0x10010000 0x00000100>;
+
             interrupt-controller;
             #interrupt-cells = <2>; /* cell[0] hwirq, cell[1] irq type
                                      * cell[1] note:
@@ -207,7 +207,96 @@
                                      */
 
             interrupt-parent = <&intc>;
-            #interrupts = <17>;
+            interrupts = <17>;
+
+            gpio-controller;
+            #gpio-cells = <2>;
+            ngpios = <32>;
+
+            status = "disabled";
+        };
+
+        gpio1: gpio-controller@10010100 {
+            compatible = "ingenic,m200-gpio";
+            reg = <0x10010100 0x00000100>;
+
+            interrupt-controller;
+            #interrupt-cells = <2>;
+
+            interrupt-parent = <&intc>;
+            interrupts = <16>;
+
+            gpio-controller;
+            #gpio-cells = <2>;
+            ngpios = <32>;
+
+            status = "disabled";
+        };
+
+        gpio2: gpio-controller@10010200 {
+            compatible = "ingenic,m200-gpio";
+            reg = <0x10010200 0x00000100>;
+
+            interrupt-controller;
+            #interrupt-cells = <2>;
+
+            interrupt-parent = <&intc>;
+            interrupts = <15>;
+
+            gpio-controller;
+            #gpio-cells = <2>;
+            ngpios = <32>;
+
+            status = "disabled";
+        };
+
+        gpio3: gpio-controller@10010300 {
+            compatible = "ingenic,m200-gpio";
+            reg = <0x10010300 0x00000100>;
+
+            interrupt-controller;
+            #interrupt-cells = <2>;
+
+            interrupt-parent = <&intc>;
+            interrupts = <14>;
+
+            gpio-controller;
+            #gpio-cells = <2>;
+            ngpios = <32>;
+
+            status = "disabled";
+        };
+
+        gpio4: gpio-controller@10010400 {
+            compatible = "ingenic,m200-gpio";
+            reg = <0x10010400 0x00000100>;
+
+            interrupt-controller;
+            #interrupt-cells = <2>;
+
+            interrupt-parent = <&intc>;
+            interrupts = <13>;
+
+            gpio-controller;
+            #gpio-cells = <2>;
+            ngpios = <32>;
+
+            status = "disabled";
+        };
+
+        gpio5: gpio-controller@10010500 {
+            compatible = "ingenic,m200-gpio";
+            reg = <0x10010500 0x00000100>;
+
+            interrupt-controller;
+            #interrupt-cells = <2>;
+
+            interrupt-parent = <&intc>;
+            interrupts = <12>;
+
+            gpio-controller;
+            #gpio-cells = <2>;
+            ngpios = <32>;
 
             status = "disabled";
         };

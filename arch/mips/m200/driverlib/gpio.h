@@ -82,6 +82,8 @@ extern tBoolean GPIOFunctionSet(unsigned long ulBase, unsigned long ulPinNumber,
 extern unsigned long GPIONumberBaseGet(unsigned long ulBase);
 extern unsigned long GPIOBaseGet(unsigned long ulNumberBase);
 extern unsigned long GPIOPinLevelGet(unsigned long ulBase, unsigned long ulPinNumber);
+extern tBoolean GPIOPullEnable(unsigned long ulBase, unsigned long ulPinNumber);
+extern tBoolean GPIOPullDisable(unsigned long ulBase, unsigned long ulPinNumber);
 
 //*****************************************************************************
 //

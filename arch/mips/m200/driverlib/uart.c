@@ -622,12 +622,12 @@ UARTConfigSetExpClk(unsigned long ulBase, unsigned long ulUARTClk,
     // Need to adjust ulDiv and ulMr, if ulDiv%16 then ulDiv/=16, ulMr*=16
     //  
     if (ulCompensate) {
-	ulCLKbr = BaudRateCLKGet(ulUARTClk, ulBaud ,&ulDiv);
-	ulAcr = ACR(ulCLKbr, ulBaud, &ulMr, &ulErrorSum);
-	if ((ulDiv % 16) == 0) {
-		ulDiv /= 16;
-		ulMr *= 16;
-	}
+        ulCLKbr = BaudRateCLKGet(ulUARTClk, ulBaud ,&ulDiv);
+        ulAcr = ACR(ulCLKbr, ulBaud, &ulMr, &ulErrorSum);
+        if ((ulDiv % 16) == 0) {
+            ulDiv /= 16;
+            ulMr *= 16;
+        }
     }
 
     //

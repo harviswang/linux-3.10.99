@@ -34,7 +34,8 @@ static int m200_gpio_direction_input(struct gpio_chip *chip, unsigned offset)
 {
     unsigned long ulBase = ((struct m200_gpio_chip *)chip)->gpio_mem_base;
     int result = GPIOFunctionSet(ulBase, offset, GPIO_FUNCTION_INTPUT);
-    return result == 1;
+    int err = (result == 1) ? 0 : -EINVAL;
+    return err;
 }
 
 static int m200_gpio_get(struct gpio_chip *chip, unsigned offset)

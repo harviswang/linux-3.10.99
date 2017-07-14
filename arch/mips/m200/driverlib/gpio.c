@@ -6229,3 +6229,249 @@ GPIOPinLevelGet(unsigned long ulBase, unsigned long ulPinNumber)
         return(-1);
     }
 }
+
+//*****************************************************************************
+//
+//! Enable GPIO internal pull resistor(pull down or pull up is pin dependence).
+//!
+//! \param ulBase is the base address of the GPIO port.
+//! \param ulPinNumber is the number of the GPIO pin.
+//!
+//! This function enable gpio internal pull register.
+//!
+//! \return Returns true if enable pull resistero operation success, others false
+//
+//*****************************************************************************
+tBoolean
+GPIOPullEnable(unsigned long ulBase, unsigned long ulPinNumber)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(GPIOBaseValid(ulBase));
+    ASSERT(GPIOPinNumberValid(ulPinNumber));
+
+    switch (ulPinNumber) {
+    case 0:
+        HWREG(ulBase + GPIO_O_PENC) |= GPIO_PENC_PULLC0;
+        return((HWREG(ulBase + GPIO_O_PEN) & GPIO_PEN_PULL0) != GPIO_PEN_PULL0);
+    case 1:
+        HWREG(ulBase + GPIO_O_PENC) |= GPIO_PENC_PULLC1;
+        return((HWREG(ulBase + GPIO_O_PEN) & GPIO_PEN_PULL1) != GPIO_PEN_PULL1);
+    case 2:
+        HWREG(ulBase + GPIO_O_PENC) |= GPIO_PENC_PULLC2;
+        return((HWREG(ulBase + GPIO_O_PEN) & GPIO_PEN_PULL2) != GPIO_PEN_PULL2);
+    case 3:
+        HWREG(ulBase + GPIO_O_PENC) |= GPIO_PENC_PULLC3;
+        return((HWREG(ulBase + GPIO_O_PEN) & GPIO_PEN_PULL3) != GPIO_PEN_PULL3);
+    case 4:
+        HWREG(ulBase + GPIO_O_PENC) |= GPIO_PENC_PULLC4;
+        return((HWREG(ulBase + GPIO_O_PEN) & GPIO_PEN_PULL4) != GPIO_PEN_PULL4);
+    case 5:
+        HWREG(ulBase + GPIO_O_PENC) |= GPIO_PENC_PULLC5;
+        return((HWREG(ulBase + GPIO_O_PEN) & GPIO_PEN_PULL5) != GPIO_PEN_PULL5);
+    case 6:
+        HWREG(ulBase + GPIO_O_PENC) |= GPIO_PENC_PULLC6;
+        return((HWREG(ulBase + GPIO_O_PEN) & GPIO_PEN_PULL6) != GPIO_PEN_PULL6);
+    case 7:
+        HWREG(ulBase + GPIO_O_PENC) |= GPIO_PENC_PULLC7;
+        return((HWREG(ulBase + GPIO_O_PEN) & GPIO_PEN_PULL7) != GPIO_PEN_PULL7);
+    case 8:
+        HWREG(ulBase + GPIO_O_PENC) |= GPIO_PENC_PULLC8;
+        return((HWREG(ulBase + GPIO_O_PEN) & GPIO_PEN_PULL8) != GPIO_PEN_PULL8);
+    case 9:
+        HWREG(ulBase + GPIO_O_PENC) |= GPIO_PENC_PULLC9;
+        return((HWREG(ulBase + GPIO_O_PEN) & GPIO_PEN_PULL9) != GPIO_PEN_PULL9);
+    case 10:
+        HWREG(ulBase + GPIO_O_PENC) |= GPIO_PENC_PULLC10;
+        return((HWREG(ulBase + GPIO_O_PEN) & GPIO_PEN_PULL10) != GPIO_PEN_PULL10);
+    case 11:
+        HWREG(ulBase + GPIO_O_PENC) |= GPIO_PENC_PULLC11;
+        return((HWREG(ulBase + GPIO_O_PEN) & GPIO_PEN_PULL11) != GPIO_PEN_PULL11);
+    case 12:
+        HWREG(ulBase + GPIO_O_PENC) |= GPIO_PENC_PULLC12;
+        return((HWREG(ulBase + GPIO_O_PEN) & GPIO_PEN_PULL12) != GPIO_PEN_PULL12);
+    case 13:
+        HWREG(ulBase + GPIO_O_PENC) |= GPIO_PENC_PULLC13;
+        return((HWREG(ulBase + GPIO_O_PEN) & GPIO_PEN_PULL13) != GPIO_PEN_PULL13);
+    case 14:
+        HWREG(ulBase + GPIO_O_PENC) |= GPIO_PENC_PULLC14;
+        return((HWREG(ulBase + GPIO_O_PEN) & GPIO_PEN_PULL14) != GPIO_PEN_PULL14);
+    case 15:
+        HWREG(ulBase + GPIO_O_PENC) |= GPIO_PENC_PULLC15;
+        return((HWREG(ulBase + GPIO_O_PEN) & GPIO_PEN_PULL15) != GPIO_PEN_PULL15);
+    case 16:
+        HWREG(ulBase + GPIO_O_PENC) |= GPIO_PENC_PULLC16;
+        return((HWREG(ulBase + GPIO_O_PEN) & GPIO_PEN_PULL16) != GPIO_PEN_PULL16);
+    case 17:
+        HWREG(ulBase + GPIO_O_PENC) |= GPIO_PENC_PULLC17;
+        return((HWREG(ulBase + GPIO_O_PEN) & GPIO_PEN_PULL17) != GPIO_PEN_PULL17);
+    case 18:
+        HWREG(ulBase + GPIO_O_PENC) |= GPIO_PENC_PULLC18;
+        return((HWREG(ulBase + GPIO_O_PEN) & GPIO_PEN_PULL18) != GPIO_PEN_PULL18);
+    case 19:
+        HWREG(ulBase + GPIO_O_PENC) |= GPIO_PENC_PULLC19;
+        return((HWREG(ulBase + GPIO_O_PEN) & GPIO_PEN_PULL19) != GPIO_PEN_PULL19);
+    case 20:
+        HWREG(ulBase + GPIO_O_PENC) |= GPIO_PENC_PULLC20;
+        return((HWREG(ulBase + GPIO_O_PEN) & GPIO_PEN_PULL20) != GPIO_PEN_PULL20);
+    case 21:
+        HWREG(ulBase + GPIO_O_PENC) |= GPIO_PENC_PULLC21;
+        return((HWREG(ulBase + GPIO_O_PEN) & GPIO_PEN_PULL21) != GPIO_PEN_PULL21);
+    case 22:
+        HWREG(ulBase + GPIO_O_PENC) |= GPIO_PENC_PULLC22;
+        return((HWREG(ulBase + GPIO_O_PEN) & GPIO_PEN_PULL22) != GPIO_PEN_PULL22);
+    case 23:
+        HWREG(ulBase + GPIO_O_PENC) |= GPIO_PENC_PULLC23;
+        return((HWREG(ulBase + GPIO_O_PEN) & GPIO_PEN_PULL23) != GPIO_PEN_PULL23);
+    case 24:
+        HWREG(ulBase + GPIO_O_PENC) |= GPIO_PENC_PULLC24;
+        return((HWREG(ulBase + GPIO_O_PEN) & GPIO_PEN_PULL24) != GPIO_PEN_PULL24);
+    case 25:
+        HWREG(ulBase + GPIO_O_PENC) |= GPIO_PENC_PULLC25;
+        return((HWREG(ulBase + GPIO_O_PEN) & GPIO_PEN_PULL25) != GPIO_PEN_PULL25);
+    case 26:
+        HWREG(ulBase + GPIO_O_PENC) |= GPIO_PENC_PULLC26;
+        return((HWREG(ulBase + GPIO_O_PEN) & GPIO_PEN_PULL26) != GPIO_PEN_PULL26);
+    case 27:
+        HWREG(ulBase + GPIO_O_PENC) |= GPIO_PENC_PULLC27;
+        return((HWREG(ulBase + GPIO_O_PEN) & GPIO_PEN_PULL27) != GPIO_PEN_PULL27);
+    case 28:
+        HWREG(ulBase + GPIO_O_PENC) |= GPIO_PENC_PULLC28;
+        return((HWREG(ulBase + GPIO_O_PEN) & GPIO_PEN_PULL28) != GPIO_PEN_PULL28);
+    case 29:
+        HWREG(ulBase + GPIO_O_PENC) |= GPIO_PENC_PULLC29;
+        return((HWREG(ulBase + GPIO_O_PEN) & GPIO_PEN_PULL29) != GPIO_PEN_PULL29);
+    case 30:
+        HWREG(ulBase + GPIO_O_PENC) |= GPIO_PENC_PULLC30;
+        return((HWREG(ulBase + GPIO_O_PEN) & GPIO_PEN_PULL30) != GPIO_PEN_PULL30);
+    case 31:
+        HWREG(ulBase + GPIO_O_PENC) |= GPIO_PENC_PULLC31;
+        return((HWREG(ulBase + GPIO_O_PEN) & GPIO_PEN_PULL31) != GPIO_PEN_PULL31);
+    default:
+        return(false);
+    }
+}
+
+//*****************************************************************************
+//
+//! Disable GPIO internal pull resistor(pull down or pull up is pin dependence).
+//!
+//! \param ulBase is the base address of the GPIO port.
+//! \param ulPinNumber is the number of the GPIO pin.
+//!
+//! This function disable gpio internal pull register.
+//!
+//! \return Returns true if disable pull resistero operation success, others false
+//
+//*****************************************************************************
+tBoolean
+GPIOPullDisable(unsigned long ulBase, unsigned long ulPinNumber)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(GPIOBaseValid(ulBase));
+    ASSERT(GPIOPinNumberValid(ulPinNumber));
+
+    switch (ulPinNumber) {
+    case 0:
+        HWREG(ulBase + GPIO_O_PENS) |= GPIO_PENS_PULLS0;
+        return((HWREG(ulBase + GPIO_O_PEN) & GPIO_PEN_PULL0) == GPIO_PEN_PULL0);
+    case 1:
+        HWREG(ulBase + GPIO_O_PENS) |= GPIO_PENS_PULLS1;
+        return((HWREG(ulBase + GPIO_O_PEN) & GPIO_PEN_PULL1) == GPIO_PEN_PULL1);
+    case 2:
+        HWREG(ulBase + GPIO_O_PENS) |= GPIO_PENS_PULLS2;
+        return((HWREG(ulBase + GPIO_O_PEN) & GPIO_PEN_PULL2) == GPIO_PEN_PULL2);
+    case 3:
+        HWREG(ulBase + GPIO_O_PENS) |= GPIO_PENS_PULLS3;
+        return((HWREG(ulBase + GPIO_O_PEN) & GPIO_PEN_PULL3) == GPIO_PEN_PULL3);
+    case 4:
+        HWREG(ulBase + GPIO_O_PENS) |= GPIO_PENS_PULLS4;
+        return((HWREG(ulBase + GPIO_O_PEN) & GPIO_PEN_PULL4) == GPIO_PEN_PULL4);
+    case 5:
+        HWREG(ulBase + GPIO_O_PENS) |= GPIO_PENS_PULLS5;
+        return((HWREG(ulBase + GPIO_O_PEN) & GPIO_PEN_PULL5) == GPIO_PEN_PULL5);
+    case 6:
+        HWREG(ulBase + GPIO_O_PENS) |= GPIO_PENS_PULLS6;
+        return((HWREG(ulBase + GPIO_O_PEN) & GPIO_PEN_PULL6) == GPIO_PEN_PULL6);
+    case 7:
+        HWREG(ulBase + GPIO_O_PENS) |= GPIO_PENS_PULLS7;
+        return((HWREG(ulBase + GPIO_O_PEN) & GPIO_PEN_PULL7) == GPIO_PEN_PULL7);
+    case 8:
+        HWREG(ulBase + GPIO_O_PENS) |= GPIO_PENS_PULLS8;
+        return((HWREG(ulBase + GPIO_O_PEN) & GPIO_PEN_PULL8) == GPIO_PEN_PULL8);
+    case 9:
+        HWREG(ulBase + GPIO_O_PENS) |= GPIO_PENS_PULLS9;
+        return((HWREG(ulBase + GPIO_O_PEN) & GPIO_PEN_PULL9) == GPIO_PEN_PULL9);
+    case 10:
+        HWREG(ulBase + GPIO_O_PENS) |= GPIO_PENS_PULLS10;
+        return((HWREG(ulBase + GPIO_O_PEN) & GPIO_PEN_PULL10) == GPIO_PEN_PULL10);
+    case 11:
+        HWREG(ulBase + GPIO_O_PENS) |= GPIO_PENS_PULLS11;
+        return((HWREG(ulBase + GPIO_O_PEN) & GPIO_PEN_PULL11) == GPIO_PEN_PULL11);
+    case 12:
+        HWREG(ulBase + GPIO_O_PENS) |= GPIO_PENS_PULLS12;
+        return((HWREG(ulBase + GPIO_O_PEN) & GPIO_PEN_PULL12) == GPIO_PEN_PULL12);
+    case 13:
+        HWREG(ulBase + GPIO_O_PENS) |= GPIO_PENS_PULLS13;
+        return((HWREG(ulBase + GPIO_O_PEN) & GPIO_PEN_PULL13) == GPIO_PEN_PULL13);
+    case 14:
+        HWREG(ulBase + GPIO_O_PENS) |= GPIO_PENS_PULLS14;
+        return((HWREG(ulBase + GPIO_O_PEN) & GPIO_PEN_PULL14) == GPIO_PEN_PULL14);
+    case 15:
+        HWREG(ulBase + GPIO_O_PENS) |= GPIO_PENS_PULLS15;
+        return((HWREG(ulBase + GPIO_O_PEN) & GPIO_PEN_PULL15) == GPIO_PEN_PULL15);
+    case 16:
+        HWREG(ulBase + GPIO_O_PENS) |= GPIO_PENS_PULLS16;
+        return((HWREG(ulBase + GPIO_O_PEN) & GPIO_PEN_PULL16) == GPIO_PEN_PULL16);
+    case 17:
+        HWREG(ulBase + GPIO_O_PENS) |= GPIO_PENS_PULLS17;
+        return((HWREG(ulBase + GPIO_O_PEN) & GPIO_PEN_PULL17) == GPIO_PEN_PULL17);
+    case 18:
+        HWREG(ulBase + GPIO_O_PENS) |= GPIO_PENS_PULLS18;
+        return((HWREG(ulBase + GPIO_O_PEN) & GPIO_PEN_PULL18) == GPIO_PEN_PULL18);
+    case 19:
+        HWREG(ulBase + GPIO_O_PENS) |= GPIO_PENS_PULLS19;
+        return((HWREG(ulBase + GPIO_O_PEN) & GPIO_PEN_PULL19) == GPIO_PEN_PULL19);
+    case 20:
+        HWREG(ulBase + GPIO_O_PENS) |= GPIO_PENS_PULLS20;
+        return((HWREG(ulBase + GPIO_O_PEN) & GPIO_PEN_PULL20) == GPIO_PEN_PULL20);
+    case 21:
+        HWREG(ulBase + GPIO_O_PENS) |= GPIO_PENS_PULLS21;
+        return((HWREG(ulBase + GPIO_O_PEN) & GPIO_PEN_PULL21) == GPIO_PEN_PULL21);
+    case 22:
+        HWREG(ulBase + GPIO_O_PENS) |= GPIO_PENS_PULLS22;
+        return((HWREG(ulBase + GPIO_O_PEN) & GPIO_PEN_PULL22) == GPIO_PEN_PULL22);
+    case 23:
+        HWREG(ulBase + GPIO_O_PENS) |= GPIO_PENS_PULLS23;
+        return((HWREG(ulBase + GPIO_O_PEN) & GPIO_PEN_PULL23) == GPIO_PEN_PULL23);
+    case 24:
+        HWREG(ulBase + GPIO_O_PENS) |= GPIO_PENS_PULLS24;
+        return((HWREG(ulBase + GPIO_O_PEN) & GPIO_PEN_PULL24) == GPIO_PEN_PULL24);
+    case 25:
+        HWREG(ulBase + GPIO_O_PENS) |= GPIO_PENS_PULLS25;
+        return((HWREG(ulBase + GPIO_O_PEN) & GPIO_PEN_PULL25) == GPIO_PEN_PULL25);
+    case 26:
+        HWREG(ulBase + GPIO_O_PENS) |= GPIO_PENS_PULLS26;
+        return((HWREG(ulBase + GPIO_O_PEN) & GPIO_PEN_PULL26) == GPIO_PEN_PULL26);
+    case 27:
+        HWREG(ulBase + GPIO_O_PENS) |= GPIO_PENS_PULLS27;
+        return((HWREG(ulBase + GPIO_O_PEN) & GPIO_PEN_PULL27) == GPIO_PEN_PULL27);
+    case 28:
+        HWREG(ulBase + GPIO_O_PENS) |= GPIO_PENS_PULLS28;
+        return((HWREG(ulBase + GPIO_O_PEN) & GPIO_PEN_PULL28) == GPIO_PEN_PULL28);
+    case 29:
+        HWREG(ulBase + GPIO_O_PENS) |= GPIO_PENS_PULLS29;
+        return((HWREG(ulBase + GPIO_O_PEN) & GPIO_PEN_PULL29) == GPIO_PEN_PULL29);
+    case 30:
+        HWREG(ulBase + GPIO_O_PENS) |= GPIO_PENS_PULLS30;
+        return((HWREG(ulBase + GPIO_O_PEN) & GPIO_PEN_PULL30) == GPIO_PEN_PULL30);
+    case 31:
+        HWREG(ulBase + GPIO_O_PENS) |= GPIO_PENS_PULLS31;
+        return((HWREG(ulBase + GPIO_O_PEN) & GPIO_PEN_PULL31) == GPIO_PEN_PULL31);
+    default:
+        return(false);
+    }
+}

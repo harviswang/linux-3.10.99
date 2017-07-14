@@ -44,6 +44,7 @@
 // peripherals.
 //
 //*****************************************************************************
+#define CPM_BASE                0xB0000000  // CPM(Clock Power Management)
 #define INTC_BASE               0xB0001000  // INTC
 #define OST_BASE                0xB0002000  // OST
 #define TCU_BASE                0xB0002000  // TCU

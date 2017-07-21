@@ -106,7 +106,7 @@
 #define CPM_CCR_SELSRC          0xC0000000  // Select the clock source for SCLK_A(the MUX clock output)
                                             // 00: stop MUX clock output
                                             // 01: APLL
-                                            // 10: EXTCLK
+                                            // 10: EXCLK
 #define CPM_CCR_SELCPLL         0x30000000  // Select the clock source for CPU and L2Cache
                                             // 00: stop MUX clock output
                                             // 01: SCLK_A
@@ -212,9 +212,9 @@
                                             // 0: active 1: power down
 #define CPM_APCR_AVCOPD         0x00000010  // VCO output Power Down
                                             // 0: active 1: power down
-#define CPM_APCR_APLLON         0x00000008  // PLL ON Flag
-                                            // 0: PLL is off or not stable
-                                            // 1: PLL is on and stable
+#define CPM_APCR_APLLON         0x00000008  // APLL ON Flag
+                                            // 0: APLL is off or not stable
+                                            // 1: APLL is on and stable
 #define CPM_APCR_ALOCK          0x00000004  //
 #define CPM_APCR_APLLEN         0x00000001  // APLL Enable. When APLLEN is set to 1, APLL starts to lock phase.
                                             // After APLL stabilizes, APLL_ON bit is set
@@ -239,9 +239,9 @@
                                             // 0: active 1: power down
 #define CPM_MPCR_MVCOPD         0x00000010  // VCO output Power Down
                                             // 0: active 1: power down
-#define CPM_MPCR_MPLLON         0x00000008  // PLL ON Flag.
-                                            // 0: PLL is off or not stable
-                                            // 1: PLL is on and stable
+#define CPM_MPCR_MPLLON         0x00000008  // MPLL ON Flag.
+                                            // 0: MPLL is off or not stable
+                                            // 1: MPLL is on and stable
 #define CPM_MPCR_MLOCK          0x00000004  //
 #define CPM_MPCR_MPLLEN         0x00000001  // MPLL Enable. When MPLLEN is set to 1, MPLL starts to lock phase.
                                             // After MPLL stabilizes, MPLL_ON bit is set

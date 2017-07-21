@@ -29,6 +29,8 @@
 #include <linux/module.h>
 #include <linux/platform_device.h>
 #include <linux/device.h>
+#include <linux/irq.h>
+#include <linux/irqdesc.h>
 
 static unsigned char bit_width = 32; /* can be 32/16/8 */
 static unsigned int  last_register_address = 0xB0002000; /* store register address coming from register_address_store() 
@@ -40,6 +42,7 @@ static ssize_t register_address_show(struct device *dev, struct device_attribute
 {
     ssize_t count;
 
+    printk("sizeof(struct irqdesc) = %d\n", (int)sizeof(struct irq_desc));
     device_lock(dev);
     count = sprintf(buf, "0x%08X\n", last_register_address);
     device_unlock(dev);

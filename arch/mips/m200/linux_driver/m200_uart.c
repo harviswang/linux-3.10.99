@@ -41,6 +41,8 @@
 #include <linux/of_device.h>
 #include <linux/of_address.h>
 #include <linux/of_irq.h>  /* irq_of_parse_and_map */
+#include <linux/clk.h>
+#include <linux/clk-private.h>
 #include "../driverlib/uart.h" /* UARTTxEmpty */
 #include "../driverlib/intc.h" /* IntEnable */
 
@@ -52,6 +54,7 @@
 struct m200_uart_port {
 	struct uart_port	uart; /* must be first, for type conversion */
 	char                    name[16];
+    struct clk *clk;
 };
 
 #define UART_TO_M200(uart_port) ((struct m200_uart_port *) uart_port)
@@ -233,7 +236,6 @@ static int m200_uart_startup(struct uart_port *port)
 		dev_err(port->dev, "%s:%d request_irq() irq:%d failed!\n", __FILE__, __LINE__, port->irq);
 	}
 
-
 	return err;
 }
 
@@ -248,6 +250,7 @@ m200_uart_set_termios(struct uart_port *port, struct ktermios *termios,
 {
 	unsigned long flags;
 	unsigned long config = 0;
+	unsigned long ulUartClk = 0;
 	unsigned int baud;
 
 	spin_lock_irqsave(&port->lock, flags);
@@ -318,8 +321,9 @@ m200_uart_set_termios(struct uart_port *port, struct ktermios *termios,
 	/* Disable UART */
 	UARTDisable(port->iobase);
 
-	/* Config baudrate TODO */
-	UARTConfigSetExpClk(port->iobase, 24000000, baud, config);
+	/* Config baudrate */
+    ulUartClk = clk_get_rate(((struct m200_uart_port *)port)->clk);
+	UARTConfigSetExpClk(port->iobase, ulUartClk, baud, config);
 
 	/* Interrupt set */
 	UARTRxStart(port->iobase);
@@ -523,6 +527,7 @@ static int m200_uart_platform_driver_probe(struct platform_device *pdev)
 {
 	int err = 0;
 	struct uart_port *port;
+	struct m200_uart_port *mup;
     const struct of_device_id *match;
     struct resource resource;
     struct device_node *device_node = pdev->dev.of_node;
@@ -549,8 +554,10 @@ static int m200_uart_platform_driver_probe(struct platform_device *pdev)
         return -EINVAL;
     }
     port->iobase = resource.start;
+    mup = (struct m200_uart_port *)port;
+    mup->clk = of_clk_get(device_node, 0);
 
-	platform_set_drvdata(pdev, port);
+	platform_set_drvdata(pdev, mup);
 	
 	err = uart_add_one_port(&m200_uart_driver, port);
 	if (err) {

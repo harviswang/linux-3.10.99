@@ -243,6 +243,7 @@ config MACH_M200
 	select IRQ_CPU
 	select USE_OF
 	select ARCH_REQUIRE_GPIOLIB
+    select COMMON_CLK
 
 config LANTIQ
 	bool "Lantiq based platforms"

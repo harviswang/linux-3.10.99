@@ -8,6 +8,7 @@ export PATH
 mount -t proc /proc /proc
 mount -t ramfs none /dev
 mount -t sysfs none /sys
+mount -t debugfs none /sys/kernel/debug
 
 # /dev nodes
 mknod /dev/null c 1 3

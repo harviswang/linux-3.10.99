@@ -4,3 +4,4 @@ obj-y += tcu.o
 obj-y += intc.o
 obj-y += pwm.o
 obj-y += gpio.o
+obj-y += cpm.o

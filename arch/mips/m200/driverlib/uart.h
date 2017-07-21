@@ -76,7 +76,7 @@ extern "C" {
 //
 //*****************************************************************************
 #define UART_FIFO_SIZE          0x00000040  // 64x8bits transmit FIFO
-	                                    // 64x11bits receive FIFO
+                                            // 64x11bits receive FIFO
 #define UART_FIFO_TX1_8         0x00000000  // Transmit interrupt at 1 of 64
 #define UART_FIFO_TX2_8         0x00000001  // Transmit interrupt at 16 of 64
 #define UART_FIFO_TX3_8         0x00000002  // Transmit interrupt at 32 of 64

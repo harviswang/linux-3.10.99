@@ -82,8 +82,7 @@ UARTBaseValid(unsigned long ulBase)
 {
     return((ulBase == UART0_BASE) || (ulBase == UART1_BASE) ||
            (ulBase == UART2_BASE) || (ulBase == UART3_BASE) ||
-           (ulBase == UART4_BASE) || (ulBase == UART5_BASE) ||
-           (ulBase == UART6_BASE) || (ulBase == UART7_BASE));
+           (ulBase == UART4_BASE));
 }
 #endif
 
@@ -450,7 +449,7 @@ BaudRateCLKGet(unsigned long ulCLKdev, unsigned long ulBaudRate, unsigned long *
     ulDiv = ulCLKdev / ulBaudRate;
     
     if (pulDivisor) {
-	*pulDivisor = ulDiv;
+        *pulDivisor = ulDiv;
     }
  
     ulClkbr = ulCLKdev / ulDiv;

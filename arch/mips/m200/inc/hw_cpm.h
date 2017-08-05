@@ -101,6 +101,8 @@
 //*****************************************************************************
 //
 // The following are defines for the bit fields in the CPM_O_CCR register.
+// Note: 1. the frequency of CCLK must be 2,3 or 4 times of the frequency of L2CLK
+//       2. the frequency of H2CLK must be 1 or 2 times of the frequency of PCLK
 //
 //*****************************************************************************
 #define CPM_CCR_SELSRC          0xC0000000  // Select the clock source for SCLK_A(the MUX clock output)
@@ -115,7 +117,7 @@
                                             // 00: stop MUX clock output
                                             // 01: SCLK_A
                                             // 10: MPLL
-#define CPM_CCR_SELH2PLL        0x03000000  // Select the clock source for AHB2 bus
+#define CPM_CCR_SELH2PLL        0x03000000  // Select the clock source for AHB2 bus and PCLK
                                             // 00: stop MUX clock output
                                             // 01: SCLK_A
                                             // 10: MPLL
@@ -218,6 +220,7 @@
 #define CPM_APCR_ALOCK          0x00000004  //
 #define CPM_APCR_APLLEN         0x00000001  // APLL Enable. When APLLEN is set to 1, APLL starts to lock phase.
                                             // After APLL stabilizes, APLL_ON bit is set
+                                            // When cpu enters sleep mode, the apllen must be set to 1
 
 //*****************************************************************************
 //
@@ -662,7 +665,7 @@
 #define CPM_I2SCDR_I2SCS        0xC0000000  // 00: SCLK_A output
                                             // 01: MPLL output
                                             // 10: EXCLK
-#define CPM_I2SCDR_CEI2S        0x20000000  // Change enable for I2S. If CE_I2S is 1 , write on I2SCDR ill start a
+#define CPM_I2SCDR_CEI2S        0x20000000  // Change enable for I2S. If CE_I2S is 1 , write on I2SCDR will start a
                                             // frequency changing sequence immediately. If CE_I2S is 0, writes on I2SCDR have no affect
 #define CPM_I2SCDR_I2SBUSY      0x10000000  // The bit is ready only bit. It indicates whether the frequency change has
                                             // finished. When the bit is 0, it indicates frequency change has finished.,
@@ -932,7 +935,7 @@
                                             // The clock mux isn't free of glitches if clock selection is changed
                                             // When switching clock source, it should be ensured that the clock switched
                                             // from and the clock switched to are running.
-#define CPM_BCHCDR_CEBCH        0x20000000  // Change enable for BCH. If CE_BCH is 1 , write on BCHCDR ill start a
+#define CPM_BCHCDR_CEBCH        0x20000000  // Change enable for BCH. If CE_BCH is 1 , write on BCHCDR will start a
                                             // frequency changing sequence immediately. If CE_BCH is 0, writes on BCHCDR have no affect
 #define CPM_BCHCDR_BCHBUSY      0x10000000  // The bit is ready only bit. It indicates whether the frequency change has
                                             // finished. When the bit is 0, it indicates frequency change has finished.,

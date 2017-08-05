@@ -107,10 +107,13 @@ extern "C" {
 #define CLOCK_NO_CIM            0x00000032
 #define CLOCK_NO_APLL           0x00000033
 #define CLOCK_NO_MPLL           0x00000034
+#define CLOCK_NO_L2CACHE        0x00000035
+#define CLOCK_NO_PCLK           0x00000036 // APB Bus Clock
+#define CLOCK_NO_AHB2           0x00000037
 
 // Total clock NO, is the last CLOCK_NO_XXX plus one
 // If add CLOCK_NO_XXX, please change CLOCK_NO_TOTAL
-#define CLOCK_NO_TOTAL          (CLOCK_NO_MPLL + 1)
+#define CLOCK_NO_TOTAL          (CLOCK_NO_PCLK + 1)
 
 //*****************************************************************************
 //

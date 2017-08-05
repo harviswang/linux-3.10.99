@@ -85,84 +85,128 @@
                     compatible = "mux-clock";
                     clocks = <&apll_clk CLOCK_NO_SCLKA>, <&ext_clk CLOCK_NO_SCLKA>;
                     #clock-cells = <1>;
+                    max_divider = <1>;
+                    current_parent_index = <0>; /* 0: using apll_clk as parent clock, 1: ext_clk */
                 };
 
                 cpu0_clk: cpu0 {
                     compatible = "mux-clock";
                     clocks = <&sclk_a_clk CLOCK_NO_P0>, <&mpll_clk CLOCK_NO_P0>;
                     #clock-cells = <0>;
+                    max_divider = <16>;
+                    current_parent_index = <0>;
                 };
 
                 cpu1_clk: cpu1 {
                     compatible = "mux-clock";
                     clocks = <&sclk_a_clk CLOCK_NO_P1>, <&mpll_clk CLOCK_NO_P1>;
                     #clock-cells = <0>;
+                    max_divider = <1>;
+                    current_parent_index = <0>;
+                };
+
+                l2cache_clk: l2cache {
+                    compatible = "mux-clock";
+                    clocks = <&sclk_a_clk CLOCK_NO_L2CACHE>, <&mpll_clk CLOCK_NO_L2CACHE>;
+                    #clock-cells = <0>;
+                    max_divider = <16>;
+                    current_parent_index = <0>;
                 };
 
                 ahb0_clk: ahb0 {
                     compatible = "mux-clock";
                     clocks = <&sclk_a_clk CLOCK_NO_AHB0>, <&mpll_clk CLOCK_NO_AHB0>;
                     #clock-cells = <0>;
+                    max_divider = <16>;
+                    current_parent_index = <1>;
                 };
 
                 ahb2_clk: ahb2 {
                     compatible = "mux-clock";
-                    clocks = <&sclk_a_clk CLOCK_NO_AHBMON>, <&mpll_clk CLOCK_NO_AHBMON>; /* TODO */
+                    clocks = <&sclk_a_clk CLOCK_NO_AHB2>, <&mpll_clk CLOCK_NO_AHB2>;
                     #clock-cells = <0>;
+                    max_divider = <16>;
+                    current_parent_index = <1>;
+                };
+
+                p_clk: pclk {
+                    compatible = "mux-clock";
+                    clocks = <&sclk_a_clk CLOCK_NO_PCLK>, <&mpll_clk CLOCK_NO_PCLK>;
+                    #clock-cells = <1>;
+                    max_divider = <16>;
+                    current_parent_index = <1>; /* should be the same as ahb2_clk, as they are controlled together */
                 };
 
                 ddr_clk: ddr {
                     compatible = "mux-clock";
                     clocks = <&sclk_a_clk CLOCK_NO_DDR>, <&mpll_clk CLOCK_NO_DDR>;
                     #clock-cells = <0>;
+                    max_divider = <16>;
+                    current_parent_index = <1>;
                 };
 
                 gpu_clk: gpu {
                     compatible = "mux-clock";
                     clocks = <&sclk_a_clk CLOCK_NO_GPU>, <&mpll_clk CLOCK_NO_GPU>;
                     #clock-cells = <0>;
+                    max_divider = <16>;
+                    current_parent_index = <1>;
                 };
 
                 vpu_clk: vpu {
                     compatible = "mux-clock";
                     clocks = <&sclk_a_clk CLOCK_NO_VPU>, <&mpll_clk CLOCK_NO_VPU>;
                     #clock-cells = <0>;
+                    max_divider = <16>;
+                    current_parent_index = <1>;
                 };
 
                 lcd_clk: lcd {
                     compatible = "mux-clock";
                     clocks = <&sclk_a_clk CLOCK_NO_LCD>, <&mpll_clk CLOCK_NO_LCD>;
                     #clock-cells = <0>;
+                    max_divider = <256>;
+                    current_parent_index = <1>;
                 };
 
                 bch_clk: bch {
                     compatible = "mux-clock";
                     clocks = <&sclk_a_clk CLOCK_NO_BCH>, <&mpll_clk CLOCK_NO_BCH>;
                     #clock-cells = <0>;
+                    max_divider = <16>;
+                    current_parent_index = <1>;
                 };
 
                 i2s_clk: i2s {
                     compatible = "mux-clock";
                     clocks = <&sclk_a_clk CLOCK_NO_I2S>, <&mpll_clk CLOCK_NO_I2S>, <&ext_clk CLOCK_NO_I2S>;
                     #clock-cells = <0>;
+                    max_divider = <256>;
+                    current_parent_index = <2>;
                 };
 
-                ssi_clk0: ssi0 {
+                ssi0_clk: ssi0 {
                     compatible = "mux-clock";
                     clocks = <&sclk_a_clk CLOCK_NO_SSI0>, <&mpll_clk CLOCK_NO_SSI0>, <&ext_clk CLOCK_NO_SSI0>;
                     #clock-cells = <0>;
+                    max_divider = <256>;
+                    current_parent_index = <2>;
                 };
 
-                ssi_clk1: ssi1 {
+                ssi1_clk: ssi1 {
                     compatible = "mux-clock";
                     clocks = <&sclk_a_clk CLOCK_NO_SSI1>, <&mpll_clk CLOCK_NO_SSI1>, <&ext_clk CLOCK_NO_SSI1>;
                     #clock-cells = <0>;
+                    max_divider = <256>;
+                    current_parent_index = <2>;
                 };
 
-                ssi_clk2: ssi2 {
+                ssi2_clk: ssi2 {
                     compatible = "mux-clock";
                     clocks = <&sclk_a_clk CLOCK_NO_SSI2>, <&mpll_clk CLOCK_NO_SSI2>, <&ext_clk CLOCK_NO_SSI2>;
                     #clock-cells = <0>;
+                    max_divider = <256>;
+                    current_parent_index = <2>;
                 };
 
                 usbphy_clk: usbphy { /* TODO */
@@ -175,60 +219,104 @@
                     compatible = "mux-clock";
                     clocks = <&sclk_a_clk CLOCK_NO_UHC>, <&mpll_clk CLOCK_NO_UHC>, <&usbphy_clk CLOCK_NO_UHC>;
                     #clock-cells = <0>;
+                    max_divider = <256>;
+                    current_parent_index = <1>;
                 };
 
                 pcm_clk: pcm {
                     compatible = "mux-clock";
                     clocks = <&sclk_a_clk CLOCK_NO_PCM>, <&mpll_clk CLOCK_NO_PCM>, <&ext_clk CLOCK_NO_PCM>;
                     #clock-cells = <0>;
+                    max_divider = <256>;
+                    current_parent_index = <2>;
                 };
 
                 cim_clk: cim {
                     compatible = "mux-clock";
                     clocks = <&sclk_a_clk CLOCK_NO_CIM>, <&mpll_clk CLOCK_NO_CIM>;
                     #clock-cells = <0>;
+                    max_divider = <256>;
+                    current_parent_index = <1>;
                 };
 
                 isp_clk: isp {
                     compatible = "mux-clock";
                     clocks = <&sclk_a_clk CLOCK_NO_ISP>, <&mpll_clk CLOCK_NO_ISP>;
                     #clock-cells = <0>;
+                    max_divider = <16>;
+                    current_parent_index = <1>;
                 };
 
                 tcu_clk: tcu {
                     compatible = "mux-clock";
-                    clocks = /* <&pclk CLOCK_NO_TCU>, TODO */<&rtc_clk CLOCK_NO_TCU>, <&ext_clk CLOCK_NO_TCUEXCLK>;
+                    clocks = <&p_clk CLOCK_NO_TCU>, <&rtc_clk CLOCK_NO_TCU>, <&ext_clk CLOCK_NO_TCUEXCLK>;
                     #clock-cells = <0>;
+                    max_divider = <1>;
+                    current_parent_index = <2>;
+                };
+
+                msc0_clk: msc0 {
+                    compatible = "mux-clock";
+                    clocks = <&sclk_a_clk CLOCK_NO_MSC0>, <&mpll_clk CLOCK_NO_MSC0>;
+                    #clock-cells = <0>;
+                    max_divider = <512>;
+                    current_parent_index = <1>;
+                };
+
+                msc1_clk: msc1 {
+                    compatible = "mux-clock";
+                    clocks = <&sclk_a_clk CLOCK_NO_MSC1>, <&mpll_clk CLOCK_NO_MSC1>;
+                    #clock-cells = <0>;
+                    max_divider = <512>;
+                    current_parent_index = <1>;
+                };
+
+                msc2_clk: msc2 {
+                    compatible = "mux-clock";
+                    clocks = <&sclk_a_clk CLOCK_NO_MSC2>, <&mpll_clk CLOCK_NO_MSC2>;
+                    #clock-cells = <0>;
+                    max_divider = <512>;
+                    current_parent_index = <1>;
                 };
 
                 uart0_clk: uart0 {
                     compatible = "mux-clock";
                     clocks = <&ext_clk CLOCK_NO_UART0>;
                     #clock-cells = <0>;
+                    max_divider = <1>;
+                    current_parent_index = <0>;
                 };
 
                 uart1_clk: uart1 {
                     compatible = "mux-clock";
                     clocks = <&ext_clk CLOCK_NO_UART1>;
                     #clock-cells = <0>;
+                    max_divider = <1>;
+                    current_parent_index = <0>;
                 };
 
                 uart2_clk: uart2 {
                     compatible = "mux-clock";
                     clocks = <&ext_clk CLOCK_NO_UART2>;
                     #clock-cells = <0>;
+                    max_divider = <1>;
+                    current_parent_index = <0>;
                 };
 
                 uart3_clk: uart3 {
                     compatible = "mux-clock";
                     clocks = <&ext_clk CLOCK_NO_UART3>;
                     #clock-cells = <0>;
+                    max_divider = <1>;
+                    current_parent_index = <0>;
                 };
 
                 uart4_clk: uart4 {
                     compatible = "mux-clock";
                     clocks = <&ext_clk CLOCK_NO_UART4>;
                     #clock-cells = <0>;
+                    max_divider = <1>;
+                    current_parent_index = <0>;
                 };
             };
         };
@@ -241,7 +329,6 @@
             interrupts = <51>;
 
             clocks = <&uart0_clk>;
-            clock-name = "uart0";
 
             status = "disabled";
         };

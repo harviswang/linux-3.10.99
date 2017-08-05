@@ -51,6 +51,58 @@ extern "C" {
 // Values that can be passed to  as the  parameter
 //
 //*****************************************************************************
+#define Index_Prefetch_I    0x1c
+#define CACHE_PREFETCH(label, size)                  \
+do{                                 \
+    unsigned long addr,end;                     \
+    /* Prefetch codes from label */                 \
+    addr = (unsigned long)(&&label) & ~(32 - 1);            \
+    end = (unsigned long)(&&label + size) & ~(32 - 1);      \
+    end += 32;                          \
+    for (; addr < end; addr += 32) {                \
+        __asm__ volatile (                  \
+                ".set mips32\n\t"           \
+                " cache %0, 0(%1)\n\t"          \
+                ".set mips32\n\t"           \
+                :                   \
+                : "I" (Index_Prefetch_I), "r"(addr));   \
+    }                               \
+}                                   \
+while(0)
+
+//*****************************************************************************
+//
+// Values that can be passed to  as the  parameter
+//
+//*****************************************************************************
+#define __SYNC()                \
+    __asm__ __volatile__(           \
+        ".set   push\n\t"       \
+        ".set   noreorder\n\t"      \
+        ".set   mips2\n\t"      \
+        "sync\n\t"          \
+        ".set   pop"            \
+        : /* no output */       \
+        : /* no input */        \
+        : "memory")
+
+#define __CKSEG1                  0xA0000000  // KSEG1 memory address
+#define __FAST_IOB()                \
+    __asm__ __volatile__(           \
+        ".set   push\n\t"       \
+        ".set   noreorder\n\t"      \
+        "lw $0,%0\n\t"      \
+        "nop\n\t"           \
+        ".set   pop"            \
+        : /* no output */       \
+        : "m" (*(int *)__CKSEG1)      \
+        : "memory")
+
+#define FAST_IOB()          \
+    do {                    \
+        __SYNC();           \
+        __FAST_IOB();       \
+    } while (0)
 
 //*****************************************************************************
 //
@@ -65,14 +117,22 @@ extern tBoolean CPMApllSetN(unsigned long ulBase, unsigned long ulN);
 extern unsigned long CPMApllGetNFraction(unsigned long ulBase);
 extern tBoolean CPMApllSetNFraction(unsigned long ulBase, unsigned long ulNFraction);
 extern tBoolean CPMApllEnable(unsigned long ulBase);
+extern tBoolean CPMApllDisable(unsigned long ulBase);
 extern unsigned long CPMMpllGetM(unsigned long ulBase);
 extern tBoolean CPMMpllSetM(unsigned long ulBase, unsigned long ulM);
 extern unsigned long CPMMpllGetN(unsigned long ulBase);
 extern tBoolean CPMMpllSetN(unsigned long ulBase, unsigned long ulN);
 extern unsigned long CPMMpllGetNFraction(unsigned long ulBase);
 extern tBoolean CPMMpllSetNFraction(unsigned long ulBase, unsigned long ulNFraction);
+extern unsigned long CPMGreatestCommonDividor(unsigned long ulA, unsigned long ulB);
+extern tBoolean CPMMpllEnable(unsigned long ulBase);
+extern tBoolean CPMMpllDisable(unsigned long ulBase);
 extern tBoolean CPMPLLCalculateMNFraction(unsigned long ulOutputFrequency, unsigned long ulReferenceFrequency,
 unsigned long *pulM, unsigned long *pulMFraction, unsigned long *pulN, unsigned long *pulNFraction);
+extern tBoolean CPMClockEnable(unsigned long ulBase, unsigned long ulClockNo);
+extern tBoolean CPMClockDisable(unsigned long ulBase, unsigned long ulClockNo);
+extern unsigned long CPMClockDividerGet(unsigned long ulBase, unsigned long ulClockNo);
+extern tBoolean CPMClockDividerSet(unsigned long ulBase, unsigned long ulClockNo, unsigned long ulClockDivider);
 
 //*****************************************************************************
 //

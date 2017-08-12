@@ -8,3 +8,4 @@ obj-y += register.o
 obj-$(CONFIG_PWM)                 += m200_pwm.o
 obj-$(CONFIG_BACKLIGHT_PWM)       += m200_backlight_pwm.o
 obj-$(CONFIG_GPIOLIB)             += m200_gpio.o
+obj-$(CONFIG_PINCTRL)             += m200_pinctrl.o

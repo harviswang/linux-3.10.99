@@ -32,12 +32,12 @@
         timer6 = &timer6;
         timer7 = &timer7;
 
-        gpio0 = &gpio0; /* used in gpio_interrupt_of_init() */
-        gpio1 = &gpio1;
-        gpio2 = &gpio2;
-        gpio3 = &gpio3;
-        gpio4 = &gpio4;
-        gpio5 = &gpio5;
+        gpio0 = &gpioPA; /* used in gpio_interrupt_of_init() */
+        gpio1 = &gpioPB;
+        gpio2 = &gpioPC;
+        gpio3 = &gpioPD;
+        gpio4 = &gpioPE;
+        gpio5 = &gpioPF;
     };
 
     memory {
@@ -70,7 +70,7 @@
         button@0 {
             label = "power";
             linux,code = <KEY_POWER>;
-            gpios = <&gpio0 30 GPIO_ACTIVE_LOW>;
+            gpios = <&gpioPA 30 GPIO_ACTIVE_LOW>;
         };
     };
 };
@@ -87,10 +87,10 @@
     status = "okay";
 };
 
-&gpio0 {
+&gpioPA {
     status = "okay";
 };
 
-&gpio1 {
+&gpioPB {
     status = "okay";
 };

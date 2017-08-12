@@ -11,5 +11,5 @@ gmake V=0 -j4 zImage ARCH=mips CROSS_COMPILE=mipsel-unknown-linux-gnu-  &&
 # /home/ingenic/B/opensource/bootimg-tools/mkbootimg/mkbootimg --kernel  arch/mips/boot/compressed/zImage --ramdisk /home/ingenic/Downloads/test/aoe/recovery/ramdisk.cpio.gz --output boot.img
 
 # ramdisk.cp.gz comes from rootfs
-/home/harvis/opensource/bootimg-tools/mkbootimg/mkbootimg --kernel  arch/mips/boot/compressed/zImage --ramdisk /home/harvis/Downloads/bootimage/ramdisk.cpio.gz --output boot.img
+/home/harvis/opensource/bootimg-tools/mkbootimg/mkbootimg --kernel  arch/mips/boot/compressed/zImage --ramdisk arch/mips/m200/ramdisk.cpio.gz --output boot.img
 

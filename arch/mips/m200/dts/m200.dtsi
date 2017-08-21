@@ -366,8 +366,8 @@
             interrupts = <48>;
 
             clocks = <&uart3_clk>;
-            //pinctrl-names = "default";
-            //pinctrl-0 = <&pinctrl_uart0>;
+            pinctrl-names = "default";
+            pinctrl-0 = <&pinctrl_uart3>;
 
             status = "disabled";
         };
@@ -474,7 +474,7 @@
             status = "disabled";
         };
 
-        gpioPA: gpio-controller@10010000 {
+        gpioPA: gpioPA@10010000 {
             compatible = "ingenic,m200-gpio";
             reg = <0x10010000 0x00000100>;
 
@@ -496,10 +496,11 @@
             #gpio-cells = <2>;
             ngpios = <32>;
 
+            #pinctrl-cells = <5>;
             status = "disabled";
         };
 
-        gpioPB: gpio-controller@10010100 {
+        gpioPB: gpioPB@10010100 {
             compatible = "ingenic,m200-gpio";
             reg = <0x10010100 0x00000100>;
 
@@ -513,10 +514,11 @@
             #gpio-cells = <2>;
             ngpios = <32>;
 
+            #pinctrl-cells = <5>;
             status = "disabled";
         };
 
-        gpioPC: gpio-controller@10010200 {
+        gpioPC: gpioPC@10010200 {
             compatible = "ingenic,m200-gpio";
             reg = <0x10010200 0x00000100>;
 
@@ -530,10 +532,11 @@
             #gpio-cells = <2>;
             ngpios = <32>;
 
+            #pinctrl-cells = <5>;
             status = "disabled";
         };
 
-        gpioPD: gpio-controller@10010300 {
+        gpioPD: gpioPD@10010300 {
             compatible = "ingenic,m200-gpio";
             reg = <0x10010300 0x00000100>;
 
@@ -547,10 +550,11 @@
             #gpio-cells = <2>;
             ngpios = <32>;
 
+            #pinctrl-cells = <5>;
             status = "disabled";
         };
 
-        gpioPE: gpio-controller@10010400 {
+        gpioPE: gpioPE@10010400 {
             compatible = "ingenic,m200-gpio";
             reg = <0x10010400 0x00000100>;
 
@@ -564,10 +568,11 @@
             #gpio-cells = <2>;
             ngpios = <32>;
 
+            #pinctrl-cells = <5>;
             status = "disabled";
         };
 
-        gpioPF: gpio-controller@10010500 {
+        gpioPF: gpioPF@10010500 {
             compatible = "ingenic,m200-gpio";
             reg = <0x10010500 0x00000100>;
 
@@ -581,6 +586,7 @@
             #gpio-cells = <2>;
             ngpios = <32>;
 
+            #pinctrl-cells = <5>;
             status = "disabled";
         };
 
@@ -589,56 +595,56 @@
 
             uart0 {
                 pinctrl_uart0: uart0-0 {
-                    ingenic,pins = <&gpioPF 0 PIN_FUNCTION_2 PIN_PULL_DISABLE PIN_SLEEP_STATE>,
-                                   <&gpioPF 1 PIN_FUNCTION_2 PIN_PULL_DISABLE PIN_SLEEP_STATE>,
-                                   <&gpioPF 1 PIN_FUNCTION_2 PIN_PULL_DISABLE PIN_SLEEP_STATE>,
-                                   <&gpioPF 3 PIN_FUNCTION_2 PIN_PULL_DISABLE PIN_SLEEP_STATE>;
+                    ingenic,pins = <&gpioPF 0 PIN_FUNCTION_2 PIN_PULL_DISABLE PIN_SLEEP_FUNCTION_1 PIN_SLEEP_PULL_DISABLE>,
+                                   <&gpioPF 1 PIN_FUNCTION_2 PIN_PULL_DISABLE PIN_SLEEP_FUNCTION_1 PIN_SLEEP_PULL_DISABLE>,
+                                   <&gpioPF 2 PIN_FUNCTION_2 PIN_PULL_DISABLE PIN_SLEEP_FUNCTION_1 PIN_SLEEP_PULL_DISABLE>,
+                                   <&gpioPF 3 PIN_FUNCTION_2 PIN_PULL_DISABLE PIN_SLEEP_FUNCTION_1 PIN_SLEEP_PULL_DISABLE>;
                 };
             };
 
             uart1 {
                 pinctrl_uart1: uart1-0 {
-                    ingenic,pins = <&gpioPD 26 PIN_FUNCTION_2 PIN_PULL_DISABLE PIN_SLEEP_STATE>,
-                                   <&gpioPD 27 PIN_FUNCTION_2 PIN_PULL_DISABLE PIN_SLEEP_STATE>,
-                                   <&gpioPD 28 PIN_FUNCTION_2 PIN_PULL_DISABLE PIN_SLEEP_STATE>,
-                                   <&gpioPD 29 PIN_FUNCTION_2 PIN_PULL_DISABLE PIN_SLEEP_STATE>;
+                    ingenic,pins = <&gpioPD 26 PIN_FUNCTION_2 PIN_PULL_DISABLE PIN_SLEEP_FUNCTION_1 PIN_SLEEP_PULL_DISABLE>,
+                                   <&gpioPD 27 PIN_FUNCTION_2 PIN_PULL_DISABLE PIN_SLEEP_FUNCTION_1 PIN_SLEEP_PULL_DISABLE>,
+                                   <&gpioPD 28 PIN_FUNCTION_2 PIN_PULL_DISABLE PIN_SLEEP_FUNCTION_1 PIN_SLEEP_PULL_DISABLE>,
+                                   <&gpioPD 29 PIN_FUNCTION_2 PIN_PULL_DISABLE PIN_SLEEP_FUNCTION_1 PIN_SLEEP_PULL_DISABLE>;
                 };
             };
 
             uart2 {
                 pinctrl_uart2: uart2-0 {
-                    ingenic,pins = <&gpioPF 6 PIN_FUNCTION_2 PIN_PULL_DISABLE PIN_SLEEP_STATE>,
-                                   <&gpioPF 7 PIN_FUNCTION_2 PIN_PULL_DISABLE PIN_SLEEP_STATE>,
-                                   <&gpioPC 10 PIN_FUNCTION_2 PIN_PULL_DISABLE PIN_SLEEP_STATE>,
-                                   <&gpioPC 20 PIN_FUNCTION_2 PIN_PULL_DISABLE PIN_SLEEP_STATE>;
+                    ingenic,pins = <&gpioPF 6 PIN_FUNCTION_2 PIN_PULL_DISABLE PIN_SLEEP_FUNCTION_1 PIN_SLEEP_PULL_DISABLE>,
+                                   <&gpioPF 7 PIN_FUNCTION_2 PIN_PULL_DISABLE PIN_SLEEP_FUNCTION_1 PIN_SLEEP_PULL_DISABLE>,
+                                   <&gpioPC 10 PIN_FUNCTION_2 PIN_PULL_DISABLE PIN_SLEEP_FUNCTION_1 PIN_SLEEP_PULL_DISABLE>,
+                                   <&gpioPC 20 PIN_FUNCTION_2 PIN_PULL_DISABLE PIN_SLEEP_FUNCTION_1 PIN_SLEEP_PULL_DISABLE>;
                 };
             };
 
             uart3 {
                 pinctrl_uart3: uart3-0 {
-                    ingenic,pins = <&gpioPA 31 PIN_FUNCTION_1 PIN_PULL_DISABLE PIN_SLEEP_STATE>;
+                    ingenic,pins = <&gpioPA 31 PIN_FUNCTION_1 PIN_PULL_DISABLE PIN_SLEEP_FUNCTION_1 PIN_SLEEP_PULL_DISABLE>;
                 };
             };
 
             uart4 {
                 pinctrl_uart4_0: uart4-0 {
-                    ingenic,pins = <&gpioPB 2 PIN_FUNCTION_2 PIN_PULL_DISABLE PIN_SLEEP_STATE>,
-                                   <&gpioPB 3 PIN_FUNCTION_2 PIN_PULL_DISABLE PIN_SLEEP_STATE>,
-                                   <&gpioPB 4 PIN_FUNCTION_2 PIN_PULL_DISABLE PIN_SLEEP_STATE>,
-                                   <&gpioPB 5 PIN_FUNCTION_2 PIN_PULL_DISABLE PIN_SLEEP_STATE>;
+                    ingenic,pins = <&gpioPB 2 PIN_FUNCTION_2 PIN_PULL_DISABLE PIN_SLEEP_FUNCTION_1 PIN_SLEEP_PULL_DISABLE>,
+                                   <&gpioPB 3 PIN_FUNCTION_2 PIN_PULL_DISABLE PIN_SLEEP_FUNCTION_1 PIN_SLEEP_PULL_DISABLE>,
+                                   <&gpioPB 4 PIN_FUNCTION_2 PIN_PULL_DISABLE PIN_SLEEP_FUNCTION_1 PIN_SLEEP_PULL_DISABLE>,
+                                   <&gpioPB 5 PIN_FUNCTION_2 PIN_PULL_DISABLE PIN_SLEEP_FUNCTION_1 PIN_SLEEP_PULL_DISABLE>;
                 };
 
                 pinctrl_uart4_1: uart4-1 {
-                    ingenic,pins = <&gpioPB 20 PIN_FUNCTION_2 PIN_PULL_DISABLE PIN_SLEEP_STATE>,
-                                   <&gpioPB 21 PIN_FUNCTION_2 PIN_PULL_DISABLE PIN_SLEEP_STATE>,
-                                   <&gpioPB 28 PIN_FUNCTION_2 PIN_PULL_DISABLE PIN_SLEEP_STATE>,
-                                   <&gpioPB 29 PIN_FUNCTION_2 PIN_PULL_DISABLE PIN_SLEEP_STATE>;
+                    ingenic,pins = <&gpioPB 20 PIN_FUNCTION_2 PIN_PULL_DISABLE PIN_SLEEP_FUNCTION_1 PIN_SLEEP_PULL_DISABLE>,
+                                   <&gpioPB 21 PIN_FUNCTION_2 PIN_PULL_DISABLE PIN_SLEEP_FUNCTION_1 PIN_SLEEP_PULL_DISABLE>,
+                                   <&gpioPB 28 PIN_FUNCTION_2 PIN_PULL_DISABLE PIN_SLEEP_FUNCTION_1 PIN_SLEEP_PULL_DISABLE>,
+                                   <&gpioPB 29 PIN_FUNCTION_2 PIN_PULL_DISABLE PIN_SLEEP_FUNCTION_1 PIN_SLEEP_PULL_DISABLE>;
                 };
 
-                pinctrl_uart4_2: uart4-2 {
-                    ingenic,pins = <&gpioPF 1 PIN_FUNCTION_1 PIN_PULL_DISABLE PIN_SLEEP_STATE>,
-                                   <&gpioPF 2 PIN_FUNCTION_1 PIN_PULL_DISABLE PIN_SLEEP_STATE>;
-                };
+                //pinctrl_uart4_2: uart4-2 {
+                //    ingenic,pins = <&gpioPF 1 PIN_FUNCTION_1 PIN_PULL_DISABLE PIN_SLEEP_FUNCTION_1 PIN_SLEEP_PULL_DISABLE>,
+                //                   <&gpioPF 2 PIN_FUNCTION_1 PIN_PULL_DISABLE PIN_SLEEP_FUNCTION_1 PIN_SLEEP_PULL_DISABLE>;
+                //};
             };
         };
     };

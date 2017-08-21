@@ -38,23 +38,28 @@
 #include <linux/compiler.h> /* unlikely */
 #include <linux/interrupt.h> /* request_irq */
 #include <linux/spinlock.h> /* spin_lock_irqsave */
+#include <linux/of.h> /* of_chosen */
 #include <linux/of_device.h>
 #include <linux/of_address.h>
 #include <linux/of_irq.h>  /* irq_of_parse_and_map */
 #include <linux/clk.h>
 #include <linux/clk-private.h>
+#include <linux/pinctrl/consumer.h> /* devm_pinctrl_get_select_default */
 #include "../driverlib/uart.h" /* UARTTxEmpty */
-#include "../driverlib/intc.h" /* IntEnable */
+#include "../driverlib/intc.h" /* INTCInterruptEnable */
 
 #define DEBUG() printk("%s %s line:%d\n", __FILE__, __func__, __LINE__)
+
+static void m200_uart_start_rx(struct uart_port *port);
 
 /*
  * We wrap our port structure around the generic uart_port.
  */
 struct m200_uart_port {
-	struct uart_port	uart; /* must be first, for type conversion */
-	char                    name[16];
+	struct uart_port uart; /* must be first, for type conversion */
+	char name[16];
     struct clk *clk;
+    unsigned long clk_rate; /* used in console, very eary after boot */
 };
 
 #define UART_TO_M200(uart_port) ((struct m200_uart_port *) uart_port)
@@ -101,11 +106,19 @@ static unsigned int m200_uart_get_mctrl(struct uart_port *port)
 static void m200_uart_stop_tx(struct uart_port *port)
 {
 	UARTTxStop(port->iobase);
+    if (0) { // TODO, used in half duplex, such RS485
+        m200_uart_start_rx(port);
+    }
 }
 
 static void m200_uart_start_tx(struct uart_port *port)
 {
 	UARTTxStart(port->iobase);
+}
+
+static void m200_uart_start_rx(struct uart_port *port)
+{
+	UARTRxStart(port->iobase);
 }
 
 static void m200_uart_stop_rx(struct uart_port *port)
@@ -236,6 +249,11 @@ static int m200_uart_startup(struct uart_port *port)
 		dev_err(port->dev, "%s:%d request_irq() irq:%d failed!\n", __FILE__, __LINE__, port->irq);
 	}
 
+	/* Enablue UART module interrupt  */ 
+	clk_prepare_enable(m200_port->clk);
+
+    m200_uart_start_rx(port);
+
 	return err;
 }
 
@@ -322,17 +340,11 @@ m200_uart_set_termios(struct uart_port *port, struct ktermios *termios,
 	UARTDisable(port->iobase);
 
 	/* Config baudrate */
-    ulUartClk = clk_get_rate(((struct m200_uart_port *)port)->clk);
+    ulUartClk = ((struct m200_uart_port *)port)->clk_rate;
 	UARTConfigSetExpClk(port->iobase, ulUartClk, baud, config);
-
-	/* Interrupt set */
-	UARTRxStart(port->iobase);
 
 	/* Enable UART */
 	UARTEnable(port->iobase);
-
-	/* Enablue UART module interrupt  */ 
-	INTCInterruptEnable(port->irq);
 
 	//DEBUG();
 	//UARTRegisterDump(port->iobase, printk);
@@ -502,6 +514,63 @@ static struct console m200_console = {
 };
 
 #define M200_CONSOLE (&m200_console)
+
+static int __init m200_console_init(void)
+{
+    struct m200_uart_port *mup;
+    struct device_node *device_node;
+    const char *name;
+    struct resource resource;
+    int uart_id;
+    int err;
+    struct uart_port *port;
+
+    name = of_get_property(of_chosen, "linux,stdout-path", NULL);
+    if (name == NULL) {
+        printk("No 'linux,stdout-path' defined in DT at %s line:%d\n", __func__, __LINE__);
+        return -EINVAL;
+    }
+
+    device_node = of_find_node_by_path(name);
+    if (device_node == NULL) {
+        printk("No uart defined for 'linux,stdout-path' at %s line:%d\n", __func__, __LINE__);
+        return -EINVAL;
+    }
+
+    uart_id = of_alias_get_id(device_node, "serial");
+    if (uart_id < 0) {
+        printk("of_alias_get_id() failed at %s line:%d\n", __func__, __LINE__);
+        return -EINVAL;
+    }
+
+    port = get_port_from_line(uart_id);
+    err = of_address_to_resource(device_node, 0, &resource);
+    if (err) {
+        printk("Error: None resource at %s line:%d\n", __func__, __LINE__);
+        return -EINVAL;
+    }
+
+    port->iobase = resource.start;
+
+    mup = (struct m200_uart_port *)port;
+    mup->clk_rate = 24000000;
+    printk("%s line:%d clock rate:%ld\n", __func__, __LINE__, mup->clk_rate);
+
+    port->irq = irq_of_parse_and_map(device_node, 0);
+    /* Turn off irq, since interrupt is not used */
+    INTCInterruptDisable(port->irq);
+
+    register_console(&m200_console);
+    return 0;
+}
+console_initcall(m200_console_init); // This is more early than module_init
+
+static void __exit m200_console_exit(void)
+{
+	unregister_console(&m200_console);
+}
+module_exit(m200_console_exit);
+
 #else
 #define M200_CONSOLE NULL
 #endif
@@ -531,6 +600,7 @@ static int m200_uart_platform_driver_probe(struct platform_device *pdev)
     const struct of_device_id *match;
     struct resource resource;
     struct device_node *device_node = pdev->dev.of_node;
+    struct pinctrl *pinctrl;
 	
     pdev->id = of_alias_get_id(pdev->dev.of_node, "serial");
 	if (pdev->id < 0) {
@@ -556,9 +626,16 @@ static int m200_uart_platform_driver_probe(struct platform_device *pdev)
     port->iobase = resource.start;
     mup = (struct m200_uart_port *)port;
     mup->clk = of_clk_get(device_node, 0);
+    mup->clk_rate = clk_get_rate(mup->clk);
 
 	platform_set_drvdata(pdev, mup);
 	
+    pinctrl = devm_pinctrl_get_select_default(&pdev->dev);
+    if (IS_ERR(pinctrl)) {
+        dev_err(&pdev->dev, "Error: None pinctrl config at %s\n", __func__);
+        return PTR_ERR(pinctrl);
+    }
+
 	err = uart_add_one_port(&m200_uart_driver, port);
 	if (err) {
 		dev_err(&pdev->dev, "Failed to add uart port, error:%d\n", err);
@@ -604,21 +681,13 @@ static int __init m200_uart_init(void)
 
 	return err;
 }
+module_init(m200_uart_init);
 
 static void __exit m200_uart_exit(void)
 {
-#ifdef CONFIG_SERIAL_M200_CONSOLE
-	unregister_console(&m200_console);
-#endif
 	platform_driver_unregister(&m200_uart_platform_driver);
 	uart_unregister_driver(&m200_uart_driver);
 }
-
-/*
- * While this can be a module, if builtin it's most likely the console
- * So let's leave module_exit but move module_init to an earlier place
- */
-arch_initcall(m200_uart_init);
 module_exit(m200_uart_exit);
 
 MODULE_DESCRIPTION("M200 UART Driver");

@@ -61,6 +61,9 @@
 #define UART2_BASE              0xB0032000  // UART2
 #define UART3_BASE              0xB0033000  // UART3
 #define UART4_BASE              0xB0034000  // UART4
+#define MSC0_BASE               0xB3450000  // MSC0
+#define MSC1_BASE               0xB3460000  // MSC1
+#define MSC2_BASE               0xB3470000  // MSC2
 
 #endif /* __HW_MEMMAP_H__ */
 

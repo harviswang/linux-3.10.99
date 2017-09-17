@@ -288,7 +288,10 @@ static int mux_clk_set_parent(struct clk_hw *hw, u8 index)
 
 static long mux_clk_round_rate(struct clk_hw *hw, unsigned long rate, unsigned long *parent_rate)
 {
-    if ((*parent_rate % rate) == 0) {
+    /*
+     * if rate=0, *parent_rate % rate will very very slow(Floating point exception)
+     */
+    if (((*parent_rate % rate) == 0) || (rate == 0)) {
         /* need do nothing */
     } else { /* get the nearest divider */
         unsigned long tmp = *parent_rate / rate;
@@ -320,21 +323,37 @@ static long mux_clk_round_rate(struct clk_hw *hw, unsigned long rate, unsigned l
     return rate;
 }
 
+/*
+ *
+ */
 static int mux_clk_set_rate(struct clk_hw *hw, unsigned long rate, unsigned long parent_rate)
 {
     struct m200_clk_mux *mux_clk = (struct m200_clk_mux *)hw;
     int clk_no = *(mux_clk->clk_nos + mux_clk->current_parent_index);
-    unsigned long divider;
     unsigned long result;
 
-    rate = mux_clk_round_rate(hw, rate, &parent_rate);
-    divider = parent_rate / rate;
-    if (divider > mux_clk->max_divider) { 
-        printk("Error: invalid divider %ld at %s line:%d\n", divider, __func__, __LINE__);
-        return -EINVAL;
+    /* rate is zero, we should gate the clock */
+    if (rate == 0) {
+        result = CPMClockDisable(CPM_BASE, clk_no);
+    } else {
+        unsigned long divider;
+        /* if last clock rate is zero, we should ungate the clock first */
+        unsigned long old_rate = clk_get_rate(hw->clk);
+        if (old_rate == 0) {
+            CPMClockEnable(CPM_BASE, clk_no);
+        }
+
+        rate = mux_clk_round_rate(hw, rate, &parent_rate);
+        printk("%s line:%d rate:%ld\n", __func__, __LINE__, rate);
+        divider = parent_rate / rate;
+        if (divider > mux_clk->max_divider) {
+            printk("Error: invalid divider %ld at %s line:%d\n", divider, __func__, __LINE__);
+            return -EINVAL;
+        }
+
+        result = CPMClockDividerSet(CPM_BASE, clk_no, divider);
     }
 
-    result = CPMClockDividerSet(CPM_BASE, clk_no, divider);
     return result == 1 ? 0 : -EINVAL;
 }
 
@@ -342,19 +361,25 @@ static unsigned long mux_clk_recalc_rate(struct clk_hw *hw, unsigned long parent
 {
     struct m200_clk_mux *mux_clk = (struct m200_clk_mux *)hw;
     int clk_no = *(mux_clk->clk_nos + mux_clk->current_parent_index);
-    unsigned long divider = CPMClockDividerGet(CPM_BASE, clk_no);
 
-    printk("%s line:%d divider:%ld\n", __func__, __LINE__, divider);
+    if (CPMClockIsEnabled(CPM_BASE, clk_no)) {
+        unsigned long divider = CPMClockDividerGet(CPM_BASE, clk_no);
+
+        printk("clk:%s %s line:%d divider:%ld\n", __clk_get_name(hw->clk), __func__, __LINE__, divider);
 /*
-    if (clk_no == CLOCK_NO_AHB2) {
-        mux_clk_set_rate(hw, 100000000, parent_rate);
-        divider = CPMClockDividerGet(CPM_BASE, clk_no);
-    }
+        if (clk_no == CLOCK_NO_AHB2) {
+            mux_clk_set_rate(hw, 100000000, parent_rate);
+            divider = CPMClockDividerGet(CPM_BASE, clk_no);
+        }
 */
-    if (divider == 0) { /* the clock not support frequency divider */
-        return parent_rate;
-    } else {
-        return parent_rate / divider;
+        if (divider == 0) { /* the clock not support frequency divider */
+            return parent_rate;
+        } else {
+            return parent_rate / divider;
+        }
+    } else { // clock is disable, it's frequency need to set zero
+             // since when set clock's frequency 0Hz, we will disable it.
+        return 0;
     }
 }
 
@@ -375,7 +400,7 @@ static struct clk *mux_clk_src_onecell_get(struct of_phandle_args *clkspec, void
     struct m200_clk_mux *mux_clk = ( struct m200_clk_mux *)data;
     struct clk *clk = mux_clk->mux_hw.clk;
 
-    printk("%s line:%d args_count:%d clk:0x%p clk->name:%s clk_no:%d\n", __func__, __LINE__, clkspec->args_count, clk, __clk_get_name(clk), *(mux_clk->clk_nos + 0));
+    printk("%s line:%d args_count:%d clk:0x%p clk->name:%s clk_no:%d\n", __func__, __LINE__, clkspec->args_count, clk, __clk_get_name(clk), *(mux_clk->clk_nos + mux_clk->current_parent_index));
     return clk;
 }
 

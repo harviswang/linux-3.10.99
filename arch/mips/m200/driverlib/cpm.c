@@ -34,6 +34,7 @@
 #include "../inc/hw_cpm.h"
 #include "../inc/hw_memmap.h"
 #include "../inc/hw_types.h"
+#include "../utils/bitops.h" // FIRST_BIT_INDEX()
 #include "debug.h"
 #include "cpm.h"
 #include "intc.h"
@@ -126,7 +127,7 @@ CPMApllSetM(unsigned long ulBase, unsigned long ulM)
     //
     ASSERT(UARTBaseValid(ulBase));
 
-    ulM = ulM << 20;
+    ulM = ulM << FIRST_BIT_INDEX(CPM_APCR_APLLM);
     HWREG(ulBase + CPM_O_APCR) = ulM | (HWREG(ulBase + CPM_O_APCR) & (~CPM_APCR_APLLM));
     return((HWREG(ulBase + CPM_O_APCR) & CPM_APCR_APLLM) == ulM);
 }
@@ -152,7 +153,7 @@ CPMApllGetN(unsigned long ulBase)
     //
     ASSERT(UARTBaseValid(ulBase));
 
-    ulN = (HWREG(ulBase + CPM_O_APCR) & CPM_APCR_APLLN) >> 14;
+    ulN = (HWREG(ulBase + CPM_O_APCR) & CPM_APCR_APLLN) >> FIRST_BIT_INDEX(CPM_APCR_APLLN);
     return(ulN);
 }
 
@@ -175,7 +176,7 @@ CPMApllSetN(unsigned long ulBase, unsigned long ulN)
     //
     ASSERT(UARTBaseValid(ulBase));
 
-    ulN = ulN << 14;
+    ulN = ulN << FIRST_BIT_INDEX(CPM_APCR_APLLN);
     HWREG(ulBase + CPM_O_APCR) = ulN | (HWREG(ulBase + CPM_O_APCR) & (~CPM_APCR_APLLN));
     return((HWREG(ulBase + CPM_O_APCR) & CPM_APCR_APLLN) == ulN);
 }
@@ -318,7 +319,7 @@ CPMMpllSetM(unsigned long ulBase, unsigned long ulM)
     //
     ASSERT(UARTBaseValid(ulBase));
 
-    ulM = ulM << 20;
+    ulM = ulM << FIRST_BIT_INDEX(CPM_MPCR_MPLLM);
     HWREG(ulBase + CPM_O_MPCR) = ulM | (HWREG(ulBase + CPM_O_MPCR) & (~CPM_MPCR_MPLLM));
     return((HWREG(ulBase + CPM_O_MPCR) & CPM_MPCR_MPLLM) == ulM);
 }
@@ -367,7 +368,7 @@ CPMMpllSetN(unsigned long ulBase, unsigned long ulN)
     //
     ASSERT(UARTBaseValid(ulBase));
 
-    ulN = ulN << 14;
+    ulN = ulN << FIRST_BIT_INDEX(CPM_MPCR_MPLLN);
     HWREG(ulBase + CPM_O_MPCR) = ulN | (HWREG(ulBase + CPM_O_MPCR) & (~CPM_MPCR_MPLLN));
     return((HWREG(ulBase + CPM_O_MPCR) & CPM_MPCR_MPLLN) == ulN);
 }
@@ -590,6 +591,8 @@ unsigned long *pulM, unsigned long *pulMFraction, unsigned long *pulN, unsigned 
 tBoolean
 CPMClockEnable(unsigned long ulBase, unsigned long ulClockNo)
 {
+    tBoolean bResult = false;
+
     //
     // Check the arguments.
     //
@@ -744,16 +747,38 @@ CPMClockEnable(unsigned long ulBase, unsigned long ulClockNo)
         return((HWREG(ulBase + CPM_O_CLKGR1) & CPM_CLKGR1_CPU) != CPM_CLKGR1_CPU);
     // Others(not controlled in clock gate register)
     case CLOCK_NO_SCLKA:
-        HWREG(ulBase + CPM_O_CCR) &= ~CPM_CCR_GATESCLKA;
-        return((HWREG(ulBase + CPM_O_CCR) & CPM_CCR_GATESCLKA) != CPM_CCR_GATESCLKA);
+        HWREG(ulBase + CPM_O_CCR) |= CPM_CCR_GATESCLKA;
+        return((HWREG(ulBase + CPM_O_CCR) & CPM_CCR_GATESCLKA) == CPM_CCR_GATESCLKA);
     case CLOCK_NO_I2S:
         // TODO
+        ASSERT(false);
+        return(false);
     case CLOCK_NO_CIM:
         // TODO
+        ASSERT(false);
+        return(false);
     case CLOCK_NO_APLL:
        return(CPMApllEnable(ulBase));
     case CLOCK_NO_MPLL:
        return(CPMMpllEnable(ulBase));
+    case CLOCK_NO_L2CACHE: // we think exit stop is enable
+        HWREG(ulBase + CPM_O_CCR) |= CPM_CCR_CECPU | (14 << FIRST_BIT_INDEX(CPM_CCR_L2CDIV));
+        bResult = !(((HWREG(ulBase + CPM_O_CCR) & CPM_CCR_L2CDIV) == CPM_CCR_L2CDIV) &&
+                   ((HWREG(ulBase + CPM_O_CCR) & CPM_CCR_CECPU) == CPM_CCR_CECPU));
+        HWREG(ulBase + CPM_O_CCR) &= ~CPM_CCR_CECPU;
+        return(bResult);
+    case CLOCK_NO_PCLK: // we think exit stop is enable
+        HWREG(ulBase + CPM_O_CCR) |= CPM_CCR_CEAHB2 | (14 << FIRST_BIT_INDEX(CPM_CCR_PDIV));
+        bResult = !(((HWREG(ulBase + CPM_O_CCR) & CPM_CCR_PDIV) == CPM_CCR_PDIV) &&
+                   ((HWREG(ulBase + CPM_O_CCR) & CPM_CCR_CEAHB2) == CPM_CCR_CEAHB2));
+        HWREG(ulBase + CPM_O_CCR) &= ~CPM_CCR_CEAHB2;
+        return(bResult);
+    case CLOCK_NO_AHB2: // we think exit stop is enable
+        HWREG(ulBase + CPM_O_CCR) |= CPM_CCR_CEAHB2 | (14 << FIRST_BIT_INDEX(CPM_CCR_H2DIV));
+        bResult = !(((HWREG(ulBase + CPM_O_CCR) & CPM_CCR_H2DIV) == CPM_CCR_H2DIV) &&
+                   ((HWREG(ulBase + CPM_O_CCR) & CPM_CCR_CEAHB2) == CPM_CCR_CEAHB2));
+        HWREG(ulBase + CPM_O_CCR) &= ~CPM_CCR_CEAHB2;
+        return(bResult);
     default:
         ASSERT(false);
         return(false);
@@ -775,6 +800,8 @@ CPMClockEnable(unsigned long ulBase, unsigned long ulClockNo)
 tBoolean
 CPMClockDisable(unsigned long ulBase, unsigned long ulClockNo)
 {
+    tBoolean bResult = false;
+
     //
     // Check the arguments.
     //
@@ -929,16 +956,187 @@ CPMClockDisable(unsigned long ulBase, unsigned long ulClockNo)
         return((HWREG(ulBase + CPM_O_CLKGR1) & CPM_CLKGR1_CPU) == CPM_CLKGR1_CPU);
     // Others(not controlled in clock gate register)
     case CLOCK_NO_SCLKA:
-        HWREG(ulBase + CPM_O_CCR) |= CPM_CCR_GATESCLKA;
-        return((HWREG(ulBase + CPM_O_CCR) & CPM_CCR_GATESCLKA) == CPM_CCR_GATESCLKA);
+        HWREG(ulBase + CPM_O_CCR) &= ~CPM_CCR_GATESCLKA;
+        return((HWREG(ulBase + CPM_O_CCR) & CPM_CCR_GATESCLKA) != CPM_CCR_GATESCLKA);
     case CLOCK_NO_I2S:
         // TODO
+        ASSERT(false);
+        return(false);
     case CLOCK_NO_CIM:
         // TODO
+        ASSERT(false);
+        return(false);
     case CLOCK_NO_APLL:
         return(CPMApllDisable(ulBase));
     case CLOCK_NO_MPLL:
         return(CPMMpllDisable(ulBase));
+    case CLOCK_NO_L2CACHE: // we think stop is disable
+        HWREG(ulBase + CPM_O_CCR) |= CPM_CCR_CECPU | CPM_CCR_L2CDIV;
+        bResult = ((HWREG(ulBase + CPM_O_CCR) & CPM_CCR_L2CDIV) == CPM_CCR_L2CDIV) &&
+                  ((HWREG(ulBase + CPM_O_CCR) & CPM_CCR_CECPU) == CPM_CCR_CECPU);
+        HWREG(ulBase + CPM_O_CCR) &= ~CPM_CCR_CECPU;
+        return(bResult);
+    case CLOCK_NO_PCLK: // we think stop is disable
+        HWREG(ulBase + CPM_O_CCR) |= CPM_CCR_CEAHB2 | CPM_CCR_PDIV;
+        bResult = ((HWREG(ulBase + CPM_O_CCR) & CPM_CCR_PDIV) == CPM_CCR_PDIV) &&
+                  ((HWREG(ulBase + CPM_O_CCR) & CPM_CCR_CEAHB2) == CPM_CCR_CEAHB2);
+        HWREG(ulBase + CPM_O_CCR) &= ~CPM_CCR_CEAHB2;
+        return(bResult);
+    case CLOCK_NO_AHB2: // we think stop is disable
+        HWREG(ulBase + CPM_O_CCR) |= CPM_CCR_CEAHB2 | CPM_CCR_H2DIV;
+        bResult = ((HWREG(ulBase + CPM_O_CCR) & CPM_CCR_H2DIV) == CPM_CCR_H2DIV) &&
+                  ((HWREG(ulBase + CPM_O_CCR) & CPM_CCR_CEAHB2) == CPM_CCR_CEAHB2);
+        HWREG(ulBase + CPM_O_CCR) &= ~CPM_CCR_CEAHB2;
+        return(bResult);
+    default:
+        ASSERT(false);
+        return(false);
+    }
+}
+
+//*****************************************************************************
+//
+//! Is a clock has been enabled.
+//!
+//! \param ulBase is the base address of the CPM.
+//! \param ulClockNo the clock ID, defined in clock.h.
+//!
+//! This function check clock's gate status.
+//!
+//! \return Returns true if clock enabled , false others
+//
+//*****************************************************************************
+tBoolean
+CPMClockIsEnabled(unsigned long ulBase, unsigned long ulClockNo)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(UARTBaseValid(ulBase));
+
+    switch (ulClockNo) {
+    // Included in clock gate 0
+    case CLOCK_NO_NFI:
+        return((HWREG(ulBase + CPM_O_CLKGR0) & CPM_CLKGR0_NFI) != CPM_CLKGR0_NFI);
+    case CLOCK_NO_NEMC:
+        return((HWREG(ulBase + CPM_O_CLKGR0) & CPM_CLKGR0_NEMC) != CPM_CLKGR0_NEMC);
+    case CLOCK_NO_BCH:
+        return((HWREG(ulBase + CPM_O_CLKGR0) & CPM_CLKGR0_BCH) != CPM_CLKGR0_BCH);
+    case CLOCK_NO_OTG:
+        return((HWREG(ulBase + CPM_O_CLKGR0) & CPM_CLKGR0_OTG) != CPM_CLKGR0_OTG);
+    case CLOCK_NO_MSC0:
+        return((HWREG(ulBase + CPM_O_CLKGR0) & CPM_CLKGR0_MSC0) != CPM_CLKGR0_MSC0);
+    case CLOCK_NO_MSC1:
+        return((HWREG(ulBase + CPM_O_CLKGR0) & CPM_CLKGR0_MSC1) != CPM_CLKGR0_MSC1);
+    case CLOCK_NO_SSI0:
+        return((HWREG(ulBase + CPM_O_CLKGR0) & CPM_CLKGR0_SSI0) != CPM_CLKGR0_SSI0);
+    case CLOCK_NO_SMB0:
+        return((HWREG(ulBase + CPM_O_CLKGR0) & CPM_CLKGR0_SMB0) != CPM_CLKGR0_SMB0);
+    case CLOCK_NO_SMB1:
+        return((HWREG(ulBase + CPM_O_CLKGR0) & CPM_CLKGR0_SMB1) != CPM_CLKGR0_SMB1);
+    case CLOCK_NO_SMB2:
+        return((HWREG(ulBase + CPM_O_CLKGR0) & CPM_CLKGR0_SMB2) != CPM_CLKGR0_SMB2);
+    case CLOCK_NO_SMB3:
+        return((HWREG(ulBase + CPM_O_CLKGR0) & CPM_CLKGR0_SMB3) != CPM_CLKGR0_SMB3);
+    case CLOCK_NO_AIC:
+        return((HWREG(ulBase + CPM_O_CLKGR0) & CPM_CLKGR0_AIC) != CPM_CLKGR0_AIC);
+    case CLOCK_NO_MSC2:
+        return((HWREG(ulBase + CPM_O_CLKGR0) & CPM_CLKGR0_MSC2) != CPM_CLKGR0_MSC2);
+    case CLOCK_NO_SADC:
+        return((HWREG(ulBase + CPM_O_CLKGR0) & CPM_CLKGR0_SADC) != CPM_CLKGR0_SADC);
+    case CLOCK_NO_UART0:
+        return((HWREG(ulBase + CPM_O_CLKGR0) & CPM_CLKGR0_UART0) != CPM_CLKGR0_UART0);
+    case CLOCK_NO_UART1:
+        return((HWREG(ulBase + CPM_O_CLKGR0) & CPM_CLKGR0_UART1) != CPM_CLKGR0_UART1);
+    case CLOCK_NO_UART2:
+        return((HWREG(ulBase + CPM_O_CLKGR0) & CPM_CLKGR0_UART2) != CPM_CLKGR0_UART2);
+    case CLOCK_NO_UART3:
+        return((HWREG(ulBase + CPM_O_CLKGR0) & CPM_CLKGR0_UART3) != CPM_CLKGR0_UART3);
+    case CLOCK_NO_UART4:
+        return((HWREG(ulBase + CPM_O_CLKGR0) & CPM_CLKGR0_UART4) != CPM_CLKGR0_UART4);
+    case CLOCK_NO_SSI1:
+        return((HWREG(ulBase + CPM_O_CLKGR0) & CPM_CLKGR0_SSI1) != CPM_CLKGR0_SSI1);
+    case CLOCK_NO_SSI2:
+        return((HWREG(ulBase + CPM_O_CLKGR0) & CPM_CLKGR0_SSI2) != CPM_CLKGR0_SSI2);
+    case CLOCK_NO_PDMA:
+        return((HWREG(ulBase + CPM_O_CLKGR0) & CPM_CLKGR0_PDMA) != CPM_CLKGR0_PDMA);
+    case CLOCK_NO_UHC:
+        return((HWREG(ulBase + CPM_O_CLKGR0) & CPM_CLKGR0_UHC) != CPM_CLKGR0_UHC);
+    case CLOCK_NO_ISP:
+        return((HWREG(ulBase + CPM_O_CLKGR0) & CPM_CLKGR0_ISP) != CPM_CLKGR0_ISP);
+    case CLOCK_NO_LCD:
+        return((HWREG(ulBase + CPM_O_CLKGR0) & CPM_CLKGR0_LCD) != CPM_CLKGR0_LCD);
+    case CLOCK_NO_CSI:
+        return((HWREG(ulBase + CPM_O_CLKGR0) & CPM_CLKGR0_CSI) != CPM_CLKGR0_CSI);
+    case CLOCK_NO_DSI:
+        return((HWREG(ulBase + CPM_O_CLKGR0) & CPM_CLKGR0_DSI) != CPM_CLKGR0_DSI);
+    case CLOCK_NO_PCM:
+        return((HWREG(ulBase + CPM_O_CLKGR0) & CPM_CLKGR0_PCM) != CPM_CLKGR0_PCM);
+    case CLOCK_NO_DES:
+        return((HWREG(ulBase + CPM_O_CLKGR0) & CPM_CLKGR0_DES) != CPM_CLKGR0_DES);
+    case CLOCK_NO_RTC:
+        return((HWREG(ulBase + CPM_O_CLKGR0) & CPM_CLKGR0_RTC) != CPM_CLKGR0_RTC);
+    case CLOCK_NO_TCU:
+        return((HWREG(ulBase + CPM_O_CLKGR0) & CPM_CLKGR0_TCU) != CPM_CLKGR0_TCU);
+    case CLOCK_NO_DDR:
+        return((HWREG(ulBase + CPM_O_CLKGR0) & CPM_CLKGR0_DDR) != CPM_CLKGR0_DDR);
+    // Included in clock gate 1
+    case CLOCK_NO_VPU:
+        return((HWREG(ulBase + CPM_O_CLKGR1) & CPM_CLKGR1_VPU) != CPM_CLKGR1_VPU);
+    case CLOCK_NO_GPU:
+        return((HWREG(ulBase + CPM_O_CLKGR1) & CPM_CLKGR1_GPU) != CPM_CLKGR1_GPU);
+    case CLOCK_NO_IPU:
+        return((HWREG(ulBase + CPM_O_CLKGR1) & CPM_CLKGR1_IPU) != CPM_CLKGR1_IPU);
+    case CLOCK_NO_AHBMON:
+        return((HWREG(ulBase + CPM_O_CLKGR1) & CPM_CLKGR1_AHBMON) != CPM_CLKGR1_AHBMON);
+    case CLOCK_NO_EPD:
+        return((HWREG(ulBase + CPM_O_CLKGR1) & CPM_CLKGR1_EPD) != CPM_CLKGR1_EPD);
+    case CLOCK_NO_AES:
+        return((HWREG(ulBase + CPM_O_CLKGR1) & CPM_CLKGR1_AES) != CPM_CLKGR1_AES);
+    case CLOCK_NO_HASH:
+        return((HWREG(ulBase + CPM_O_CLKGR1) & CPM_CLKGR1_HASH) != CPM_CLKGR1_HASH);
+    case CLOCK_NO_DMIC:
+        return((HWREG(ulBase + CPM_O_CLKGR1) & CPM_CLKGR1_DMIC) != CPM_CLKGR1_DMIC);
+    case CLOCK_NO_P1:
+        return((HWREG(ulBase + CPM_O_CLKGR1) & CPM_CLKGR1_P1) != CPM_CLKGR1_P1);
+    case CLOCK_NO_P0:
+        return((HWREG(ulBase + CPM_O_CLKGR1) & CPM_CLKGR1_P0) != CPM_CLKGR1_P0);
+    case CLOCK_NO_AHB0:
+        return((HWREG(ulBase + CPM_O_CLKGR1) & CPM_CLKGR1_AHB0) != CPM_CLKGR1_AHB0);
+    case CLOCK_NO_SYSOST:
+        return((HWREG(ulBase + CPM_O_CLKGR1) & CPM_CLKGR1_SYSOST) != CPM_CLKGR1_SYSOST);
+    case CLOCK_NO_TCUEXCLK:
+        return((HWREG(ulBase + CPM_O_CLKGR1) & CPM_CLKGR1_TCUEXCLK) != CPM_CLKGR1_TCUEXCLK);
+    case CLOCK_NO_DLINE:
+        return((HWREG(ulBase + CPM_O_CLKGR1) & CPM_CLKGR1_DLINE) != CPM_CLKGR1_DLINE);
+    case CLOCK_NO_APB0:
+        return((HWREG(ulBase + CPM_O_CLKGR1) & CPM_CLKGR1_APB0) != CPM_CLKGR1_APB0);
+    case CLOCK_NO_CPU:
+        return((HWREG(ulBase + CPM_O_CLKGR1) & CPM_CLKGR1_CPU) != CPM_CLKGR1_CPU);
+    // Others(not controlled in clock gate register)
+    case CLOCK_NO_SCLKA:
+        return((HWREG(ulBase + CPM_O_CCR) & CPM_CCR_GATESCLKA) == CPM_CCR_GATESCLKA);
+    case CLOCK_NO_I2S:
+        // TODO
+        ASSERT(false);
+        return(false);
+    case CLOCK_NO_CIM:
+        // TODO
+        ASSERT(false);
+        return(false);
+    case CLOCK_NO_APLL:
+        return((HWREG(ulBase + CPM_O_APCR) & CPM_APCR_APLLON) == CPM_APCR_APLLON);
+    case CLOCK_NO_MPLL:
+        return((HWREG(ulBase + CPM_O_MPCR) & CPM_MPCR_MPLLON) == CPM_MPCR_MPLLON);
+    case CLOCK_NO_L2CACHE: // we think stop is disabled
+        return(!(((HWREG(ulBase + CPM_O_CCR) & CPM_CCR_L2CDIV) == CPM_CCR_L2CDIV) &&
+                 ((HWREG(ulBase + CPM_O_CCR) & CPM_CCR_CECPU) == CPM_CCR_CECPU)));
+    case CLOCK_NO_PCLK: // we think stop is disabled
+        return(!(((HWREG(ulBase + CPM_O_CCR) & CPM_CCR_PDIV) == CPM_CCR_PDIV) &&
+                  ((HWREG(ulBase + CPM_O_CCR) & CPM_CCR_CEAHB2) == CPM_CCR_CEAHB2)));
+    case CLOCK_NO_AHB2: // we think stop is disabled
+        return(!(((HWREG(ulBase + CPM_O_CCR) & CPM_CCR_H2DIV) == CPM_CCR_H2DIV) &&
+                  ((HWREG(ulBase + CPM_O_CCR) & CPM_CCR_CEAHB2) == CPM_CCR_CEAHB2)));
     default:
         ASSERT(false);
         return(false);
@@ -1277,7 +1475,7 @@ CPMClockDividerSet(unsigned long ulBase, unsigned long ulClockNo, unsigned long 
         ulL2CacheDivider -= 1;
         ulClockDivider -= 1;
         HWREG(ulBase + CPM_O_CCR) |= CPM_CCR_CECPU;
-        HWREG(ulBase + CPM_O_CCR) = (HWREG(ulBase + CPM_O_CCR) & (~CPM_CCR_CDIV) & (~CPM_CCR_L2CDIV)) | ulClockDivider | (ulL2CacheDivider << 4);
+        HWREG(ulBase + CPM_O_CCR) = (HWREG(ulBase + CPM_O_CCR) & (~CPM_CCR_CDIV) & (~CPM_CCR_L2CDIV)) | ulClockDivider | (ulL2CacheDivider << FIRST_BIT_INDEX(CPM_CCR_L2CDIV));
         while ((HWREG(ulBase + CPM_O_CSR) & CPM_CSR_CDIVBUSY) == CPM_CSR_CDIVBUSY) {
             continue; // wait until frequency change finished
         }
@@ -1285,7 +1483,7 @@ CPMClockDividerSet(unsigned long ulBase, unsigned long ulClockNo, unsigned long 
         return((HWREG(ulBase + CPM_O_CCR) & CPM_CCR_CDIV) == ulClockDivider);
     case CLOCK_NO_AHB0:
         ulClockDivider -= 1;
-        ulClockDivider <<= 8;
+        ulClockDivider <<= FIRST_BIT_INDEX(CPM_CCR_H0DIV);
         HWREG(ulBase + CPM_O_CCR) |= CPM_CCR_CEAHB0;
         HWREG(ulBase + CPM_O_CCR) = (HWREG(ulBase + CPM_O_CCR) & (~CPM_CCR_H0DIV)) | ulClockDivider;
         HWREG(ulBase + CPM_O_CCR) &= ~CPM_CCR_CEAHB0;
@@ -1327,7 +1525,7 @@ CPMClockDividerSet(unsigned long ulBase, unsigned long ulClockNo, unsigned long 
             (ulCpuP0Divider * 4 == ulClockDivider))
         {
             ulClockDivider -= 1;
-            ulClockDivider <<= 4;
+            ulClockDivider <<= FIRST_BIT_INDEX(CPM_CCR_L2CDIV);
             HWREG(ulBase + CPM_O_CCR) |= CPM_CCR_CECPU;
             HWREG(ulBase + CPM_O_CCR) = (HWREG(ulBase + CPM_O_CCR) & (~CPM_CCR_L2CDIV)) | ulClockDivider;
             HWREG(ulBase + CPM_O_CCR) &= ~CPM_CCR_CECPU;
@@ -1339,7 +1537,7 @@ CPMClockDividerSet(unsigned long ulBase, unsigned long ulClockNo, unsigned long 
         ulAHB2Divider = CPMClockDividerGet(ulBase, CLOCK_NO_AHB2);
         if ((ulAHB2Divider == ulClockDivider) || (ulClockDivider * 2 == ulClockDivider)) {
             ulClockDivider -= 1;
-            ulClockDivider <<= 16;
+            ulClockDivider <<= FIRST_BIT_INDEX(CPM_CCR_PDIV);
             HWREG(ulBase + CPM_O_CCR) |= CPM_CCR_CEAHB2;
             HWREG(ulBase + CPM_O_CCR) = (HWREG(ulBase + CPM_O_CCR) & (~CPM_CCR_PDIV)) | ulClockDivider;
             HWREG(ulBase + CPM_O_CCR) &= ~CPM_CCR_CEAHB2;
@@ -1351,7 +1549,7 @@ CPMClockDividerSet(unsigned long ulBase, unsigned long ulClockNo, unsigned long 
         ulPeripheralDivider = CPMClockDividerGet(ulBase, CLOCK_NO_PCLK);
         if ((ulPeripheralDivider == ulClockDivider) || (ulPeripheralDivider == ulClockDivider * 2)) {
             ulClockDivider -= 1;
-            ulClockDivider <<= 12;
+            ulClockDivider <<= FIRST_BIT_INDEX(CPM_CCR_H2DIV);
             HWREG(ulBase + CPM_O_CCR) |= CPM_CCR_CEAHB2;
             HWREG(ulBase + CPM_O_CCR) = (HWREG(ulBase + CPM_O_CCR) & (~CPM_CCR_H2DIV)) | ulClockDivider;
             HWREG(ulBase + CPM_O_CCR) &= ~CPM_CCR_CEAHB2;

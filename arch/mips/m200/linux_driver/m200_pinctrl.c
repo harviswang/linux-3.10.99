@@ -507,7 +507,18 @@ static struct platform_driver m200_pinctrl_driver = {
     .probe = m200_pinctrl_probe,
     .remove= m200_pinctrl_remove,
 };
-module_platform_driver(m200_pinctrl_driver);
+
+static int m200_pinctrl_init(void)
+{
+    return platform_driver_register(&m200_pinctrl_driver);
+}
+arch_initcall(m200_pinctrl_init);
+
+static void  m200_pinctrl_exit(void)
+{
+    return platform_driver_unregister(&m200_pinctrl_driver);
+}
+module_exit(m200_pinctrl_exit);
 
 MODULE_DESCRIPTION("M200 Pin Control Driver");
 MODULE_LICENSE("Dual BSD/GPL");

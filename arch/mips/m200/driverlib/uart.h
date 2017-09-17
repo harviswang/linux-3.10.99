@@ -2,7 +2,7 @@
 //
 // uart.h - Defines and Macros for the UART.
 //
-// Copyright (c) 2016-2017 Harvis Wang.  All rights reserved.
+// Copyright (c) 2017 Harvis Wang.  All rights reserved.
 // Software License Agreement
 // 
 //   Redistribution and use in source and binary forms, with or without

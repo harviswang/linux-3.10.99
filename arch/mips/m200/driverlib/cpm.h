@@ -131,6 +131,7 @@ extern tBoolean CPMPLLCalculateMNFraction(unsigned long ulOutputFrequency, unsig
 unsigned long *pulM, unsigned long *pulMFraction, unsigned long *pulN, unsigned long *pulNFraction);
 extern tBoolean CPMClockEnable(unsigned long ulBase, unsigned long ulClockNo);
 extern tBoolean CPMClockDisable(unsigned long ulBase, unsigned long ulClockNo);
+extern tBoolean CPMClockIsEnabled(unsigned long ulBase, unsigned long ulClockNo);
 extern unsigned long CPMClockDividerGet(unsigned long ulBase, unsigned long ulClockNo);
 extern tBoolean CPMClockDividerSet(unsigned long ulBase, unsigned long ulClockNo, unsigned long ulClockDivider);
 

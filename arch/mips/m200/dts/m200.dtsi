@@ -38,9 +38,9 @@
         #address-cells      = <1>;
         #size-cells         = <1>;
         device_type = "soc";
-        ranges = <0x10000000 0xB0000000 0x00100000>;
+        ranges = <0x10000000 0xB0000000 0x04000000>;
         bus-frequency = <0>;
-        reg = <0x10000000 0x02000000>; /* TODO */
+        reg = <0x10000000 0x04000000>; /* TODO */
 
         intc: interrupt-controller@10001000 {
             compatible = "ingenic,m200-intc";
@@ -588,6 +588,21 @@
 
             #pinctrl-cells = <5>;
             status = "disabled";
+        };
+
+        mmc0: mmc0@13450000 {
+            compatible = "ingenic,m200-mmc";
+            reg = <0x13450000 0x00010000>;
+
+            min-frequency = <20000000>;
+            max-frequency = <50000000>;
+            bus-width = <8>;
+            sdma-descriptor-count = <8>;
+
+            interrupt-parent = <&intc>;
+            interrupts = <37>;
+
+            clocks = <&msc0_clk>;
         };
 
         pinctrl: pinctrl@10010000 {

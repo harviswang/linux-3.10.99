@@ -5,3 +5,4 @@ obj-y += intc.o
 obj-y += pwm.o
 obj-y += gpio.o
 obj-y += cpm.o
+obj-y += msc.o

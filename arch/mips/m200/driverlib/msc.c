@@ -97,7 +97,7 @@ MSCRegisterDump(unsigned long ulBase, int (*print)(const char *format, ...))
     REG_PRINT(MSC_O_CMDAT,  ulBase, print);
     REGH_PRINT(MSC_O_RESTO, ulBase, print);
     REG_PRINT(MSC_O_RDTO,   ulBase, print);
-    REGH_PRINT(MSC_O_BLKEN, ulBase, print);
+    REGH_PRINT(MSC_O_BLKLEN, ulBase, print);
     REGH_PRINT(MSC_O_NOB,   ulBase, print);
     REG_PRINT(MSC_O_SNOB,   ulBase, print);
     REG_PRINT(MSC_O_IMASK,  ulBase, print);
@@ -318,8 +318,8 @@ MSCBlockSizeSet(unsigned long ulBase, unsigned long ulBlockSize)
     //
     ASSERT(MSCBaseValid(ulBase));
 
-    HWREGH(ulBase + MSC_O_BLKEN) = (ulBlockSize & MSC_BLKEN_BLKEN);
-    return((HWREGH(ulBase + MSC_O_BLKEN) & MSC_BLKEN_BLKEN) == (ulBlockSize & MSC_BLKEN_BLKEN));
+    HWREGH(ulBase + MSC_O_BLKLEN) = (ulBlockSize & MSC_BLKLEN_BLKLEN);
+    return((HWREGH(ulBase + MSC_O_BLKLEN) & MSC_BLKLEN_BLKLEN) == (ulBlockSize & MSC_BLKLEN_BLKLEN));
 }
 
 //*****************************************************************************
@@ -341,53 +341,7 @@ MSCBlockSizeGet(unsigned long ulBase)
     //
     ASSERT(MSCBaseValid(ulBase));
 
-    return(HWREGH(ulBase + MSC_O_BLKEN) & MSC_BLKEN_BLKEN);
-}
-
-//*****************************************************************************
-//
-//! MSC read timeout set.
-//!
-//! \param ulBase is the base address of the MSC.
-//! \param ulReadTimeout is the read timeout, in MSC_CLK units.
-//!
-//! This function set the the read timeout.
-//!
-//! \return true if the read timeout is set ok, false others.
-//
-//*****************************************************************************
-tBoolean
-MSCReadTimeoutSet(unsigned long ulBase, unsigned long ulReadTimeout)
-{
-    //
-    // Check the arguments.
-    //
-    ASSERT(MSCBaseValid(ulBase));
-
-    HWREG(ulBase + MSC_O_RDTO) = (ulReadTimeout & MSC_RDTO_READTO);
-    return((HWREG(ulBase + MSC_O_RDTO) & MSC_RDTO_READTO) == (ulReadTimeout & MSC_RDTO_READTO));
-}
-
-//*****************************************************************************
-//
-//! MSC read timeout get.
-//!
-//! \param ulBase is the base address of the MSC.
-//!
-//! This function get the the read timeout.
-//!
-//! \return the read timeout(in MSC_CLK units).
-//
-//*****************************************************************************
-unsigned long
-MSCReadTimeoutGet(unsigned long ulBase)
-{
-    //
-    // Check the arguments.
-    //
-    ASSERT(MSCBaseValid(ulBase));
-
-    return(HWREG(ulBase + MSC_O_RDTO) & MSC_RDTO_READTO);
+    return(HWREGH(ulBase + MSC_O_BLKLEN) & MSC_BLKLEN_BLKLEN);
 }
 
 //*****************************************************************************
@@ -1017,6 +971,120 @@ MSCDMADataDoneFlagGet(unsigned long ulBase)
 
 //*****************************************************************************
 //
+//! MSC DMA Data Done flag clear.
+//!
+//! \param ulBase is the base address of the MSC.
+//!
+//! This function clear MSC DMA Data Done flag.
+//!
+//! \return true MSC DMA Data Done flag cleared success, false others.
+//
+//*****************************************************************************
+tBoolean
+MSCDMADataDoneFlagClear(unsigned long ulBase)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(MSCBaseValid(ulBase));
+
+    HWREG(ulBase + MSC_O_IFLG) |= MSC_IFLG_DMADATADONE;
+    return((HWREG(ulBase + MSC_O_IFLG) & MSC_IFLG_DMADATADONE) != MSC_IFLG_DMADATADONE);
+}
+
+//*****************************************************************************
+//
+//! MSC DMA End interrupt enable.
+//!
+//! \param ulBase is the base address of the MSC.
+//!
+//! This function enable MSC DMA End interrupt.
+//!
+//! \return true MSC DMA End interrupt enable operation success, false others.
+//
+//*****************************************************************************
+tBoolean
+MSCDMAEndEnable(unsigned long ulBase)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(MSCBaseValid(ulBase));
+
+    HWREG(ulBase + MSC_O_IMASK) &= ~MSC_IMASK_DMAEND;
+    return((HWREG(ulBase + MSC_O_IMASK) & MSC_IMASK_DMAEND) != MSC_IMASK_DMAEND);
+}
+
+//*****************************************************************************
+//
+//! MSC DMA End interrupt disable.
+//!
+//! \param ulBase is the base address of the MSC.
+//!
+//! This function disable MSC DMA End interrupt.
+//!
+//! \return true MSC DMA End interrupt disable operation success, false others.
+//
+//*****************************************************************************
+tBoolean
+MSCDMAEndDisable(unsigned long ulBase)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(MSCBaseValid(ulBase));
+
+    HWREG(ulBase + MSC_O_IMASK) |= MSC_IMASK_DMAEND;
+    return((HWREG(ulBase + MSC_O_IMASK) & MSC_IMASK_DMAEND) == MSC_IMASK_DMAEND);
+}
+
+//*****************************************************************************
+//
+//! MSC DMA End Flag get.
+//!
+//! \param ulBase is the base address of the MSC.
+//!
+//! This function get MSC DMA End flag.
+//!
+//! \return MSC DMA END flag.
+//
+//*****************************************************************************
+tBoolean
+MSCDMAEndFlagGet(unsigned long ulBase)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(MSCBaseValid(ulBase));
+
+    return((HWREG(ulBase + MSC_O_IFLG) & MSC_IFLG_DMAEND) == MSC_IFLG_DMAEND);
+}
+
+//*****************************************************************************
+//
+//! MSC DMA End Flag clear.
+//!
+//! \param ulBase is the base address of the MSC.
+//!
+//! This function clear MSC DMA End flag.
+//!
+//! \return true if MSC DMA END flag is cleared, false others.
+//
+//*****************************************************************************
+tBoolean
+MSCDMAEndFlagClear(unsigned long ulBase)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(MSCBaseValid(ulBase));
+
+    HWREG(ulBase + MSC_O_IFLG) |= MSC_IFLG_DMAEND;
+    return((HWREG(ulBase + MSC_O_IFLG) & MSC_IFLG_DMAEND) != MSC_IFLG_DMAEND);
+}
+
+//*****************************************************************************
+//
 //! MSC DMA enable(start).
 //!
 //! \param ulBase is the base address of the MSC.
@@ -1106,3 +1174,525 @@ MSCDataDisable(unsigned long ulBase)
     HWREG(ulBase + MSC_O_CMDAT) &= ~MSC_CMDAT_DATALEN;
     return((HWREG(ulBase + MSC_O_CMDAT) & MSC_CMDAT_DATALEN) != MSC_CMDAT_DATALEN);
 }
+
+//*****************************************************************************
+//
+//! MSC data read.
+//!
+//! \param ulBase is the base address of the MSC.
+//!
+//! This function enable data read function.
+//!
+//! \return true if data read enable operation success, false others.
+//
+//*****************************************************************************
+tBoolean
+MSCDataRead(unsigned long ulBase)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(MSCBaseValid(ulBase));
+
+    HWREG(ulBase + MSC_O_CMDAT) &= ~MSC_CMDAT_WRITEREAD;
+    return((HWREG(ulBase + MSC_O_CMDAT) & MSC_CMDAT_WRITEREAD) != MSC_CMDAT_WRITEREAD);
+}
+
+//*****************************************************************************
+//
+//! MSC data write.
+//!
+//! \param ulBase is the base address of the MSC.
+//!
+//! This function enable data write function.
+//!
+//! \return true if data write enable operation success, false others.
+//
+//*****************************************************************************
+tBoolean
+MSCDataWrite(unsigned long ulBase)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(MSCBaseValid(ulBase));
+
+    HWREG(ulBase + MSC_O_CMDAT) |= MSC_CMDAT_WRITEREAD;
+    return((HWREG(ulBase + MSC_O_CMDAT) & MSC_CMDAT_WRITEREAD) == MSC_CMDAT_WRITEREAD);
+}
+//*****************************************************************************
+//
+//! MSC low power mode set.
+//!
+//! \param ulBase is the base address of the MSC.
+//!
+//! This function config low power mode. TODO
+//!
+//! \return true if low power mode config operation success, false others.
+//
+//*****************************************************************************
+tBoolean
+MSCLowPowerModeSet(unsigned long ulBase)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(MSCBaseValid(ulBase));
+
+    HWREG(ulBase + MSC_O_LPM) = MSC_LPM_LPM;
+    return((HWREG(ulBase + MSC_O_LPM) & (MSC_LPM_DRVSEL | MSC_LPM_SMPSEL | MSC_LPM_LPM)) == MSC_LPM_LPM);
+}
+
+//*****************************************************************************
+//
+//! MSC RXFIFO Read Request interrupt enable.
+//!
+//! \param ulBase is the base address of the MSC.
+//!
+//! This function enable RXFIFO read request interrupt.
+//!
+//! \return true if RXFIFO RD REQ enable operation successed, false others.
+//
+//*****************************************************************************
+tBoolean
+MSCRXFIFOReadRequestEnable(unsigned long ulBase)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(MSCBaseValid(ulBase));
+
+    HWREG(ulBase + MSC_O_IMASK) &= ~MSC_IMASK_RXFIFORDREQ;
+    return((HWREG(ulBase + MSC_O_IMASK) & MSC_IMASK_RXFIFORDREQ) != MSC_IMASK_RXFIFORDREQ);
+}
+
+//*****************************************************************************
+//
+//! MSC RXFIFO Read Request interrupt disable.
+//!
+//! \param ulBase is the base address of the MSC.
+//!
+//! This function disable RXFIFO read request interrupt.
+//!
+//! \return true if RXFIFO RD REQ disable operation successed, false others.
+//
+//*****************************************************************************
+tBoolean
+MSCRXFIFOReadRequestDisable(unsigned long ulBase)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(MSCBaseValid(ulBase));
+
+    HWREG(ulBase + MSC_O_IMASK) |= MSC_IMASK_RXFIFORDREQ;
+    return((HWREG(ulBase + MSC_O_IMASK) & MSC_IMASK_RXFIFORDREQ) == MSC_IMASK_RXFIFORDREQ);
+}
+
+//*****************************************************************************
+//
+//! MSC RXFIFO Read Request interrupt flag get.
+//!
+//! \param ulBase is the base address of the MSC.
+//!
+//! This function get the vale of RXFIFO read request flag.
+//!
+//! \return the vale of RXFIFO read request flag.
+//
+//*****************************************************************************
+tBoolean
+MSCRXFIFOReadRequestFlagGet(unsigned long ulBase)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(MSCBaseValid(ulBase));
+
+    return((HWREG(ulBase + MSC_O_IFLG) & MSC_IFLG_RXFIFORDREQ) == MSC_IFLG_RXFIFORDREQ);
+}
+
+//*****************************************************************************
+//
+//! MSC RXFIFO Read Request interrupt flag clear.
+//!
+//! \param ulBase is the base address of the MSC.
+//!
+//! This function clear RXFIFO read request flag.
+//!
+//! \return true if the vale of RXFIFO read request flag is cleared, false others.
+//
+//*****************************************************************************
+tBoolean
+MSCRXFIFOReadRequestFlagClear(unsigned long ulBase)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(MSCBaseValid(ulBase));
+
+    HWREG(ulBase + MSC_O_IFLG) |= MSC_IFLG_RXFIFORDREQ;
+    return((HWREG(ulBase + MSC_O_IFLG) & MSC_IFLG_RXFIFORDREQ) != MSC_IFLG_RXFIFORDREQ);
+}
+
+//*****************************************************************************
+//
+//! MSC Data FIFO full interrupt enable.
+//!
+//! \param ulBase is the base address of the MSC.
+//!
+//! This function enable Data FIFO full.
+//!
+//! \return true if enable Data FIFO full operation is successed, false others.
+//
+//*****************************************************************************
+tBoolean
+MSCDataFIFOFullEnable(unsigned long ulBase)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(MSCBaseValid(ulBase));
+
+    HWREG(ulBase + MSC_O_IMASK) &= ~MSC_IMASK_DATAFIFOFULL;
+    return((HWREG(ulBase + MSC_O_IMASK) & MSC_IMASK_DATAFIFOFULL) != MSC_IMASK_DATAFIFOFULL);
+}
+
+//*****************************************************************************
+//
+//! MSC Data FIFO full interrupt disable.
+//!
+//! \param ulBase is the base address of the MSC.
+//!
+//! This function disable Data FIFO full.
+//!
+//! \return true if disable Data FIFO full operation is successed, false others.
+//
+//*****************************************************************************
+tBoolean
+MSCDataFIFOFullDisable(unsigned long ulBase)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(MSCBaseValid(ulBase));
+
+    HWREG(ulBase + MSC_O_IMASK) |= MSC_IMASK_DATAFIFOFULL;
+    return((HWREG(ulBase + MSC_O_IMASK) & MSC_IMASK_DATAFIFOFULL) == MSC_IMASK_DATAFIFOFULL);
+}
+
+//*****************************************************************************
+//
+//! MSC Data FIFO full interrupt flag get.
+//!
+//! \param ulBase is the base address of the MSC.
+//!
+//! This function get the value of Data FIFO full flag.
+//!
+//! \return Data FIFO full flag's value.
+//
+//*****************************************************************************
+tBoolean
+MSCDataFIFOFullFlagGet(unsigned long ulBase)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(MSCBaseValid(ulBase));
+
+    return((HWREG(ulBase + MSC_O_IFLG) & MSC_IFLG_DATAFIFOFULL) == MSC_IFLG_DATAFIFOFULL);
+}
+
+//*****************************************************************************
+//
+//! MSC Data FIFO empty interrupt enable.
+//!
+//! \param ulBase is the base address of the MSC.
+//!
+//! This function enable Data FIFO empty interrupt.
+//!
+//! \return true if Data FIFO empty interrup is enabled, false others.
+//
+//*****************************************************************************
+tBoolean
+MSCDataFIFOEmptyEnable(unsigned long ulBase)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(MSCBaseValid(ulBase));
+
+    HWREG(ulBase + MSC_O_IMASK) &= ~MSC_IMASK_DATAFIFOEMP;
+    return((HWREG(ulBase + MSC_O_IMASK) & MSC_IMASK_DATAFIFOEMP) != MSC_IMASK_DATAFIFOEMP);
+}
+
+//*****************************************************************************
+//
+//! MSC Data FIFO empty interrupt disable.
+//!
+//! \param ulBase is the base address of the MSC.
+//!
+//! This function disable Data FIFO empty interrupt.
+//!
+//! \return true if Data FIFO empty interrup is disabled, false others.
+//
+//*****************************************************************************
+tBoolean
+MSCDataFIFOEmptyDisable(unsigned long ulBase)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(MSCBaseValid(ulBase));
+
+    HWREG(ulBase + MSC_O_IMASK) |= MSC_IMASK_DATAFIFOEMP;
+    return((HWREG(ulBase + MSC_O_IMASK) & MSC_IMASK_DATAFIFOEMP) == MSC_IMASK_DATAFIFOEMP);
+}
+
+//*****************************************************************************
+//
+//! MSC Data FIFO empty flag get.
+//!
+//! \param ulBase is the base address of the MSC.
+//!
+//! This function get the value of Data FIFO empty interrupt flag.
+//!
+//! \return Data FIFO empty interrup's flag.
+//
+//*****************************************************************************
+tBoolean
+MSCDataFIFOEmptyFlagGet(unsigned long ulBase)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(MSCBaseValid(ulBase));
+
+    return((HWREG(ulBase + MSC_O_IFLG) & MSC_IFLG_DATAFIFOEMP) == MSC_IFLG_DATAFIFOEMP);
+}
+
+//*****************************************************************************
+//
+//! MSC CRC Response Error enable.
+//!
+//! \param ulBase is the base address of the MSC.
+//!
+//! This function enable CRC Response Error interrupt.
+//!
+//! \return true if CRC Response Error interrupt is enabled, false others.
+//
+//*****************************************************************************
+tBoolean
+MSCCRCResponseErrorEnable(unsigned long ulBase)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(MSCBaseValid(ulBase));
+
+    HWREG(ulBase + MSC_O_IMASK) &= ~MSC_IMASK_CRCRESERR;
+    return((HWREG(ulBase + MSC_O_IMASK) & MSC_IMASK_CRCRESERR) != MSC_IMASK_CRCRESERR);
+}
+
+//*****************************************************************************
+//
+//! MSC CRC Response Error disable.
+//!
+//! \param ulBase is the base address of the MSC.
+//!
+//! This function disable CRC Response Error interrupt.
+//!
+//! \return true if CRC Response Error interrupt is disabled, false others.
+//
+//*****************************************************************************
+tBoolean
+MSCCRCResponseErrorDisable(unsigned long ulBase)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(MSCBaseValid(ulBase));
+
+    HWREG(ulBase + MSC_O_IMASK) |= MSC_IMASK_CRCRESERR;
+    return((HWREG(ulBase + MSC_O_IMASK) & MSC_IMASK_CRCRESERR) == MSC_IMASK_CRCRESERR);
+}
+
+//*****************************************************************************
+//
+//! MSC CRC Response Error flag get.
+//!
+//! \param ulBase is the base address of the MSC.
+//!
+//! This function get CRC Response Error interrupt's flag.
+//!
+//! \return the CRC Response Error interrupt flag's value.
+//
+//*****************************************************************************
+tBoolean
+MSCCRCResponseErrorFlagGet(unsigned long ulBase)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(MSCBaseValid(ulBase));
+
+    return((HWREG(ulBase + MSC_O_IFLG) & MSC_IFLG_CRCRESERR) == MSC_IFLG_CRCRESERR);
+}
+
+//*****************************************************************************
+//
+//! MSC CRC Response Error flag clear.
+//!
+//! \param ulBase is the base address of the MSC.
+//!
+//! This function clear CRC Response Error interrupt's flag.
+//!
+//! \return true if the CRC Response Error interrupt flag is cleared, false others.
+//
+//*****************************************************************************
+tBoolean
+MSCCRCResponseErrorFlagClear(unsigned long ulBase)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(MSCBaseValid(ulBase));
+
+    HWREG(ulBase + MSC_O_IFLG) |= MSC_IFLG_CRCRESERR;
+    return((HWREG(ulBase + MSC_O_IFLG) & MSC_IFLG_CRCRESERR) != MSC_IFLG_CRCRESERR);
+}
+
+//*****************************************************************************
+//
+//! MSC CRC Read Error interrupt enable.
+//!
+//! \param ulBase is the base address of the MSC.
+//!
+//! This function enable CRC Read Error interrupt.
+//!
+//! \return true if the CRC Read Error interrupt is enabled, false others.
+//
+//*****************************************************************************
+tBoolean
+MSCCRCReadErrorEnable(unsigned long ulBase)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(MSCBaseValid(ulBase));
+
+    HWREG(ulBase + MSC_O_IMASK) &= ~MSC_IMASK_CRCREADERR;
+    return((HWREG(ulBase + MSC_O_IMASK) & MSC_IMASK_CRCREADERR) != MSC_IMASK_CRCREADERR);
+}
+
+//*****************************************************************************
+//
+//! MSC CRC Read Error interrupt disable.
+//!
+//! \param ulBase is the base address of the MSC.
+//!
+//! This function disable CRC Read Error interrupt.
+//!
+//! \return true if the CRC Read Error interrupt is disabled, false others.
+//
+//*****************************************************************************
+tBoolean
+MSCCRCReadErrorDisable(unsigned long ulBase)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(MSCBaseValid(ulBase));
+
+    HWREG(ulBase + MSC_O_IMASK) |= MSC_IMASK_CRCREADERR;
+    return((HWREG(ulBase + MSC_O_IMASK) & MSC_IMASK_CRCREADERR) == MSC_IMASK_CRCREADERR);
+}
+
+//*****************************************************************************
+//
+//! MSC CRC Read Error interrupt flag get.
+//!
+//! \param ulBase is the base address of the MSC.
+//!
+//! This function get CRC Read Error interrupt's flag's value.
+//!
+//! \return CRC Read Error interrupt's flag's value.
+//
+//*****************************************************************************
+tBoolean
+MSCCRCReadErrorFlagGet(unsigned long ulBase)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(MSCBaseValid(ulBase));
+
+    return((HWREG(ulBase + MSC_O_IFLG) & MSC_IFLG_CRCREADERR) == MSC_IFLG_CRCREADERR);
+}
+
+//*****************************************************************************
+//
+//! MSC CRC Read Error interrupt flag clear.
+//!
+//! \param ulBase is the base address of the MSC.
+//!
+//! This function clear CRC Read Error interrupt's flag.
+//!
+//! \return true if CRC Read Error interrupt's flag is cleared, false others.
+//
+//*****************************************************************************
+tBoolean
+MSCCRCReadErrorFlagClear(unsigned long ulBase)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(MSCBaseValid(ulBase));
+
+    HWREG(ulBase + MSC_O_IFLG) |= MSC_IFLG_CRCREADERR;
+    return((HWREG(ulBase + MSC_O_IFLG) & MSC_IFLG_CRCREADERR) != MSC_IFLG_CRCREADERR);
+}
+
+//*****************************************************************************
+//
+//! MSC RXFIFO get.
+//!
+//! \param ulBase is the base address of the MSC.
+//!
+//! This function read RXFIFO.
+//!
+//! \return one word from RXFIFO.
+//
+//*****************************************************************************
+unsigned long
+MSCRXFIFOGet(unsigned long ulBase)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(MSCBaseValid(ulBase));
+
+    return(HWREG(ulBase + MSC_O_RXFIFO));
+}
+
+//*****************************************************************************
+//
+//! MSC RTFIFO Count get.
+//!
+//! \param ulBase is the base address of the MSC.
+//!
+//! This function read MSC_O_RTCNT.
+//!
+//! \return the vale in MSC_O_RTCNT.
+//
+//*****************************************************************************
+unsigned long
+MSCRTFIFOCountGet(unsigned long ulBase)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(MSCBaseValid(ulBase));
+
+    return(HWREG(ulBase + MSC_O_RTCNT) & MSC_RTCNT_RTCNT);
+}
+

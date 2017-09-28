@@ -49,7 +49,7 @@
 #define MSC_O_CMDAT             0x0000000C  // MSC Command and Data Control Register
 #define MSC_O_RESTO             0x00000010  // MSC Response Time Out Register 16-bits
 #define MSC_O_RDTO              0x00000014  // MSC Read Time Out Register
-#define MSC_O_BLKEN             0x00000018  // MSC Block Size Register 16-bits
+#define MSC_O_BLKLEN            0x00000018  // MSC Block Size Register 16-bits
 #define MSC_O_NOB               0x0000001C  // MSC Block Counter Register 16-bits
 #define MSC_O_SNOB              0x00000020  // MSC Successfull-transfered Blocks Count Register
 #define MSC_O_IMASK             0x00000024  // MSC Interrupt Mask Register
@@ -274,10 +274,10 @@
 
 //*****************************************************************************
 //
-// The following are defines for the bit fields in the MSC_O_BLKEN register.
+// The following are defines for the bit fields in the MSC_O_BLKLEN register.
 //
 //*****************************************************************************
-#define MSC_BLKEN_BLKEN         0x0000FFFF  // Specifies the number of bytes in a block, and is normally set to 0x200 for MMC/SD data transactions. The value specified in the cards CSD.
+#define MSC_BLKLEN_BLKLEN       0x0000FFFF  // Specifies the number of bytes in a block, and is normally set to 0x200 for MMC/SD data transactions. The value specified in the cards CSD.
 
 //*****************************************************************************
 //

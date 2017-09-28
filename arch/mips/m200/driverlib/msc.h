@@ -49,6 +49,7 @@ extern "C" {
 //*****************************************************************************
 //
 // Struct for MSC inner DMA descriptor, used in DMA data transfer mode.
+// SDMA is the special DMA in MSC controller
 //
 //*****************************************************************************
 struct sdma_descriptor {
@@ -118,8 +119,6 @@ extern tBoolean MSCBlockCountSet(unsigned long ulBase, unsigned long ulBlockCoun
 extern unsigned long MSCBlockCountGet(unsigned long ulBase);
 extern tBoolean MSCBlockSizeSet(unsigned long ulBase, unsigned long ulBlockSize);
 extern unsigned long MSCBlockSizeGet(unsigned long ulBase);
-extern tBoolean MSCReadTimeoutSet(unsigned long ulBase, unsigned long ulReadTimeout);
-extern unsigned long MSCReadTimeoutGet(unsigned long ulBase);
 extern tBoolean MSCStreamModeEnable(unsigned long ulBase);
 extern tBoolean MSCStreamModeDisable(unsigned long ulBase);
 extern tBoolean MSCResponseFormatSet(unsigned long ulBase, unsigned long ulResponseFormat);
@@ -145,10 +144,38 @@ extern unsigned long MSCDMADescriptorAddressGet(unsigned long ulBase);
 extern tBoolean MSCDMADataDoneEnable(unsigned long ulBase);
 extern tBoolean MSCDMADataDoneDisable(unsigned long ulBase);
 extern tBoolean MSCDMADataDoneFlagGet(unsigned long ulBase);
+extern tBoolean MSCDMADataDoneFlagClear(unsigned long ulBase);
+extern tBoolean MSCDMAEndEnable(unsigned long ulBase);
+extern tBoolean MSCDMAEndDisable(unsigned long ulBase);
+extern tBoolean MSCDMAEndFlagGet(unsigned long ulBase);
+extern tBoolean MSCDMAEndFlagClear(unsigned long ulBase);
 extern tBoolean MSCDMAEnable(unsigned long ulBase);
 extern tBoolean MSCDMADisable(unsigned long ulBase);
 extern tBoolean MSCDataEnable(unsigned long ulBase);
 extern tBoolean MSCDataDisable(unsigned long ulBase);
+extern tBoolean MSCDataRead(unsigned long ulBase);
+extern tBoolean MSCDataWrite(unsigned long ulBase);
+extern tBoolean MSCRXFIFOReadRequestEnable(unsigned long ulBase);
+extern tBoolean MSCRXFIFOReadRequestDisable(unsigned long ulBase);
+extern tBoolean MSCRXFIFOReadRequestFlagGet(unsigned long ulBase);
+extern tBoolean MSCRXFIFOReadRequestFlagClear(unsigned long ulBase);
+extern tBoolean MSCDataFIFOFullEnable(unsigned long ulBase);
+extern tBoolean MSCDataFIFOFullDisable(unsigned long ulBase);
+extern tBoolean MSCDataFIFOFullFlagGet(unsigned long ulBase);
+extern tBoolean MSCDataFIFOEmptyEnable(unsigned long ulBase);
+extern tBoolean MSCDataFIFOEmptyDisable(unsigned long ulBase);
+extern tBoolean MSCDataFIFOEmptyFlagGet(unsigned long ulBase);
+extern tBoolean MSCCRCResponseErrorEnable(unsigned long ulBase);
+extern tBoolean MSCCRCResponseErrorDisable(unsigned long ulBase);
+extern tBoolean MSCCRCResponseErrorFlagGet(unsigned long ulBase);
+extern tBoolean MSCCRCResponseErrorFlagClear(unsigned long ulBase);
+extern tBoolean MSCCRCReadErrorEnable(unsigned long ulBase);
+extern tBoolean MSCCRCReadErrorDisable(unsigned long ulBase);
+extern tBoolean MSCCRCReadErrorFlagGet(unsigned long ulBase);
+extern tBoolean MSCCRCReadErrorFlagClear(unsigned long ulBase);
+extern tBoolean MSCLowPowerModeSet(unsigned long ulBase);
+extern unsigned long MSCRXFIFOGet(unsigned long ulBase);
+extern unsigned long MSCRTFIFOCountGet(unsigned long ulBase);
 
 //*****************************************************************************
 //

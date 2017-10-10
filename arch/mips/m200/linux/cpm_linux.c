@@ -32,19 +32,12 @@ static int pll_clk_enable(struct clk_hw *hw)
     return 0;
 }
 
-static int pll_clk_set_rate(struct clk_hw *hw, unsigned long rate, unsigned long parent_rate);
 static unsigned long pll_clk_recalc_rate(struct clk_hw *hw, unsigned long parent_rate)
 {
     struct m200_clk_pll *pll_clk = (struct m200_clk_pll *)hw;
     unsigned long ulM, ulN, ulNFraction;
 
     printk("%s line:%d parent_rate:%ld\n", __func__, __LINE__, parent_rate);
-/*
- * test code
-    if (pll_clk->pll_type == PLL_TYPE_APLL) {
-        pll_clk_set_rate(hw, 1280000000, 24000000);
-    }
-*/
 
     switch (pll_clk->pll_type) {
     case PLL_TYPE_APLL:
@@ -164,6 +157,7 @@ static void m200_pll_clk_setup(struct device_node *node)
     int err;
     struct m200_clk_pll *pll_clk;
     const char *parent_name;
+    u32 freq;
 
     parent_clk = of_clk_get(node, 0);
     parent_name = __clk_get_name(parent_clk);
@@ -191,6 +185,13 @@ static void m200_pll_clk_setup(struct device_node *node)
 
     pll_clk->ulBase = CPM_BASE;
     pll_clk->pll_hw.init = &init;
+
+    /* Using 'clock-frequency' as default frequency */
+    if (of_property_read_u32(node, "clock-frequency", &freq) == 0) {
+        printk("%s line:%d freq:%d parent freq:%d\n", __func__, __LINE__, freq, (int)clk_get_rate(parent_clk));
+        pll_clk_set_rate(&pll_clk->pll_hw, freq, clk_get_rate(parent_clk));
+    }
+
     clk = clk_register(NULL, &pll_clk->pll_hw);
     if (IS_ERR(clk)) {
         printk("%s line:%d clock register failed:0x%p\n", __func__, __LINE__, clk);

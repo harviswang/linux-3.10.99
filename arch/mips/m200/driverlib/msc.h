@@ -162,6 +162,10 @@ extern tBoolean MSCRXFIFOReadRequestFlagClear(unsigned long ulBase);
 extern tBoolean MSCDataFIFOFullEnable(unsigned long ulBase);
 extern tBoolean MSCDataFIFOFullDisable(unsigned long ulBase);
 extern tBoolean MSCDataFIFOFullFlagGet(unsigned long ulBase);
+extern tBoolean MSCAutoCMD12DoneEnable(unsigned long ulBase);
+extern tBoolean MSCAutoCMD12DoneDisable(unsigned long ulBase);
+extern tBoolean MSCAutoCMD12DoneFlagGet(unsigned long ulBase);
+extern tBoolean MSCAutoCMD12DoneFlagClear(unsigned long ulBase);
 extern tBoolean MSCDataFIFOEmptyEnable(unsigned long ulBase);
 extern tBoolean MSCDataFIFOEmptyDisable(unsigned long ulBase);
 extern tBoolean MSCDataFIFOEmptyFlagGet(unsigned long ulBase);
@@ -176,6 +180,7 @@ extern tBoolean MSCCRCReadErrorFlagClear(unsigned long ulBase);
 extern tBoolean MSCLowPowerModeSet(unsigned long ulBase);
 extern unsigned long MSCRXFIFOGet(unsigned long ulBase);
 extern unsigned long MSCRTFIFOCountGet(unsigned long ulBase);
+extern unsigned long MSCInterruptGet(unsigned long ulBase);
 
 //*****************************************************************************
 //

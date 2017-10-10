@@ -1404,6 +1404,97 @@ MSCDataFIFOFullFlagGet(unsigned long ulBase)
 
 //*****************************************************************************
 //
+//! MSC AutoCMD12 done interrupt enable.
+//!
+//! \param ulBase is the base address of the MSC.
+//!
+//! This function enable Auto CMD12 done interrupt.
+//!
+//! \return true if Auto CMD12 Done enable operation is successed, false others.
+//
+//*****************************************************************************
+tBoolean
+MSCAutoCMD12DoneEnable(unsigned long ulBase)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(MSCBaseValid(ulBase));
+
+    HWREG(ulBase + MSC_O_IMASK) &= ~MSC_IMASK_AUTOCMD12DONE;
+    return((HWREG(ulBase + MSC_O_IMASK) & MSC_IMASK_AUTOCMD12DONE) != MSC_IMASK_AUTOCMD12DONE);
+}
+
+//*****************************************************************************
+//
+//! MSC AutoCMD12 done interrupt disable.
+//!
+//! \param ulBase is the base address of the MSC.
+//!
+//! This function disable Auto CMD12 done interrupt.
+//!
+//! \return true if Auto CMD12 Done disable operation is successed, false others.
+//
+//*****************************************************************************
+tBoolean
+MSCAutoCMD12DoneDisable(unsigned long ulBase)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(MSCBaseValid(ulBase));
+
+    HWREG(ulBase + MSC_O_IMASK) |= MSC_IMASK_AUTOCMD12DONE;
+    return((HWREG(ulBase + MSC_O_IMASK) & MSC_IMASK_AUTOCMD12DONE) == MSC_IMASK_AUTOCMD12DONE);
+}
+
+//*****************************************************************************
+//
+//! MSC AutoCMD12 done interrupt flag get.
+//!
+//! \param ulBase is the base address of the MSC.
+//!
+//! This function get Auto CMD12 done flag.
+//!
+//! \return Auto CMD12 Done flag's value.
+//
+//*****************************************************************************
+tBoolean
+MSCAutoCMD12DoneFlagGet(unsigned long ulBase)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(MSCBaseValid(ulBase));
+
+    return((HWREG(ulBase + MSC_O_IFLG) & MSC_IFLG_AUTOCMD12DONE) == MSC_IFLG_AUTOCMD12DONE);
+}
+
+//*****************************************************************************
+//
+//! MSC AutoCMD12 done interrupt flag clear.
+//!
+//! \param ulBase is the base address of the MSC.
+//!
+//! This function clear Auto CMD12 done flag.
+//!
+//! \return true if the Auto CMD12 done flag clear operation is successed, false others.
+//
+//*****************************************************************************
+tBoolean
+MSCAutoCMD12DoneFlagClear(unsigned long ulBase)
+{
+    //
+    // Check the arguments.
+    //
+    ASSERT(MSCBaseValid(ulBase));
+
+    HWREG(ulBase + MSC_O_IFLG) |= MSC_IFLG_AUTOCMD12DONE;
+    return((HWREG(ulBase + MSC_O_IFLG) & MSC_IFLG_AUTOCMD12DONE) != MSC_IFLG_AUTOCMD12DONE);
+}
+
+//*****************************************************************************
+//
 //! MSC Data FIFO empty interrupt enable.
 //!
 //! \param ulBase is the base address of the MSC.
@@ -1696,3 +1787,23 @@ MSCRTFIFOCountGet(unsigned long ulBase)
     return(HWREG(ulBase + MSC_O_RTCNT) & MSC_RTCNT_RTCNT);
 }
 
+//*****************************************************************************
+//
+//! Get current interrupt source, used for debug.
+//!
+//! \param ulBase is the base address of the MSC.
+//!
+//! This function get MSC interrupt source.
+//!
+//! \return interrupt source, reference MSC_O_IFLG see which interrupt.
+//
+//*****************************************************************************
+unsigned long
+MSCInterruptGet(unsigned long ulBase)
+{
+    unsigned long ulMask, ulFlag;
+
+    ulMask = HWREG(ulBase + MSC_O_IMASK);
+    ulFlag = HWREG(ulBase + MSC_O_IFLG);
+    return((~ulMask) & ulFlag);
+}

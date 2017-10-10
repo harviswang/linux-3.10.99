@@ -32,6 +32,7 @@
 #include <linux/platform_device.h> /* module_platform_driver */
 #include <linux/dma-mapping.h> /* */
 #include <linux/clk.h>
+#include <linux/completion.h>
 #include <linux/of.h>
 #include <linux/of_irq.h>
 #include <linux/of_device.h>
@@ -57,10 +58,14 @@ struct m200_mmc_host {
     struct clk *clk;
     unsigned int clock;
     struct mmc_host *mmc_host;
-    struct mmc_command *mmc_command;
+    struct mmc_command *mmc_command; /* command of current request */
+    struct mmc_data *mmc_data;       /* data of last request */
     struct device *dev;
     struct sdma_descriptor *sdma_descriptor;
-    unsigned char sdma_descriptor_count;
+    struct completion dma_completion; /* make sure data and data progress is in sequence */
+                                      /* while a data dma is progressing, a new command can be progressed in parallel */
+                                      /* if the new command with data, the data progress is blocking */
+    unsigned char sdma_descriptor_count; /* how many sdma descriptor used */
     unsigned char power_mode;
     unsigned char bus_width;
     int irq;
@@ -70,9 +75,7 @@ struct m200_mmc_host {
 static int m200_mmc_request_done(struct mmc_host *host, struct mmc_request *request)
 {
     struct m200_mmc_host *mmh = mmc_priv(host);
-
     mmh->mmc_command = NULL;
-
     mmc_request_done(mmh->mmc_host, request);
     return 0;
 }
@@ -84,6 +87,14 @@ static int m200_mmc_data_done(struct mmc_host *host, struct mmc_data *data)
 
     if (data->error) {
         data->bytes_xfered = 0;
+        MSCRXFIFOReadRequestFlagClear(mmh->mmc_mem_base);
+        MSCRXFIFOReadRequestDisable(mmh->mmc_mem_base);
+        MSCDataFIFOFullDisable(mmh->mmc_mem_base);
+//        MSCDataFIFOEmptyDisable(mmh->mmc_mem_base);
+        MSCCRCResponseErrorFlagClear(mmh->mmc_mem_base);
+        MSCCRCResponseErrorDisable(mmh->mmc_mem_base);
+        MSCCRCReadErrorFlagClear(mmh->mmc_mem_base);
+        MSCCRCReadErrorDisable(mmh->mmc_mem_base);
         dev_err(mmh->dev, "MMC Data failed at %s line:%d\n", __func__, __LINE__);
     } else {
         data->bytes_xfered = data->blocks * data->blksz;
@@ -91,29 +102,26 @@ static int m200_mmc_data_done(struct mmc_host *host, struct mmc_data *data)
 
     MSCDataTransferDoneFlagClear(mmh->mmc_mem_base);
     MSCDataTransferDoneDisable(mmh->mmc_mem_base);
-    if (data->stop) { // TODO
+
+    if (data->stop) { /* use AutoCMD12 deal with */
         printk("%s line:%d data->stop:0x%p\n", __func__, __LINE__, data->stop);
     } else {
+        printk("%s line:%d data->mrq:0x%p data->mrq->cmd:0x%p\n", __func__, __LINE__, data->mrq, data->mrq->cmd);
         m200_mmc_request_done(host, data->mrq);
         printk("%s line:%d\n", __func__, __LINE__);
     }
-
     return 0;
 }
 
 static int m200_mmc_data_start(struct mmc_host *host, struct mmc_data *data)
 {
-#if 0
+#if 1
     struct m200_mmc_host *mmh = mmc_priv(host);
+    MSCDMADataDoneFlagClear(mmh->mmc_mem_base);
     MSCDMADataDoneEnable(mmh->mmc_mem_base);
-    MSCDMAEndEnable(mmh->mmc_mem_base);
+//    MSCDMAEndEnable(mmh->mmc_mem_base);
 
     printk("%s line:%d NDA:0x%08x DA:0x%08x LEN:0x%08x CMD:0x%08x\n", __func__, __LINE__, mmh->sdma_descriptor->NDA, mmh->sdma_descriptor->DA, mmh->sdma_descriptor->LEN, mmh->sdma_descriptor->CMD);
-{
-    int result;
-    result = MSCDMAEnable(mmh->mmc_mem_base);
-    printk("%s line:%d result:%d\n", __func__, __LINE__, result);
-}
 #endif
     return 0;
 }
@@ -140,7 +148,6 @@ static int m200_mmc_command_done(struct mmc_host *host, struct mmc_command *comm
             }
         } else { /* 48 bits command response */
             /* response types 1, 1b, 3, 4, 5, 6 */
-            int i;
             unsigned long ulResponse = MSCCommandResponseGet(mmh->mmc_mem_base);
 
             command->resp[0] = ulResponse << 24;
@@ -149,9 +156,9 @@ static int m200_mmc_command_done(struct mmc_host *host, struct mmc_command *comm
             ulResponse = MSCCommandResponseGet(mmh->mmc_mem_base);
             command->resp[0] |= ulResponse & 0x00FF;
 
-            for (i = 1; i < ARRAY_SIZE(command->resp); i++) {
-                command->resp[i] = 0x00000000;
-            }
+            command->resp[1] = 0x00000000;
+            command->resp[2] = 0x00000000;
+            command->resp[3] = 0x00000000;
         }
     }
 
@@ -159,7 +166,7 @@ static int m200_mmc_command_done(struct mmc_host *host, struct mmc_command *comm
         // TODO error handle
         printk("%s line:%d\n", __func__, __LINE__);
     } else if (command->data) { /* command with data */
-        MSCDataTransferDoneEnable(mmh->mmc_mem_base);
+        //MSCDataTransferDoneEnable(mmh->mmc_mem_base);
     } else { /* command without data */
         m200_mmc_request_done(host, command->mrq);
     }
@@ -231,13 +238,15 @@ static int m200_mmc_data_setup(struct mmc_host *host, struct mmc_data *data)
 {
     struct m200_mmc_host *mmh = mmc_priv(host);
     unsigned int ticks = m200_mmc_timout_ticks_calculate(host, data);
-//    int i;
-//    struct scatterlist *scatterlist;
-//    int dma_direction = data->flags & MMC_DATA_WRITE ? DMA_TO_DEVICE : DMA_FROM_DEVICE;
-//    struct sdma_descriptor *sdma_descriptor = mmh->sdma_descriptor;
-//    int result;
-#if 0
+#if 1
+    int i;
+    struct scatterlist *scatterlist;
+    int dma_direction = data->flags & MMC_DATA_WRITE ? DMA_TO_DEVICE : DMA_FROM_DEVICE;
+    struct sdma_descriptor *sdma_descriptor = mmh->sdma_descriptor;
+    int result;
+
     /* DMA prepare */
+    wait_for_completion(&mmh->dma_completion);
     printk("%s line:%d data->sg_len:%d ticks:0x%08X\n", __func__, __LINE__, data->sg_len, ticks);
     dma_map_sg(mmh->dev, data->sg, data->sg_len, dma_direction);
 
@@ -280,11 +289,10 @@ static int m200_mmc_data_setup(struct mmc_host *host, struct mmc_data *data)
     }
     MSCRXFIFOReadRequestEnable(mmh->mmc_mem_base);
     MSCDataFIFOFullEnable(mmh->mmc_mem_base);
-    MSCDataFIFOEmptyEnable(mmh->mmc_mem_base);
     MSCCRCResponseErrorEnable(mmh->mmc_mem_base);
     MSCCRCReadErrorEnable(mmh->mmc_mem_base);
     printk("%s line:%d\n", __func__, __LINE__);
-    MSCRegisterDump(mmh->mmc_mem_base, printk);
+//    MSCRegisterDump(mmh->mmc_mem_base, printk);
 
     return 0;
 }
@@ -306,8 +314,8 @@ static void m200_mmc_host_ops_request(struct mmc_host *host, struct mmc_request 
     struct mmc_command *mmc_command = req->cmd;
     struct mmc_data *mmc_data = req->data;
 
-//    printk("%s line:%d mmh->clock:%d mmc_command->opcode:%d mmc_command->arg:0x%08X req:0x%p mmc_data:0x%p\n",
-//         __func__, __LINE__, mmh->clock, mmc_command->opcode, mmc_command->arg, req, mmc_data);
+//    printk("%s line:%d mmh->clock:%d mmc_command->opcode:%d mmc_command->arg:0x%08X req:0x%p mmc_data:0x%p cmd->data:0x%p\n",
+//         __func__, __LINE__, mmh->clock, mmc_command->opcode, mmc_command->arg, req, mmc_data, mmc_command->data);
 
     if (mmc_data != NULL) {
         m200_mmc_data_setup(host, mmc_data);
@@ -316,7 +324,6 @@ static void m200_mmc_host_ops_request(struct mmc_host *host, struct mmc_request 
     }
 
     m200_mmc_command_start(host, mmc_command);
-
     if (mmc_data != NULL) {
         m200_mmc_data_start(host, mmc_data);
     }
@@ -325,7 +332,7 @@ static void m200_mmc_host_ops_request(struct mmc_host *host, struct mmc_request 
 static void m200_mmc_host_ops_set_ios(struct mmc_host *host, struct mmc_ios *ios)
 {
     struct m200_mmc_host *mmh = mmc_priv(host);
-    //printk("%s line:%d ios->clock:%d\n", __func__, __LINE__, ios->clock);
+    printk("%s line:%d ios->clock:%d\n", __func__, __LINE__, ios->clock);
 
     /* power mode */
     if (ios->power_mode != mmh->power_mode) {
@@ -367,6 +374,9 @@ static void m200_mmc_host_ops_set_ios(struct mmc_host *host, struct mmc_ios *ios
     if (ios->clock != mmh->clock) {
         clk_set_rate(mmh->clk, (unsigned long)ios->clock);
         mmh->clock = ios->clock;
+        if (mmh->clock == 26000000) {
+            dump_stack();
+        }
     }
 
 }
@@ -472,58 +482,66 @@ static struct of_device_id m200_mmc_match_table[] = {
 static irqreturn_t m200_mmc_irq_handler(int irq, void *dev_id)
 {
     struct m200_mmc_host *mmh = (struct m200_mmc_host *)dev_id;
+//    printk("%s line:%d\n", __func__, __LINE__);
     if (MSCSDIOInterruptFlagGet(mmh->mmc_mem_base)) {
         mmc_signal_sdio_irq(mmh->mmc_host);
-        printk("%s line:%d SDIO %s\n", __func__, __LINE__, mmh->mmc_command && mmh->mmc_command->data ? "data" : "");
+        //printk("%s line:%d SDIO %s\n", __func__, __LINE__, mmh->mmc_command && mmh->mmc_command->data ? "data" : "");
     } else if (MSCEndCommandResponseFlagGet(mmh->mmc_mem_base)) {
-        printk("%s line:%d CMD DONE %s\n", __func__, __LINE__, mmh->mmc_command && mmh->mmc_command->data ? "data" : "");
+        //printk("%s line:%d CMD DONE %s\n", __func__, __LINE__, mmh->mmc_command && mmh->mmc_command->data ? "data" : "");
         //MSCRegisterDump(mmh->mmc_mem_base, printk);
         m200_mmc_command_done(mmh->mmc_host, mmh->mmc_command);
-    } else if (MSCDataTransferDoneFlagGet(mmh->mmc_mem_base)) {
-        m200_mmc_data_done(mmh->mmc_host, mmh->mmc_command->data);
-        printk("%s line:%d DATA TRANSFER DONE %s\n", __func__, __LINE__, mmh->mmc_command && mmh->mmc_command->data ? "data" : "");
 #if 0
+    } else if (MSCDataTransferDoneFlagGet(mmh->mmc_mem_base)) {
+        printk("%s line:%d DATA TRANSFER DONE %s\n", __func__, __LINE__, mmh->mmc_command && mmh->mmc_command->data ? "data" : "");
+        //printk("%s line:%d\n", __func__, __LINE__);
+#endif
+#if 1
     } else if (MSCDMADataDoneFlagGet(mmh->mmc_mem_base)) {
         MSCDMADataDoneFlagClear(mmh->mmc_mem_base);
         MSCDMADataDoneDisable(mmh->mmc_mem_base);
+        MSCDMADisable(mmh->mmc_mem_base);
         printk("%s line:%d DMA DATA DONE\n", __func__, __LINE__);
+#if 0
     } else if (MSCDMAEndFlagGet(mmh->mmc_mem_base)) {
         MSCDMAEndFlagClear(mmh->mmc_mem_base);
         MSCDMADisable(mmh->mmc_mem_base);
         printk("%s line:%d DMA END\n", __func__, __LINE__);
 #endif
+#endif
     } else if (MSCRXFIFOReadRequestFlagGet(mmh->mmc_mem_base)) {
-        /* read */
-        struct mmc_data *data = mmh->mmc_command->data;
-        unsigned int *address;
-        unsigned int count;
-        int i = 0;
-
-        printk("%s line:%d\n", __func__, __LINE__);
-        address = sg_virt(data->sg);
-        count = sg_dma_len(data->sg);
-        //MSCRegisterDump(mmh->mmc_mem_base, printk);
-        for (i = 0; i < count / 4; i++) {
-            *address = MSCRXFIFOGet(mmh->mmc_mem_base);
-            address++;
+        if (mmh->mmc_command && mmh->mmc_command->data) {
+            MSCDMAEnable(mmh->mmc_mem_base);
+            INIT_COMPLETION(mmh->dma_completion);
+            MSCDataFIFOEmptyEnable(mmh->mmc_mem_base);
+//            printk("%s line:%d DMA Enable\n", __func__, __LINE__);
         }
-        printk("%s line:%d RXFIFO RD REQ\n", __func__, __LINE__);
-        //MSCRXFIFOReadRequestFlagClear(mmh->mmc_mem_base);
-        //MSCRXFIFOReadRequestDisable(mmh->mmc_mem_base);
-        //MSCRegisterDump(mmh->mmc_mem_base, printk);
     } else if (MSCDataFIFOFullFlagGet(mmh->mmc_mem_base)) {
         printk("%s line:%d DATA FIFO FULL\n", __func__, __LINE__);
     } else if (MSCDataFIFOEmptyFlagGet(mmh->mmc_mem_base)) {
         printk("%s line:%d DATA FIFO EMPTY\n", __func__, __LINE__);
         MSCDataFIFOEmptyDisable(mmh->mmc_mem_base);
-        MSCRegisterDump(mmh->mmc_mem_base, printk);
+        if (mmh->mmc_command && mmh->mmc_command->data) {
+            m200_mmc_data_done(mmh->mmc_host, mmh->mmc_command->data);
+            complete(&mmh->dma_completion);
+        }
     } else if (MSCCRCResponseErrorFlagGet(mmh->mmc_mem_base)) {
+        //mmh->mmc_command->error = -EILSEQ;
+        //MSCCRCResponseErrorFlagClear(mmh->mmc_mem_base);
+        //MSCCRCResponseErrorDisable(mmh->mmc_mem_base);
         printk("%s line:%d CRC Response Error\n", __func__, __LINE__);
     } else if (MSCCRCReadErrorFlagGet(mmh->mmc_mem_base)) {
+        //mmh->mmc_command->data->error = -EILSEQ;
+        //MSCCRCReadErrorFlagClear(mmh->mmc_mem_base);
+        //MSCCRCReadErrorDisable(mmh->mmc_mem_base);
         printk("%s line:%d CRC Read Error\n", __func__, __LINE__);
+    } else if (MSCAutoCMD12DoneFlagGet(mmh->mmc_mem_base)) {
+        MSCAutoCMD12DoneFlagClear(mmh->mmc_mem_base);
+        MSCAutoCMD12DoneDisable(mmh->mmc_mem_base);
+        printk("%s line:%d AUTO12CMD DONE\n", __func__, __LINE__);
     } else {
         printk("%s line:%d UNKNOW %s\n", __func__, __LINE__,
             mmh->mmc_command && mmh->mmc_command->data ? "data" : "");
+        printk("interrupt: 0x%08X\n", (int)MSCInterruptGet(mmh->mmc_mem_base));
     }
 
     return IRQ_HANDLED;
@@ -596,6 +614,13 @@ static int m200_mmc_platform_driver_probe(struct platform_device *pdev)
         break;
     }
 
+    if (of_get_property(device_node, "mmc-cap-mmc-highspeed", NULL)) {
+        mmh->mmc_host->caps |= MMC_CAP_MMC_HIGHSPEED;
+    }
+    if (of_get_property(device_node, "mmc-cap-sd-highspeed", NULL)) {
+        mmh->mmc_host->caps |= MMC_CAP_SD_HIGHSPEED;
+    }
+
     err = of_property_read_u32_index(device_node, "sdma-descriptor-count", 0, &sdma_descriptor_count);
     if (err) {
         dev_err(dev, "Error: No sdma-descriptor-count configuration in MMC DT at %s\n", __func__);
@@ -624,6 +649,9 @@ static int m200_mmc_platform_driver_probe(struct platform_device *pdev)
         return -ENOMEM;
     }
     printk("%s line:%d mmh->sdma_descriptor:0x%p\n", __func__, __LINE__, mmh->sdma_descriptor);
+
+    init_completion(&mmh->dma_completion);
+    mmh->dma_completion.done = 1;
 
     mmh->clk = of_clk_get(device_node, 0);
     printk("%s line:%d mmh->clk:0x%p\n", __func__, __LINE__, mmh->clk);
